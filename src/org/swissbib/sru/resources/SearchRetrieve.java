@@ -1,16 +1,16 @@
 package org.swissbib.sru.resources;
 
+import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.restlet.Context;
 import org.restlet.data.Form;
 import org.restlet.ext.xml.DomRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
-import org.swissbib.sru.targets.solr.SOLRQueryTransformation;
-import org.z3950.zing.cql.CQLNode;
-import org.z3950.zing.cql.CQLParseException;
-import org.z3950.zing.cql.CQLParser;
+import org.swissbib.sru.targets.solr.SOLRQueryTransformationInterface;
 
 import java.io.IOException;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,15 +31,21 @@ public class SearchRetrieve extends ServerResource {
     @Get
     public Representation toXml() throws IOException {
 
+        //Application test = this.getApplication();
+        Context c =  getContext();
+        //Series<Parameter> params = c.getParameters() ;
+        ConcurrentMap<String,Object> attributes = c.getAttributes();
+        HttpSolrServer solrServer =  (HttpSolrServer) attributes.get("solrServer");
+
 
         Form queryParams = getRequest().getResourceRef().getQueryAsForm();
         String query = queryParams.getFirstValue("query");
 
-        SOLRQueryTransformation sQ = new SOLRQueryTransformation();
+        SOLRQueryTransformationInterface sQ = new SOLRQueryTransformationInterface();
 
         try {
 
-            sQ.init(query);
+            sQ.init(query,solrServer);
             sQ.runQuery();
 
             String result = sQ.getResult();

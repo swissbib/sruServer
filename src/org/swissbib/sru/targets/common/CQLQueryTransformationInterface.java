@@ -1,5 +1,7 @@
 package org.swissbib.sru.targets.common;
 
+import org.apache.solr.client.solrj.impl.HttpSolrServer;
+
 /**
  * Created with IntelliJ IDEA.
  * User: swissbib
@@ -7,9 +9,9 @@ package org.swissbib.sru.targets.common;
  * Time: 8:42 AM
  * To change this template use File | Settings | File Templates.
  */
-public interface CQLQueryTransformation {
+public interface CQLQueryTransformationInterface {
 
-    public void init(String cqlQuery) throws Exception;
+    public void init(String cqlQuery, HttpSolrServer sorlServer) throws Exception;
 
     public void runQuery() throws Exception;
 

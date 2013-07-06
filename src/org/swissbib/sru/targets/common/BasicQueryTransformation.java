@@ -1,5 +1,6 @@
 package org.swissbib.sru.targets.common;
 
+import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.z3950.zing.cql.CQLNode;
 import org.z3950.zing.cql.CQLParseException;
 import org.z3950.zing.cql.CQLParser;
@@ -11,16 +12,20 @@ import org.z3950.zing.cql.CQLParser;
  * Time: 8:47 AM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class BasicQueryTransformation implements CQLQueryTransformation{
+public abstract class BasicQueryTransformation implements CQLQueryTransformationInterface {
 
     /**
      * CQLNode to be processed by target
       */
     protected CQLNode cqlNode = null;
+    protected HttpSolrServer solrServer = null;
 
 
     @Override
-    public void init(String cqlQuery) throws Exception {
+    public void init(String cqlQuery, HttpSolrServer sorlServer) throws Exception {
+
+
+        this.solrServer = solrServer;
         System.out.println(cqlQuery);
 
         CQLParser cqlP = new CQLParser();
@@ -31,6 +36,7 @@ public abstract class BasicQueryTransformation implements CQLQueryTransformation
             pE.printStackTrace();
         }
     }
+
 
     @Override
     public abstract void runQuery() throws Exception;

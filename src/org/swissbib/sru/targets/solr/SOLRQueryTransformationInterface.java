@@ -2,20 +2,12 @@ package org.swissbib.sru.targets.solr;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.impl.CloudSolrServer;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
 import org.swissbib.sru.targets.common.BasicQueryTransformation;
-import org.swissbib.utilities.web.HTTPConnectionHandling;
 import org.z3950.zing.cql.*;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URLEncoder;
-import java.util.Scanner;
 import java.util.StringTokenizer;
 
 /**
@@ -25,7 +17,7 @@ import java.util.StringTokenizer;
  * Time: 9:00 AM
  * To change this template use File | Settings | File Templates.
  */
-public class SOLRQueryTransformation extends BasicQueryTransformation {
+public class SOLRQueryTransformationInterface extends BasicQueryTransformation {
 
 
 
@@ -55,7 +47,10 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
 
         SolrQuery parameters = new SolrQuery();
         parameters.set("q", luceneStringQuery.toString());
-        parameters.set("qt","/select") ;
+        parameters.set("qt","dismax") ;
+        parameters.set("defType","edismax") ;
+        parameters.set("df","bla") ; //should be a default field if no one is defined in the configuration of the server
+
 
 
         QueryResponse response = solrServer.query(parameters);
