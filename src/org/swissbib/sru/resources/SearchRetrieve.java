@@ -7,7 +7,7 @@ import org.restlet.ext.xml.DomRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
-import org.swissbib.sru.targets.solr.SOLRQueryTransformationInterface;
+import org.swissbib.sru.targets.solr.SOLRQueryTransformation;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentMap;
@@ -41,7 +41,7 @@ public class SearchRetrieve extends ServerResource {
         Form queryParams = getRequest().getResourceRef().getQueryAsForm();
         String query = queryParams.getFirstValue("query");
 
-        SOLRQueryTransformationInterface sQ = new SOLRQueryTransformationInterface();
+        SOLRQueryTransformation sQ = new SOLRQueryTransformation();
 
         try {
 
@@ -49,7 +49,6 @@ public class SearchRetrieve extends ServerResource {
             sQ.runQuery();
 
             String result = sQ.getResult();
-
             System.out.println(result);
 
         }catch (Exception ex) {

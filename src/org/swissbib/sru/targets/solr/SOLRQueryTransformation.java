@@ -17,7 +17,7 @@ import java.util.StringTokenizer;
  * Time: 9:00 AM
  * To change this template use File | Settings | File Templates.
  */
-public class SOLRQueryTransformationInterface extends BasicQueryTransformation {
+public class SOLRQueryTransformation extends BasicQueryTransformation {
 
 
 

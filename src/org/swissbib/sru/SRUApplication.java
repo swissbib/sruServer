@@ -16,6 +16,8 @@ import java.util.HashMap;
  */
 public class SRUApplication extends Application {
 
+    //Beispielabfrage:http://localhost:8111/search?query=fulltext+=+%22hallo%22+and+fulltext+=+%22a*%22
+
 
     public static void main(String[] args) throws Exception {
 
