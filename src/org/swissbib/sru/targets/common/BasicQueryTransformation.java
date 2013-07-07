@@ -1,6 +1,8 @@
 package org.swissbib.sru.targets.common;
 
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocumentList;
 import org.z3950.zing.cql.CQLNode;
 import org.z3950.zing.cql.CQLParseException;
 import org.z3950.zing.cql.CQLParser;
@@ -39,8 +41,8 @@ public abstract class BasicQueryTransformation implements CQLQueryTransformation
 
 
     @Override
-    public abstract void runQuery() throws Exception;
+    public abstract QueryResponse runQuery() throws Exception;
 
     @Override
-    public abstract String getResult();
+    public abstract SolrDocumentList getResult();
 }

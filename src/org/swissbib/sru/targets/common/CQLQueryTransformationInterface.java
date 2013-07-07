@@ -1,6 +1,8 @@
 package org.swissbib.sru.targets.common;
 
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocumentList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,8 +15,8 @@ public interface CQLQueryTransformationInterface {
 
     public void init(String cqlQuery, HttpSolrServer sorlServer) throws Exception;
 
-    public void runQuery() throws Exception;
+    public QueryResponse runQuery() throws Exception;
 
-    public String getResult();
+    public SolrDocumentList getResult();
 
 }

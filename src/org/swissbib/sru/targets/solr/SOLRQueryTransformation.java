@@ -1,13 +1,23 @@
 package org.swissbib.sru.targets.solr;
 
+
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.swissbib.sru.targets.common.BasicQueryTransformation;
 import org.z3950.zing.cql.*;
 
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 /**
@@ -19,6 +29,10 @@ import java.util.StringTokenizer;
  */
 public class SOLRQueryTransformation extends BasicQueryTransformation {
 
+
+    protected SolrDocumentList result = null;
+
+    protected ArrayList<HashMap<String,String>> listOfResults = new ArrayList<HashMap<String, String>>();
 
 
     private final static SolrServer solrServer;
@@ -35,7 +49,7 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
     //http://localhost:8111/search?query=fulltext+=+%22hello%22+and+title+=+%22hello%22
 
     @Override
-    public void runQuery() throws Exception {
+    public QueryResponse runQuery() throws Exception {
 
         if (null == cqlNode)
             throw new Exception ("target not initialzed");
@@ -55,18 +69,18 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
 
 
 
-        QueryResponse response = solrServer.query(parameters);
+        return solrServer.query(parameters);
 
-        SolrDocumentList list = response.getResults();
-        System.out.println("number found: " + list.getNumFound());
-        System.out.println("query time: " + response.getQTime());
+
+        //System.out.println("number found: " + list.getNumFound());
+        //System.out.println("query time: " + response.getQTime());
 
 
     }
 
     @Override
-    public String getResult() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public SolrDocumentList getResult() {
+        return result;
     }
 
 

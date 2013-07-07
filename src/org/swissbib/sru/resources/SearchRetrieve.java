@@ -1,15 +1,31 @@
 package org.swissbib.sru.resources;
 
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
 import org.restlet.Context;
 import org.restlet.data.Form;
+import org.restlet.data.Reference;
 import org.restlet.ext.xml.DomRepresentation;
+import org.restlet.ext.xml.SaxRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
+import org.swissbib.sru.targets.common.SolrSaxRepresentation;
 import org.swissbib.sru.targets.solr.SOLRQueryTransformation;
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.concurrent.ConcurrentMap;
 
 /**
@@ -43,26 +59,32 @@ public class SearchRetrieve extends ServerResource {
 
         SOLRQueryTransformation sQ = new SOLRQueryTransformation();
 
+        SaxRepresentation saxRepresentation = null;
+
+
         try {
 
+
+
             sQ.init(query,solrServer);
-            sQ.runQuery();
 
-            String result = sQ.getResult();
-            System.out.println(result);
 
-        }catch (Exception ex) {
+            QueryResponse qR = sQ.runQuery();
 
+
+            saxRepresentation = new SolrSaxRepresentation(qR);
+
+
+
+        }
+        catch (Exception ex) {
             ex.printStackTrace();
 
         }
 
 
+        return saxRepresentation;
 
-
-        DomRepresentation result = new DomRepresentation();
-
-        return result;
 
 
     }
