@@ -12,6 +12,7 @@ import org.restlet.ext.xml.SaxRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
+import org.swissbib.sru.targets.common.SolrDomRepresentation;
 import org.swissbib.sru.targets.common.SolrSaxRepresentation;
 import org.swissbib.sru.targets.solr.SOLRQueryTransformation;
 import org.w3c.dom.*;
@@ -61,6 +62,7 @@ public class SearchRetrieve extends ServerResource {
 
         SaxRepresentation saxRepresentation = null;
 
+        DomRepresentation dR = null;
 
         try {
 
@@ -72,8 +74,8 @@ public class SearchRetrieve extends ServerResource {
             QueryResponse qR = sQ.runQuery();
 
 
-            saxRepresentation = new SolrSaxRepresentation(qR);
-
+            //saxRepresentation = new SolrSaxRepresentation(qR);
+            dR = new SolrDomRepresentation(qR).getDom();
 
 
         }
@@ -83,7 +85,8 @@ public class SearchRetrieve extends ServerResource {
         }
 
 
-        return saxRepresentation;
+        //return saxRepresentation;
+        return dR;
 
 
 

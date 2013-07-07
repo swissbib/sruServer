@@ -2,6 +2,7 @@ package org.swissbib.sru.targets.common;
 
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
+import org.restlet.ext.xml.DomRepresentation;
 import org.restlet.ext.xml.SaxRepresentation;
 import org.xml.sax.SAXException;
 
@@ -31,6 +32,10 @@ public class SolrSaxRepresentation extends SaxRepresentation {
 
         this.qR = qR;
 
+
+        SaxRepresentation s = new SaxRepresentation();
+
+
     }
 
 
@@ -38,9 +43,15 @@ public class SolrSaxRepresentation extends SaxRepresentation {
     public void write(org.restlet.ext.xml.XmlWriter writer)
             throws IOException {
 
+
+
         Iterator<SolrDocument> iterator =  qR.getResults().iterator();
 
         try {
+
+
+
+
 
             writer.startDocument();
             writer.startElement("collection");
@@ -64,12 +75,26 @@ public class SolrSaxRepresentation extends SaxRepresentation {
 
 
                             case XMLStreamConstants.START_ELEMENT:
+
+
+
                                 writer.startElement(sR.getLocalName());
+
+
+                                //writer.dataElement();
+
+                                //writer.dataElement();
+
+
                                 if (sR.getLocalName().equalsIgnoreCase("subfield")) {
 
 
-                                    //writer.characters(sR.getElementText());
-                                    //writer.endElement("subfield");
+                                    writer.characters(sR.getElementText());
+                                    writer.endElement("subfield");
+
+                                } else if (sR.getLocalName().equalsIgnoreCase("datafield")) {
+
+
 
                                 }
 
@@ -77,6 +102,9 @@ public class SolrSaxRepresentation extends SaxRepresentation {
                                 break;
                             case XMLStreamConstants.END_ELEMENT:
                                 writer.endElement(sR.getLocalName());
+                                break;
+                            case XMLStreamConstants.CHARACTERS:
+                                //writer.characters(sR.getText());
                                 break;
 
                         }
