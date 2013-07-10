@@ -40,10 +40,30 @@ public class SolrDomRepresentation  {
 
         StringBuilder sB = new StringBuilder();
 
-        sB.append("<test>\n");
+        //sB.append("<searchRetrieveResponse xmlns=\"http://www.loc.gov/zing/srw/\">\n");
+        sB.append("<searchRetrieveResponse>\n");
+        sB.append("<version>1.1</version>");
+        sB.append("<numberOfRecords>");
+        sB.append(qR.getResults().getNumFound());
+        sB.append("</numberOfRecords>");
+        sB.append("<records>\n");
+        //sB.append("<extraRecordData>\n";
+        //sB.append("<rel:qure xmlns:rel=\"xmlns:rob=\"info:srw/extension/2/relevancy\">0.965</rel:rank>\n" +
+        //        "    </extraRecordData> ")
+
+        //sB.append("<records xmlns:ns1=\"http://www.loc.gov/zing/srw/\">");
+
+
+
+
 
         while (iterator.hasNext()) {
 
+            sB.append("<record>");
+            sB.append("<recordSchema>info:srw/schema/1/marcxml-v1.1</recordSchema>");
+            sB.append("<recordPacking>xml</recordPacking>");
+
+            sB.append("<recordData>");
 
             SolrDocument doc = iterator.next();
 
@@ -52,11 +72,16 @@ public class SolrDomRepresentation  {
 
 
             sB.append(record.substring(21));
+
+            sB.append("</recordData>");
+            sB.append("</record>");
+
             //sB.append(holdings);
 
 
         }
-        sB.append("</test>\n");
+        sB.append("</records>\n");
+        sB.append("</searchRetrieveResponse>\n");
 
         try {
 
@@ -71,6 +96,10 @@ public class SolrDomRepresentation  {
             Document aDocument = documentBuilder.parse(a);
 
             domR = new DomRepresentation(MediaType.APPLICATION_XML, aDocument);
+            //domR = new DomRepresentation(MediaType.APPLICATION_XML);
+            //domR.setNamespaceAware(true);
+            //domR.setDocument(aDocument);
+
 
         } catch (ParserConfigurationException pCE){
 
