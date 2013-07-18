@@ -1,21 +1,28 @@
 package org.swissbib.sru.targets.solr;
 
+import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
+import org.restlet.Context;
 import org.restlet.data.MediaType;
 import org.restlet.ext.xml.DomRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
+import org.swissbib.sru.resources.RequestedSchema;
+import org.swissbib.sru.targets.common.SRUBasicRepresentation;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import javax.xml.transform.*;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.*;
 import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,24 +31,25 @@ import java.util.Iterator;
  * Time: 4:03 PM
  * To change this template use File | Settings | File Templates.
  */
-public class SolrStringRepresenation {
+public class SolrStringRepresenation extends SRUBasicRepresentation {
 
     QueryResponse qR = null;
+    Context context = null;
+    RequestedSchema schema = null;
 
-    public SolrStringRepresenation (QueryResponse qR) {
+    public SolrStringRepresenation (QueryResponse qR, Context context, RequestedSchema schema) {
 
+        super();
         this.qR = qR;
-
+        this.context = context;
+        this.schema = schema;
     }
 
+    @Override
+    public Representation getRepresentation() {
 
-
-
-    public Representation getDom() {
 
         Iterator<SolrDocument> iterator =  qR.getResults().iterator();
-        StringRepresentation representation = null;
-
         StringBuilder sB = new StringBuilder();
 
         //sB.append("<searchRetrieveResponse xmlns=\"http://www.loc.gov/zing/srw/\">\n");
@@ -61,24 +69,31 @@ public class SolrStringRepresenation {
 
 
 
+
+
+
         while (iterator.hasNext()) {
-
-            sB.append("<record>");
-            sB.append("<recordSchema>info:srw/schema/1/marcxml-v1.1</recordSchema>");
-            sB.append("<recordPacking>xml</recordPacking>");
-
-            sB.append("<recordData>");
 
             SolrDocument doc = iterator.next();
 
-            String record = (String) doc.getFieldValue("fullrecord");
-            //String holdings = (String) doc.getFieldValue("holdings");
+            switch (schema) {
+                case dcNoNS:
+                    sB.append(createDCNoNS(doc));
+                    break;
+                case dcNS:
+                    break;
+                case marcNoNs:
+                    sB.append(createMarcNoNS(doc));
+                    break;
+                case marcNS:
+                    break;
+                default:
+
+            }
 
 
-            sB.append(record.substring(21));
 
-            sB.append("</recordData>");
-            sB.append("</record>");
+
 
             //sB.append(holdings);
 
@@ -87,13 +102,77 @@ public class SolrStringRepresenation {
         sB.append("</records>\n");
         sB.append("</searchRetrieveResponse>\n");
 
-
-        StringRepresentation sR = new StringRepresentation(sB.toString(),MediaType.TEXT_XML);
-
-        return sR;
-
-
+        return new StringRepresentation(sB.toString(),MediaType.TEXT_XML);
     }
+
+
+    private String createMarcNoNS (SolrDocument doc)  {
+
+
+        StringBuilder sB = new StringBuilder();
+
+        sB.append("<record>");
+        sB.append("<recordSchema>info:srw/schema/1/marcxml-v1.1</recordSchema>");
+        sB.append("<recordPacking>xml</recordPacking>");
+
+        sB.append("<recordData>");
+
+
+        String record = (String) doc.getFieldValue("fullrecord");
+        //String holdings = (String) doc.getFieldValue("holdings");
+
+
+        sB.append(record.substring(21));
+
+        sB.append("</recordData>");
+        sB.append("</record>");
+
+        return sB.toString();
+    }
+
+
+    private String createDCNoNS (SolrDocument doc)  {
+
+
+        ConcurrentMap<String,Object> attributes = context.getAttributes();
+        Templates template =  (Templates)((ConcurrentHashMap<String,Templates>) attributes.get("templatesMap")).get("m2DCnoNs");
+        StringBuilder sB = new StringBuilder();
+
+        try {
+
+            final Transformer transformer = template.newTransformer();
+
+
+            sB.append("<record>");
+            sB.append("<recordSchema>info:srw/schema/1/marcxml-v1.1</recordSchema>");
+            sB.append("<recordPacking>dc</recordPacking>");
+
+            sB.append("<recordData>");
+
+            String record = (String) doc.getFieldValue("fullrecord");
+            Source sourceRecord =  new StreamSource(new StringReader(record));
+
+            StringWriter sw = new StringWriter() ;
+            Result streamResult = new StreamResult(sw);
+
+            transformer.transform(sourceRecord,streamResult);
+
+            sB.append(sw.toString().substring(38)) ;
+            //sB.append(sw.toString()) ;
+
+
+            sB.append("</recordData>");
+            sB.append("</record>");
+
+            return sB.toString();
+        } catch (TransformerException tE ) {
+            tE.printStackTrace();
+        }
+
+
+        return sB.toString();
+    }
+
 
 
 }

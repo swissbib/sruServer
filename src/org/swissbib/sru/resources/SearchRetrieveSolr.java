@@ -10,6 +10,8 @@ import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
+import org.swissbib.sru.targets.common.SRUBasicRepresentation;
+import org.swissbib.sru.targets.solr.SolrStringRepresenation;
 import org.swissbib.sru.targets.solr.SolrXSLTTransRepresentation;
 import org.swissbib.sru.targets.solr.SOLRQueryTransformation;
 
@@ -24,74 +26,54 @@ import java.util.concurrent.ConcurrentMap;
  * To change this template use File | Settings | File Templates.
  */
 //public class SearchRetrieveSolr extends Restlet {
-public class SearchRetrieveSolr extends ServerResource {
-
-
-//    public SearchRetrieveSolr (Context context) {
-//        super(context);
-//    }
+public class SearchRetrieveSolr extends SearchRetrieveBasic {
 
 
     @Get()
-    public Representation getSearchResult() throws IOException {
+    public Representation getSearchResult() throws Exception {
 
         //s. auch http://restlet.org/learn/2.0/firstResource
         //ich kann  @Get("xml") angeben - schneller?
+
+
+        super.init();
+
+
 
         Context context =  getContext();
         ConcurrentMap<String,Object> attributes = context.getAttributes();
         HttpSolrServer solrServer =  (HttpSolrServer) attributes.get("solrServer");
 
 
-        Form queryParams = getRequest().getResourceRef().getQueryAsForm();
-
-        //todo: no query -> diagnostics error
-        //todo: no schema: default dc
-
-        String query = queryParams.getFirstValue("query");
-        String recordSchema = queryParams.getFirstValue("recordSchema");
-
-        //recordSchema=info:srw/schema/1/dc-v1.1
-
-
         SOLRQueryTransformation sQ = new SOLRQueryTransformation();
-        SaxRepresentation saxRepresentation = null;
-
-
-
-        DomRepresentation dR = null;
-        StringRepresentation sR = null;
-
         Representation rep = null;
-
-
-
 
         try {
 
             sQ.init(query,solrServer);
             QueryResponse qR = sQ.runQuery();
-            //saxRepresentation = new SolrSaxRepresentation(qR);
-            //dR = new SolrDomRepresentation(qR).getDom();
 
-            //sR = (StringRepresentation)  new SolrStringRepresenation(qR).getDom();
 
-            SolrXSLTTransRepresentation xsltTrans = new SolrXSLTTransRepresentation(qR);
-            rep =  xsltTrans.getRepresentation();
+            String repClass =  (String) attributes.get("representationClass");
+
+            SRUBasicRepresentation basicRepresenation = null;
+
+            if (repClass.equalsIgnoreCase("org.swissbib.sru.solr.SolrXSLTTransRepresentation")) {
+
+                basicRepresenation = new SolrXSLTTransRepresentation(qR);
+            } else {
+                basicRepresenation = new SolrStringRepresenation(qR,context,this.schemaType);
+            }
+
+
+            rep =  basicRepresenation.getRepresentation();
 
         }
         catch (Exception ex) {
             ex.printStackTrace();
         }
 
-
-        //return saxRepresentation;
-        //return dR;
-
         return rep;
-        //return sR;
-
-
 
     }
 

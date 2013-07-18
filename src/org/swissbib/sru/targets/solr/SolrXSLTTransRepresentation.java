@@ -5,6 +5,7 @@ import org.apache.solr.common.SolrDocument;
 import org.restlet.data.MediaType;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
+import org.swissbib.sru.targets.common.SRUBasicRepresentation;
 
 import javax.xml.transform.*;
 import javax.xml.transform.stream.StreamResult;
@@ -21,13 +22,14 @@ import java.util.Iterator;
  * Time: 5:32 AM
  * To change this template use File | Settings | File Templates.
  */
-public class SolrXSLTTransRepresentation {
+public class SolrXSLTTransRepresentation extends SRUBasicRepresentation {
 
 
     QueryResponse qR = null;
 
     public SolrXSLTTransRepresentation (QueryResponse qR) {
 
+        super();
         this.qR = qR;
 
     }
@@ -37,9 +39,7 @@ public class SolrXSLTTransRepresentation {
 
         StringRepresentation sR = null;
 
-
         final TransformerFactory tF = TransformerFactory.newInstance();
-
         final Source styleSheet = new StreamSource(new File("/home/swissbib/environment/code/sruRestlet/resources/xslt/MARC21slim2OAIDC.nonamespace.xsl"));
 
         try {
