@@ -1,4 +1,4 @@
-package org.swissbib.sru.targets.common;
+package org.swissbib.sru.targets.solr;
 
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;

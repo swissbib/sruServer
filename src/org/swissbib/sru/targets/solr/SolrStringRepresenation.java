@@ -1,9 +1,11 @@
-package org.swissbib.sru.targets.common;
+package org.swissbib.sru.targets.solr;
 
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.restlet.data.MediaType;
 import org.restlet.ext.xml.DomRepresentation;
+import org.restlet.representation.Representation;
+import org.restlet.representation.StringRepresentation;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -18,25 +20,27 @@ import java.util.Iterator;
 /**
  * Created with IntelliJ IDEA.
  * User: swissbib
- * Date: 7/7/13
- * Time: 8:42 PM
+ * Date: 7/14/13
+ * Time: 4:03 PM
  * To change this template use File | Settings | File Templates.
  */
-public class SolrDomRepresentation  {
+public class SolrStringRepresenation {
 
     QueryResponse qR = null;
 
-    public SolrDomRepresentation(QueryResponse qR) {
+    public SolrStringRepresenation (QueryResponse qR) {
 
         this.qR = qR;
 
     }
 
 
-    public DomRepresentation getDom() {
+
+
+    public Representation getDom() {
 
         Iterator<SolrDocument> iterator =  qR.getResults().iterator();
-        DomRepresentation domR = null;
+        StringRepresentation representation = null;
 
         StringBuilder sB = new StringBuilder();
 
@@ -83,38 +87,11 @@ public class SolrDomRepresentation  {
         sB.append("</records>\n");
         sB.append("</searchRetrieveResponse>\n");
 
-        try {
 
-            DocumentBuilderFactory factory =
-                    DocumentBuilderFactory.newInstance();
+        StringRepresentation sR = new StringRepresentation(sB.toString(),MediaType.TEXT_XML);
 
-            DocumentBuilder documentBuilder = factory.newDocumentBuilder();
+        return sR;
 
-            String test = sB.toString();
-
-            ByteArrayInputStream a = new ByteArrayInputStream(test.getBytes("utf-8"));
-            Document aDocument = documentBuilder.parse(a);
-
-            domR = new DomRepresentation(MediaType.APPLICATION_XML, aDocument);
-            //domR = new DomRepresentation(MediaType.APPLICATION_XML);
-            //domR.setNamespaceAware(true);
-            //domR.setDocument(aDocument);
-
-
-        } catch (ParserConfigurationException pCE){
-
-        } catch (UnsupportedEncodingException uE) {
-            uE.printStackTrace();
-        }  catch (SAXException sE) {
-            sE.printStackTrace();
-
-
-        } catch (IOException ioE) {
-            ioE.printStackTrace();
-        }
-
-
-        return domR;
 
     }
 
