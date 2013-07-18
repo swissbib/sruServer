@@ -35,11 +35,11 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
     protected ArrayList<HashMap<String,String>> listOfResults = new ArrayList<HashMap<String, String>>();
 
 
-    private final static SolrServer solrServer;
+    //private final static SolrServer solrServer;
 
-    static {
-        solrServer = new HttpSolrServer("http://search.swissbib.ch/solr/sb-biblio");
-    }
+    //static {
+    //    solrServer = new HttpSolrServer("http://localhost:8080/solr/sb-biblio");
+    //}
 
 
 
@@ -67,13 +67,7 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
         //todo: have a closer look into the pre condition
         parameters.set("df","bla") ; //should be a default field if no one is defined in the configuration of the server
 
-
-
-        return solrServer.query(parameters);
-
-
-        //System.out.println("number found: " + list.getNumFound());
-        //System.out.println("query time: " + response.getQTime());
+        return this.searchServer.query(parameters);
 
 
     }

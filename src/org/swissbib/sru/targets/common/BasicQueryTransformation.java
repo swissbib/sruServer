@@ -20,14 +20,14 @@ public abstract class BasicQueryTransformation implements CQLQueryTransformation
      * CQLNode to be processed by target
       */
     protected CQLNode cqlNode = null;
-    protected HttpSolrServer solrServer = null;
+    protected HttpSolrServer searchServer = null;
 
 
     @Override
-    public void init(String cqlQuery, HttpSolrServer sorlServer) throws Exception {
+    public void init(String cqlQuery, HttpSolrServer solrServer) throws Exception {
 
 
-        this.solrServer = solrServer;
+        this.searchServer = solrServer;
         System.out.println(cqlQuery);
 
         CQLParser cqlP = new CQLParser();

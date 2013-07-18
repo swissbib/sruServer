@@ -10,10 +10,13 @@ import org.restlet.data.Reference;
 import org.restlet.ext.xml.DomRepresentation;
 import org.restlet.ext.xml.SaxRepresentation;
 import org.restlet.representation.Representation;
+import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
 import org.swissbib.sru.targets.common.SolrDomRepresentation;
 import org.swissbib.sru.targets.common.SolrSaxRepresentation;
+import org.swissbib.sru.targets.common.SolrStringRepresenation;
+import org.swissbib.sru.targets.common.SolrXSLTTransRepresentation;
 import org.swissbib.sru.targets.solr.SOLRQueryTransformation;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
@@ -36,77 +39,78 @@ import java.util.concurrent.ConcurrentMap;
  * Time: 10:19 PM
  * To change this template use File | Settings | File Templates.
  */
-//public class SearchRetrieve extends Restlet {
-public class SearchRetrieve extends ServerResource {
+//public class SearchRetrieveSolr extends Restlet {
+public class SearchRetrieveSolr extends ServerResource {
 
 
-//    public SearchRetrieve (Context context) {
+//    public SearchRetrieveSolr (Context context) {
 //        super(context);
 //    }
 
 
-    @Get
-    public Representation toXml() throws IOException {
+    @Get()
+    public Representation getSearchResult() throws IOException {
 
-        //Application test = this.getApplication();
-        Context c =  getContext();
-        //Series<Parameter> params = c.getParameters() ;
-        ConcurrentMap<String,Object> attributes = c.getAttributes();
+        //s. auch http://restlet.org/learn/2.0/firstResource
+        //ich kann  @Get("xml") angeben - schneller?
+
+        Context context =  getContext();
+        ConcurrentMap<String,Object> attributes = context.getAttributes();
         HttpSolrServer solrServer =  (HttpSolrServer) attributes.get("solrServer");
 
 
         Form queryParams = getRequest().getResourceRef().getQueryAsForm();
+
+        //todo: no query -> diagnostics error
+        //todo: no schema: default dc
+
         String query = queryParams.getFirstValue("query");
+        String recordSchema = queryParams.getFirstValue("recordSchema");
+
+        //recordSchema=info:srw/schema/1/dc-v1.1
+
 
         SOLRQueryTransformation sQ = new SOLRQueryTransformation();
-
         SaxRepresentation saxRepresentation = null;
 
+
+
         DomRepresentation dR = null;
+        StringRepresentation sR = null;
+
+        Representation rep = null;
+
+
+
 
         try {
 
-
-
             sQ.init(query,solrServer);
-
-
             QueryResponse qR = sQ.runQuery();
-
-
             //saxRepresentation = new SolrSaxRepresentation(qR);
-            dR = new SolrDomRepresentation(qR).getDom();
+            //dR = new SolrDomRepresentation(qR).getDom();
 
+            //sR = (StringRepresentation)  new SolrStringRepresenation(qR).getDom();
+
+            SolrXSLTTransRepresentation xsltTrans = new SolrXSLTTransRepresentation(qR);
+            rep =  xsltTrans.getRepresentation();
 
         }
         catch (Exception ex) {
             ex.printStackTrace();
-
         }
 
 
         //return saxRepresentation;
-        return dR;
+        //return dR;
+
+        return rep;
+        //return sR;
 
 
 
     }
 
-    /*
-    @Override
-    public void handle(Request request, Response response) {
-        String entity = "Method       : " + request.getMethod()
-                + "\nResource URI : "
-                + request.getResourceRef()
-                + "\nIP address   : "
-                + request.getClientInfo().getAddress()
-                + "\nAgent name   : "
-                + request.getClientInfo().getAgentName()
-                + "\nAgent version: "
-                + request.getClientInfo().getAgentVersion();
-        response.setEntity(entity, MediaType.TEXT_PLAIN);
-    }
-     */
 
 
 }

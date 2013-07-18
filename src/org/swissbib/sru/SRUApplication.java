@@ -4,8 +4,16 @@ import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.restlet.*;
 import org.restlet.data.Protocol;
 import org.restlet.routing.Router;
-import org.swissbib.sru.resources.SearchRetrieve;
+import org.swissbib.sru.resources.SearchRetrieveSolr;
+
+import javax.xml.transform.Source;
+import javax.xml.transform.Templates;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamSource;
+import java.io.File;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -46,15 +54,40 @@ public class SRUApplication extends Application {
 
 
         //todo: make this configurable
-        HttpSolrServer  solrServer = new HttpSolrServer("http://search.swissbib.ch/solr/sb-biblio");
+        //HttpSolrServer  solrServer = new HttpSolrServer("http://search.swissbib.ch/solr/sb-biblio");
+        HttpSolrServer  solrServer = new HttpSolrServer("http://localhost:8080/solr/sb-biblio");
         HashMap<String,Object>  hM =  new HashMap<String, Object>();
         hM.put("solrServer",solrServer);
+
+        ConcurrentHashMap<String,Templates> templatesMap = new ConcurrentHashMap<String, Templates>();
+
+        final TransformerFactory tF = TransformerFactory.newInstance();
+
+        //todo: load templates resources with RESTlet means
+        final Source marc2DCNoNamespace = new StreamSource(new File("/home/swissbib/environment/code/sruRestlet/resources/xslt/MARC21slim2OAIDC.nonamespace.xsl"));
+
+        try {
+            Templates templates =  tF.newTemplates(marc2DCNoNamespace);
+            templatesMap.put("m2DCnoNs",templates);
+
+
+        } catch (TransformerConfigurationException trConfiguration) {
+
+            //todo: logging with Restlet
+            trConfiguration.printStackTrace();
+        }
+
+        hM.put("templatesMap",templatesMap);
+
+
+
+
         getContext().setAttributes(hM);
 
         Router router = new Router(getContext());
 
         router.attach("/search",
-                SearchRetrieve.class);
+                SearchRetrieveSolr.class);
 
         return router;
 
