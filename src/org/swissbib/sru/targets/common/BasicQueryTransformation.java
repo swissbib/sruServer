@@ -3,6 +3,7 @@ package org.swissbib.sru.targets.common;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
+import org.restlet.data.Form;
 import org.z3950.zing.cql.CQLNode;
 import org.z3950.zing.cql.CQLParseException;
 import org.z3950.zing.cql.CQLParser;
@@ -21,11 +22,20 @@ public abstract class BasicQueryTransformation implements CQLQueryTransformation
       */
     protected CQLNode cqlNode = null;
     protected HttpSolrServer searchServer = null;
+    protected Form inputParams = null;
 
 
     @Override
-    public void init(String cqlQuery, HttpSolrServer solrServer) throws Exception {
+    public void init(Form inputParams, HttpSolrServer solrServer) throws Exception {
 
+        String cqlQuery = inputParams.getFirstValue("query");
+
+        if (null == cqlQuery) {
+            throw new Exception("no query");
+
+        }
+
+        this.inputParams = inputParams;
 
         this.searchServer = solrServer;
         System.out.println(cqlQuery);

@@ -63,6 +63,7 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
         parameters.set("q", luceneStringQuery.toString());
         parameters.set("qt","dismax") ;
         parameters.set("defType","edismax") ;
+        parameters.set("start","10");
         //seems that edismax needs a default query field
         //todo: have a closer look into the pre condition
         parameters.set("df","bla") ; //should be a default field if no one is defined in the configuration of the server

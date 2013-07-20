@@ -3,6 +3,7 @@ package org.swissbib.sru.targets.common;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
+import org.restlet.data.Form;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,7 +14,7 @@ import org.apache.solr.common.SolrDocumentList;
  */
 public interface CQLQueryTransformationInterface {
 
-    public void init(String cqlQuery, HttpSolrServer sorlServer) throws Exception;
+    public void init(Form inputParams, HttpSolrServer sorlServer) throws Exception;
 
     public QueryResponse runQuery() throws Exception;
 

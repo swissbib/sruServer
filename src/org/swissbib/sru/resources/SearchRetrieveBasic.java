@@ -19,14 +19,16 @@ public class SearchRetrieveBasic extends ServerResource{
 
 
     protected RequestedSchema schemaType;
-
     protected String query = null;
+
 
     protected void init () throws Exception {
 
 
 
         Form queryParams = getRequest().getResourceRef().getQueryAsForm();
+
+
 
         //todo: no query -> diagnostics error
         //todo: no schema: default dc

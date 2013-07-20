@@ -50,7 +50,11 @@ public class SearchRetrieveSolr extends SearchRetrieveBasic {
 
         try {
 
-            sQ.init(query,solrServer);
+
+
+            Form queryParams = getRequest().getResourceRef().getQueryAsForm();
+
+            sQ.init(queryParams,solrServer);
             QueryResponse qR = sQ.runQuery();
 
 
@@ -62,7 +66,7 @@ public class SearchRetrieveSolr extends SearchRetrieveBasic {
 
                 basicRepresenation = new SolrXSLTTransRepresentation(qR);
             } else {
-                basicRepresenation = new SolrStringRepresenation(qR,context,this.schemaType);
+                basicRepresenation = new SolrStringRepresenation(qR,context,queryParams, this.schemaType);
             }
 
 
