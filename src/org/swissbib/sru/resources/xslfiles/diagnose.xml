@@ -1,0 +1,144 @@
+<?xml version="1.0" ?>
+<?xml-stylesheet type="text/xsl" href="/SRW/explainResponse.xsl"?>
+<SRW:explainResponse xmlns:SRW="http://www.loc.gov/zing/srw/">
+    <SRW:version>1.1</SRW:version>
+    <SRW:record>
+        <SRW:recordSchema>http://explain.z3950.org/dtd/2.0/</SRW:recordSchema>
+        <SRW:recordPacking>xml</SRW:recordPacking>
+        <SRW:recordData>
+            <explain authoritative="true" xmlns="http://explain.z3950.org/dtd/2.0/">
+                <serverInfo protocol="SRW/U">
+                </serverInfo>
+                <databaseInfo>
+                    <implementation version='1.1' indentifier='http://www.oclc.org/research/software/srw'>
+                        <title>OCLC Research SRW Server version 1.1</title>
+                    </implementation>
+                </databaseInfo>
+                <metaInfo>
+                </metaInfo>
+                <indexInfo>
+                    <set identifier="null" name="dc"/>
+                    <index>
+                        <title>dc.xonline</title>
+                        <map>
+                            <name set="dc">xonline</name>
+                        </map>
+                    </index>
+                    <index>
+                        <title>dc.date</title>
+                        <map>
+                            <name set="dc">date</name>
+                        </map>
+                    </index>
+                    <index>
+                        <title>dc.personalName</title>
+                        <map>
+                            <name set="dc">personalName</name>
+                        </map>
+                    </index>
+                    <index>
+                        <title>dc.id</title>
+                        <map>
+                            <name set="dc">id</name>
+                        </map>
+                    </index>
+                    <index>
+                        <title>dc.identifier</title>
+                        <map>
+                            <name set="dc">identifier</name>
+                        </map>
+                    </index>
+                    <index>
+                        <title>dc.corporateName</title>
+                        <map>
+                            <name set="dc">corporateName</name>
+                        </map>
+                    </index>
+                    <index>
+                        <title>dc.xNetwork</title>
+                        <map>
+                            <name set="dc">xNetwork</name>
+                        </map>
+                    </index>
+                    <index>
+                        <title>dc.topicalSubject</title>
+                        <map>
+                            <name set="dc">topicalSubject</name>
+                        </map>
+                    </index>
+                    <index>
+                        <title>dc.medium</title>
+                        <map>
+                            <name set="dc">medium</name>
+                        </map>
+                    </index>
+                    <index>
+                        <title>dc.language</title>
+                        <map>
+                            <name set="dc">language</name>
+                        </map>
+                    </index>
+                    <index>
+                        <title>dc.anywhere</title>
+                        <map>
+                            <name set="dc">anywhere</name>
+                        </map>
+                    </index>
+                    <index>
+                        <title>dc.title</title>
+                        <map>
+                            <name set="dc">title</name>
+                        </map>
+                    </index>
+                    <index>
+                        <title>dc.subject</title>
+                        <map>
+                            <name set="dc">subject</name>
+                        </map>
+                    </index>
+                    <index>
+                        <title>dc.genreForm</title>
+                        <map>
+                            <name set="dc">genreForm</name>
+                        </map>
+                    </index>
+                    <index>
+                        <title>dc.uniformTitle</title>
+                        <map>
+                            <name set="dc">uniformTitle</name>
+                        </map>
+                    </index>
+                    <index>
+                        <title>dc.creator</title>
+                        <map>
+                            <name set="dc">creator</name>
+                        </map>
+                    </index>
+                    <index>
+                        <title>dc.possessingInstitution</title>
+                        <map>
+                            <name set="dc">possessingInstitution</name>
+                        </map>
+                    </index>
+                </indexInfo>
+                <schemaInfo>
+                    <schema sort="false" retrieve="true" name="dc"
+                            identifier="info:srw/schema/1/dc-v1.1"
+                            location="http://www.loc.gov/zing/srw/dc-schema.xsd">
+                        <title>Dublin Core Elements</title>
+                    </schema>
+                    <schema sort="false" retrieve="true" name="marcxml"
+                            identifier="info:srw/schema/1/marcxml-v1.1"
+                            location="http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd">
+                        <title>MARCXML</title>
+                    </schema>
+                </schemaInfo>
+                <configInfo>
+                    <default type="maximumRecords">100</default>
+                    <default type="numberOfRecords">10</default>
+                    <default type="retrieveSchema">info:srw/schema/1/dc-v1.1</default>
+                </configInfo>
+            </explain>
+        </SRW:recordData>
+    </SRW:record>
+</SRW:explainResponse>

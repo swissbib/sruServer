@@ -5,6 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+
+    <script type="text/javascript">
+
+
+        function mungeForm() {
+            inform = document.CQLForm;
+            outform = document.SRUForm;
+            max = inform.maxIndex.value;
+            if(outform.resultSetTTL.value==0) {
+                if(outform.sortKeys.value.indexOf(',')) {
+                    outform.resultSetTTL.value=300;
+                }
+            }
+            cql = "";
+            prevIdx = 0;
+            // Step through elements in form to create CQL
+            for (var idx = 1; idx <= max; idx++) {
+                term = inform["term"+idx].value;
+                if (term) {
+                    if (prevIdx) {
+                        cql += " " + inform["bool" + prevIdx].value + " "
+                    }
+                    if (term.indexOf(' ')) {
+                        term = '"' + term + '"';
+                    }
+                    cql += inform["index" + idx].value + " " + inform["relat" + idx].value + " " + term;
+                    prevIdx = idx
+                }
+            }
+            if (!cql) {
+                alert("At least one term is required to search.");
+                return false;
+            }
+            outform.query.value = cql;
+            outform.submit();
+            return false;
+        }
+
+
+
+    </script>
+
 </head>
 <body>
 
@@ -39,7 +81,7 @@
 
 
 <div id="wrapper" class="container-fluid">
-<form id="frmOptions" method="post" class="well form-inline">
+<form id="frmOptions" method="get" class="well form-inline">
 
 
             <div class="row-fluid">
@@ -127,7 +169,7 @@
                         <option>NOT</option>
                     </select>
                 </div>
-            </div>                            <label>Searchfield</label>
+            </div>
 
         </div>
 
@@ -308,7 +350,7 @@
   </div>
 
 
-<script src="http://code.jquery.com/jquery.js"></script>
+<script src="js/jquery-1.10.2.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 </body>
 </html>
