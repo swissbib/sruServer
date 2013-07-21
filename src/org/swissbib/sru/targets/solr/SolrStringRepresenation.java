@@ -97,7 +97,7 @@ public class SolrStringRepresenation extends SRUBasicRepresentation {
         StringBuilder sB = new StringBuilder();
 
         sB.append("<?xml version=\"1.0\" ?>");
-        sB.append("<?xml-stylesheet type=\"text/xsl\" href=\"/xslfiles/searchRetrieveResponse.xsl\"?>");
+        //sB.append("<?xml-stylesheet type=\"text/xsl\" href=\"/xslfiles/searchRetrieveResponse.xsl\"?>");
 
         //sB.append("<searchRetrieveResponse xmlns=\"http://www.loc.gov/zing/srw/\">\n");
         sB.append("<searchRetrieveResponse>\n");
