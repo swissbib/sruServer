@@ -12,7 +12,7 @@ import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
 import org.swissbib.sru.targets.common.SRUBasicRepresentation;
 import org.swissbib.sru.targets.solr.SolrStringRepresenation;
-import org.swissbib.sru.targets.solr.SolrXSLTTransRepresentation;
+
 import org.swissbib.sru.targets.solr.SOLRQueryTransformation;
 
 import java.io.IOException;
@@ -60,15 +60,8 @@ public class SearchRetrieveSolr extends SearchRetrieveBasic {
 
             String repClass =  (String) attributes.get("representationClass");
 
-            SRUBasicRepresentation basicRepresenation = null;
-
-            if (repClass.equalsIgnoreCase("org.swissbib.sru.solr.SolrXSLTTransRepresentation")) {
-
-                basicRepresenation = new SolrXSLTTransRepresentation(qR);
-            } else {
-                basicRepresenation = new SolrStringRepresenation(qR,context,queryParams, this.schemaType);
-            }
-
+            //we had differentiation between String and XSLT transformation - I guess no longer needed
+            SRUBasicRepresentation basicRepresenation = new SolrStringRepresenation(qR,context,queryParams, this.schemaType);
 
             rep =  basicRepresenation.getRepresentation();
 
