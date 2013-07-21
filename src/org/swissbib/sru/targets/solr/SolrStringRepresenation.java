@@ -5,10 +5,13 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.restlet.Context;
 import org.restlet.data.Form;
+import org.restlet.data.LocalReference;
 import org.restlet.data.MediaType;
 import org.restlet.ext.xml.DomRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
+import org.restlet.resource.ClientResource;
+import org.restlet.resource.Resource;
 import org.swissbib.sru.resources.RequestedSchema;
 import org.swissbib.sru.targets.common.SRUBasicRepresentation;
 import org.w3c.dom.Document;
@@ -80,6 +83,9 @@ public class SolrStringRepresenation extends SRUBasicRepresentation {
     public Representation getRepresentation() {
 
 
+
+
+
         startPage = qR.getResults().getStart();
 
         Iterator<SolrDocument> iterator =  qR.getResults().iterator();
@@ -90,7 +96,8 @@ public class SolrStringRepresenation extends SRUBasicRepresentation {
 
         StringBuilder sB = new StringBuilder();
 
-
+        sB.append("<?xml version=\"1.0\" ?>");
+        sB.append("<?xml-stylesheet type=\"text/xsl\" href=\"/xslfiles/searchRetrieveResponse.xsl\"?>");
 
         //sB.append("<searchRetrieveResponse xmlns=\"http://www.loc.gov/zing/srw/\">\n");
         sB.append("<searchRetrieveResponse>\n");
@@ -161,10 +168,10 @@ public class SolrStringRepresenation extends SRUBasicRepresentation {
         sB.append("</recordData>");
         sB.append("<recordPosition>").append(position).append("</recordPosition>");
 
-        sB.append("<extraRecordData>");
-        sB.append("<queryTime xmlns=\"urn:swissbib-sru:queryTime\">").append(this.qR.getQTime()).append("</queryTime>");
-        if (useHoldings) {
 
+        //sB.append("<queryTime xmlns=\"urn:swissbib-sru:queryTime\">").append(this.qR.getQTime()).append("</queryTime>");
+        if (useHoldings) {
+            sB.append("<extraRecordData>");
             sB.append("<holdings xmlns=\"urn:swissbib-sru:holdings\">");
 
             String holdings = (String) doc.getFieldValue("holdings");
@@ -178,9 +185,10 @@ public class SolrStringRepresenation extends SRUBasicRepresentation {
 
             sB.append("</holdings>");
 
+            sB.append("</extraRecordData>");
         }
 
-        sB.append("</extraRecordData>");
+
 
         sB.append("</record>");
 

@@ -3,7 +3,10 @@ package org.swissbib.sru;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.restlet.*;
 import org.restlet.data.Protocol;
+import org.restlet.resource.Directory;
 import org.restlet.routing.Router;
+import org.swissbib.sru.resources.SRUDiagnose;
+import org.swissbib.sru.resources.SRUFileResources;
 import org.swissbib.sru.resources.SearchRetrieveSolr;
 
 import javax.xml.transform.Source;
@@ -37,6 +40,7 @@ public class SRUApplication extends Application {
 
         Component sruComponent = new Component();
         sruComponent.getServers().add(Protocol.HTTP, 8111);
+        sruComponent.getClients().add(Protocol.CLAP);
         sruComponent.getDefaultHost().attach(new SRUApplication());
         sruComponent.start();
 
@@ -91,6 +95,20 @@ public class SRUApplication extends Application {
 
         router.attach("/search",
                 SearchRetrieveSolr.class);
+
+        router.attach("/xslfiles/{filename}",
+                SRUFileResources.class);
+
+        Directory directory = new Directory(getContext(), "file:////home/swissbib/environment/code/sruRestlet/src/org/swissbib/sru/resources/");
+
+        Directory d = new Directory(getContext(),"/diagnose");
+
+        router.attach(d,SRUDiagnose.class);
+
+        //router.attach("/diagnose/{filename}",
+        //        SRUDiagnose.class);
+
+
 
         return router;
 
