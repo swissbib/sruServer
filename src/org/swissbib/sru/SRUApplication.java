@@ -41,6 +41,7 @@ public class SRUApplication extends Application {
         Component sruComponent = new Component();
         sruComponent.getServers().add(Protocol.HTTP, 8111);
         sruComponent.getClients().add(Protocol.CLAP);
+        sruComponent.getClients().add(Protocol.FILE);
         sruComponent.getDefaultHost().attach(new SRUApplication());
         sruComponent.start();
 
@@ -99,15 +100,9 @@ public class SRUApplication extends Application {
         router.attach("/xslfiles/{filename}",
                 SRUFileResources.class);
 
-        Directory directory = new Directory(getContext(), "file:////home/swissbib/environment/code/sruRestlet/src/org/swissbib/sru/resources/");
-
-        Directory d = new Directory(getContext(),"/diagnose");
-
-        router.attach(d,SRUDiagnose.class);
-
-        //router.attach("/diagnose/{filename}",
-        //        SRUDiagnose.class);
-
+        //todo: look for a better way to load resources
+        Directory directory = new Directory(getContext(), "file:///home/swissbib/environment/code/sruRestlet/src/org/swissbib/sru/resources/diagnose/");
+        router.attach("/diagnose", directory);
 
 
         return router;
