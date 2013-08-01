@@ -16,6 +16,8 @@ import org.swissbib.sru.targets.solr.SolrStringRepresenation;
 import org.swissbib.sru.targets.solr.SOLRQueryTransformation;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
@@ -49,6 +51,7 @@ public class SearchRetrieveSolr extends SearchRetrieveBasic {
 
 
     @Get()
+    @SuppressWarnings("unchecked")
     public Representation getSearchResult() throws Exception {
 
         //s. auch http://restlet.org/learn/2.0/firstResource
@@ -73,7 +76,9 @@ public class SearchRetrieveSolr extends SearchRetrieveBasic {
 
             Form queryParams = getRequest().getResourceRef().getQueryAsForm();
 
-            sQ.init(queryParams,solrServer);
+            HashMap<String,ArrayList<String>> searchMapping = (HashMap<String,ArrayList<String>>)    attributes.get("searchMapping");
+
+            sQ.init(queryParams,solrServer, searchMapping);
             QueryResponse qR = sQ.runQuery();
 
 

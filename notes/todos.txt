@@ -1,0 +1,18 @@
+
+
+1) Refactoring
+org.swissbib.sru.targets.common.CQLQueryTransformationInterface sollte keinen typ SOLRServer enthalten da die Schnittstelle sinst nicht mehr kompatibel zu
+anderen SearchServern ist
+
+
+
+2) paging durch die resultlist
+-> und damit auch Berücksichtigung eines startFrom Parameters
+
+
+3) es gibt noch feste Dateilinks auf Ressourcen (z.B. xslt -> mach dies konfigurierbar)
+
+
+4) logging mit Restlet
+
+

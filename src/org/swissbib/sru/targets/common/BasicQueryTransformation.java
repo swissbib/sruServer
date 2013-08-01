@@ -8,6 +8,9 @@ import org.z3950.zing.cql.CQLNode;
 import org.z3950.zing.cql.CQLParseException;
 import org.z3950.zing.cql.CQLParser;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * [...description of the type ...]
  *
@@ -41,10 +44,13 @@ public abstract class BasicQueryTransformation implements CQLQueryTransformation
     protected CQLNode cqlNode = null;
     protected HttpSolrServer searchServer = null;
     protected Form inputParams = null;
+    protected HashMap<String,ArrayList<String>> searchMapping = null;
+
+
 
 
     @Override
-    public void init(Form inputParams, HttpSolrServer solrServer) throws Exception {
+    public void init(Form inputParams, HttpSolrServer solrServer, HashMap<String,ArrayList<String>> searchMapping) throws Exception {
 
         String cqlQuery = inputParams.getFirstValue("query");
 
@@ -54,6 +60,7 @@ public abstract class BasicQueryTransformation implements CQLQueryTransformation
         }
 
         this.inputParams = inputParams;
+        this.searchMapping = searchMapping;
 
         this.searchServer = solrServer;
         System.out.println(cqlQuery);

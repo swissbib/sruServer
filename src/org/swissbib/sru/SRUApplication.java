@@ -5,7 +5,6 @@ import org.restlet.*;
 import org.restlet.data.Protocol;
 import org.restlet.resource.Directory;
 import org.restlet.routing.Router;
-import org.swissbib.sru.resources.SRUDiagnose;
 import org.swissbib.sru.resources.SRUFileResources;
 import org.swissbib.sru.resources.SearchRetrieveSolr;
 
@@ -15,6 +14,8 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -64,15 +65,11 @@ public class SRUApplication extends Application {
         sruComponent.getDefaultHost().attach(new SRUApplication());
         sruComponent.start();
 
-
-
     }
 
 
 
-    /**
-     * Creates a root Restlet to trace requests.
-     */
+
     @Override
     public Restlet createInboundRoot() {
 
@@ -106,8 +103,62 @@ public class SRUApplication extends Application {
         //hM.put("representationClass","org.swissbib.sru.solr.SolrXSLTTransRepresentation");
         hM.put("representationClass","org.swissbib.sru.solr.SolrStringRepresenation");
 
+        /*
+
+    var searchFieldNamesOptions = {
+        "dc.anywhere"               :       "dc.anywhere",
+        "dc.corporateName"          :       "dc.corporateName",
+        "dc.creator"                :       "dc.creator",
+        "dc.date"                   :       "dc.date",
+        "dc.genreForm"              :       "dc.genreForm",
+        "dc.identifier"             :       "dc.identifier",
+        "dc.id"                     :       "dc.id",
+        "dc.language"               :       "dc.language",
+        "dc.medium"                 :       "dc.medium",
+        "dc.personalName"           :       "dc.personalName",
+        "dc.possessingInstitution"  :       "dc.possessingInstitution",
+        "dc.subject"                :       "dc.subject",
+        "dc.title"                  :       "dc.title",
+        "dc.topicalSubject"         :       "dc.topicalSubject",
+        "dc.uniformTitle"           :       "dc.uniformTitle",
+        "dc.xNetwork"               :       "dc.xNetwork",
+        "dc.xonline"                :       "dc.xonline"
+
+    };
 
 
+
+         */
+
+
+        HashMap<String,ArrayList<String>> searchFieldMapping = new HashMap<String,ArrayList<String>>();
+
+        searchFieldMapping.put("dc.anywhere",new ArrayList<String>( Arrays.asList("title_short","title_full_unstemmed",
+                                                                       "title_full","title","title_alt","title_new",
+                                                                        "series","author","author_fuller","contents","topic",
+                                                                        "fulltext")));
+        searchFieldMapping.put("dc.creator",new ArrayList<String>( Arrays.asList("author","author_fuller", "author_additional")));
+        searchFieldMapping.put("dc.corporateName",new ArrayList<String>( Arrays.asList("author","author_fuller", "author_additional")));
+        searchFieldMapping.put("dc.date",new ArrayList<String>( Arrays.asList("publishDate")));
+        searchFieldMapping.put("dc.genreForm",new ArrayList<String>( Arrays.asList("title_full")));
+        searchFieldMapping.put("dc.identifier",new ArrayList<String>( Arrays.asList("ctrlnum")));
+        searchFieldMapping.put("dc.id",new ArrayList<String>( Arrays.asList("id")));
+        searchFieldMapping.put("dc.language",new ArrayList<String>( Arrays.asList("language")));
+        searchFieldMapping.put("dc.medium",new ArrayList<String>( Arrays.asList("navMediatype")));
+        searchFieldMapping.put("dc.personalName",new ArrayList<String>( Arrays.asList("author","author_fuller", "author_additional")));
+        searchFieldMapping.put("dc.possessingInstitution",new ArrayList<String>( Arrays.asList("institution")));
+        searchFieldMapping.put("dc.subject",new ArrayList<String>( Arrays.asList("topic_unstemmed","topic", "geographic","era")));
+        searchFieldMapping.put("dc.title",new ArrayList<String>( Arrays.asList("title_short","title_full_unstemmed",
+                "title_full","title","title_alt","title_new",
+                "series","series2")));
+        searchFieldMapping.put("dc.topicalSubject",new ArrayList<String>( Arrays.asList("topic_unstemmed","topic", "geographic","era")));
+        searchFieldMapping.put("dc.uniformTitle",new ArrayList<String>( Arrays.asList("title_short","title_full_unstemmed",
+                "title_full","title","title_alt","title_new",
+                "series","series2")));
+        searchFieldMapping.put("dc.xNetwork",new ArrayList<String>( Arrays.asList("union")));
+        searchFieldMapping.put("dc.xonline",new ArrayList<String>( Arrays.asList("union")));
+
+        hM.put("searchMapping",searchFieldMapping);
 
         getContext().setAttributes(hM);
 
@@ -122,6 +173,10 @@ public class SRUApplication extends Application {
         //todo: look for a better way to load resources
         Directory directory = new Directory(getContext(), "file:///home/swissbib/environment/code/sruRestlet/src/org/swissbib/sru/resources/diagnose/");
         router.attach("/diagnose", directory);
+
+
+
+
 
 
         return router;

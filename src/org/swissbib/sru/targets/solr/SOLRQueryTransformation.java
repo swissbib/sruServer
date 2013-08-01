@@ -118,44 +118,69 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
             String index=ctn.getIndex();
 
             //String newIndex=(String)indexMappings.get(index);
+
+
             String newIndex=index;
 
             if(newIndex!=null)
                 index=newIndex;
 
-            if(!index.equals(""))
-                sb.append(index).append(":");
+            ArrayList <String> searchFields = this.searchMapping.get(index);
 
-            String term=ctn.getTerm();
-            if(ctn.getRelation().getBase().equals("=") ||
-                    ctn.getRelation().getBase().equals("scr")) {
-                if(term.indexOf(' ')>=0)
-                    sb.append('"').append(term).append('"');
-                else
-                    sb.append(ctn.getTerm());
+            if (searchFields.size() > 1) {
+                sb.append(" ( ");
             }
-            else if(ctn.getRelation().getBase().equals("any")) {
-                if(term.indexOf(' ')>=0)
-                    sb.append('(').append(term).append(')');
-                else
-                    sb.append(ctn.getTerm());
-            }
-            else if(ctn.getRelation().getBase().equals("all")) {
-                if(term.indexOf(' ')>=0) {
-                    sb.append('(');
-                    StringTokenizer st=new StringTokenizer(term);
-                    while(st.hasMoreTokens()) {
-                        sb.append(st.nextToken());
-                        if(st.hasMoreTokens())
-                            sb.append(" AND ");
+
+            int count = 1;
+
+            for (String sF : searchFields ) {
+
+                sb.append(sF).append(":");
+
+                String term=ctn.getTerm();
+                if(ctn.getRelation().getBase().equals("=") ||
+                        ctn.getRelation().getBase().equals("scr")) {
+                    if(term.indexOf(' ')>=0)
+                        sb.append('"').append(term).append('"');
+                    else
+                        sb.append(ctn.getTerm());
+                }
+                else if(ctn.getRelation().getBase().equals("any")) {
+                    if(term.indexOf(' ')>=0)
+                        sb.append('(').append(term).append(')');
+                    else
+                        sb.append(ctn.getTerm());
+                }
+                else if(ctn.getRelation().getBase().equals("all")) {
+                    if(term.indexOf(' ')>=0) {
+                        sb.append('(');
+                        StringTokenizer st=new StringTokenizer(term);
+                        while(st.hasMoreTokens()) {
+                            sb.append(st.nextToken());
+                            if(st.hasMoreTokens())
+                                sb.append(" AND ");
+                        }
+                        sb.append(')');
                     }
-                    sb.append(')');
+                    else
+                        sb.append(ctn.getTerm());
                 }
                 else
-                    sb.append(ctn.getTerm());
+                    sb.append("Unsupported Relation: ").append(ctn.getRelation().getBase());
+
+                count++;
+                if (count <= searchFields.size())
+                    sb.append(" OR ");
             }
-            else
-                sb.append("Unsupported Relation: ").append(ctn.getRelation().getBase());
+
+            if (searchFields.size() > 1) {
+                sb.append(" ) ");
+            }
+
+
+            //if(!index.equals(""))
+            //    sb.append(index).append(":");
+
         }
         else sb.append("UnknownCQLNode(").append(node).append(")");
     }

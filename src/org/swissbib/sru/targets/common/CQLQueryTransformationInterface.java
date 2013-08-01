@@ -5,6 +5,9 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
 import org.restlet.data.Form;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * [...description of the type ...]
  *
@@ -33,7 +36,7 @@ import org.restlet.data.Form;
 
 public interface CQLQueryTransformationInterface {
 
-    public void init(Form inputParams, HttpSolrServer sorlServer) throws Exception;
+    public void init(Form inputParams, HttpSolrServer sorlServer, HashMap<String,ArrayList<String>> searchMapping) throws Exception;
 
     public QueryResponse runQuery() throws Exception;
 
