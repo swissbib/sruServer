@@ -1,6 +1,8 @@
 
 /**
- * [...description of these functions ...]
+ * utility functions to control the flow of the swissbib SRI diagnose form
+ *
+ *  initial work July / August 2013
  *
  * Copyright (C) project swissbib, University Library Basel, Switzerland
  * http://www.swissbib.org  / http://www.swissbib.ch / http://www.ub.unibas.ch
@@ -24,8 +26,9 @@
  */
 
 
-
-
+/**
+ * all values of the
+ */
 function collectFormValues() {
 
     var counter = 1;
@@ -63,6 +66,8 @@ function collectFormValues() {
 
         $("form#frmSRUsend").submit();
 
+    } else {
+        alert ("you have to fill in at least the value for one search field")
     }
     //alert (query);
 
@@ -71,6 +76,42 @@ function collectFormValues() {
 
 
 $(function () {
+
+
+    var searchFieldNamesOptions = {
+        "dc.anywhere"               :       "dc.anywhere",
+        "dc.corporateName"          :       "dc.corporateName",
+        "dc.creator"                :       "dc.creator",
+        "dc.date"                   :       "dc.date",
+        "dc.genreForm"              :       "dc.genreForm",
+        "dc.identifier"             :       "dc.identifier",
+        "dc.id"                     :       "dc.id",
+        "dc.language"               :       "dc.language",
+        "dc.medium"                 :       "dc.medium",
+        "dc.personalName"           :       "dc.personalName",
+        "dc.possessingInstitution"  :       "dc.possessingInstitution",
+        "dc.subject"                :       "dc.subject",
+        "dc.title"                  :       "dc.title",
+        "dc.topicalSubject"         :       "dc.topicalSubject",
+        "dc.uniformTitle"           :       "dc.uniformTitle",
+        "dc.xNetwork"               :       "dc.xNetwork",
+        "dc.xonline"                :       "dc.xonline"
+
+    };
+
+
+    $.each($(".searchFieldNames"), function() {
+
+        //Closure is necessary
+        var currentSelect = this;
+        $.each(searchFieldNamesOptions, function(key, value) {
+            $(currentSelect).append($('<option>', { value : key })
+                    .text(value));
+        });
+    });
+
+
+
 
     $("ul.nav li.querysubmit a").click(function () {
         collectFormValues();

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Bootstrap 101 Template</title>
+    <title>swissbib SRU server diagnose form</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -91,10 +91,7 @@
         <div  class="span3">
             <div class="control-group">
                 <div class="controls">
-                    <select name="fieldname">
-                        <option value="title">title</option>
-                        <option value="title_sub">title_sub</option>
-                        <option value="fulltext">fulltext</option>
+                    <select class="searchFieldNames"  name="fieldname">
                     </select>
                 </div>
             </div>
@@ -121,7 +118,7 @@
         <div  class="span3">
             <div class="control-group">
                 <div class="controls">
-                    <input name="inputvalue"  type="text" class="input-append" placeholder="Email">
+                    <input name="inputvalue"  type="text" class="input-append" placeholder="value for search field">
                 </div>
             </div>
         </div>
@@ -150,10 +147,7 @@
                 <div  class="span3">
                     <div class="control-group">
                         <div class="controls">
-                            <select name="fieldname">
-                                <option value="title">title</option>
-                                <option value="title_sub">title_sub</option>
-                                <option value="fulltext">fulltext</option>
+                            <select class="searchFieldNames" name="fieldname">
                             </select>
                         </div>
                     </div>
@@ -180,7 +174,7 @@
                 <div  class="span3">
                     <div class="control-group">
                         <div class="controls">
-                            <input name="inputvalue"  type="text" class="input-append" placeholder="Email">
+                            <input name="inputvalue"  type="text" class="input-append" placeholder="value for search field">
                         </div>
                     </div>
                 </div>
@@ -295,7 +289,7 @@
                 <div  class="span3">
                     <div class="control-group">
                         <div class="controls">
-                            <label >Number of Records</label>
+                            <label >start record</label>
                         </div>
                     </div>
                 </div>
@@ -392,10 +386,7 @@
     <div  class="span3">
         <div class="control-group">
             <div class="controls">
-                <select name="fieldname">
-                    <option value="title">title</option>
-                    <option value="title_sub">title_sub</option>
-                    <option value="fulltext">fulltext</option>
+                <select class="searchFieldNames" name="fieldname">
                 </select>
             </div>
         </div>
@@ -422,7 +413,7 @@
     <div  class="span3">
         <div class="control-group">
             <div class="controls">
-                <input name="inputvalue"  type="text" class="input-append" placeholder="Email">
+                <input name="inputvalue"  type="text" class="input-append" placeholder="value for search field">
             </div>
         </div>
     </div>
