@@ -29,8 +29,8 @@
                     <li class="active"><a href="#">Home</a></li>
                     <li><a href="#about">About</a></li>
                     <li><a href="#contact">Contact</a></li>
-                    <li><a href="#plus">add search row<i class="icon-plus"></i> </a></li>
-                    <li><a href="#minus">remove search row<i class="icon-minus"></i> </a></li>
+                    <li class="rowadd"><a href="#plus">add search row<i class="icon-plus"></i> </a></li>
+                    <li class="rowremove"><a href="#minus">remove search row<i class="icon-minus"></i> </a></li>
                     <li class="querysubmit"><a href="#querysubmit">submit query<i class="icon-minus"></i> </a></li>
                 </ul>
             </div><!--/.nav-collapse -->
@@ -385,6 +385,67 @@
 
 
   </div>
+
+
+
+<div style="display: none"  id="rowCopyElement">
+    <div  class="span3">
+        <div class="control-group">
+            <div class="controls">
+                <select name="fieldname">
+                    <option value="title">title</option>
+                    <option value="title_sub">title_sub</option>
+                    <option value="fulltext">fulltext</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div  class="span3">
+        <div class="control-group">
+            <div class="controls">
+                <select name="relators">
+                    <option value="=">=</option>
+                    <option value="exact">exact</option>
+                    <option value="any">any</option>
+                    <option value="all">all</option>
+                    <option value="<">&lt;</option>
+                    <option value=">">&gt;</option>
+                    <option value="<=">&lt;=</option>
+                    <option value=">=">&gt;=</option>
+                    <option value="<>">not</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div  class="span3">
+        <div class="control-group">
+            <div class="controls">
+                <input name="inputvalue"  type="text" class="input-append" placeholder="Email">
+            </div>
+        </div>
+    </div>
+
+    <div  class="span3">
+        <div class="control-group">
+            <div class="controls">
+                <select name="booloptions">
+                    <option value="AND" >AND</option>
+                    <option value="OR">OR</option>
+                    <option value="NOT">NOT</option>
+                </select>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+</div>
+
+
 
 
 </body>
