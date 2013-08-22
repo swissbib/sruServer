@@ -3,6 +3,7 @@ package org.swissbib.sru.targets.solr;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
 import org.restlet.Context;
 import org.restlet.data.Form;
 import org.restlet.data.LocalReference;
@@ -72,16 +73,12 @@ public class SolrStringRepresenation extends SRUBasicRepresentation {
     private final static Pattern pHoldingsPattern = Pattern.compile("<record>(.*?)</record>");
 
 
-
-
     protected long startPage = 0;
-
-
-
-    QueryResponse qR = null;
-    Context context = null;
-    RequestedSchema schema = null;
-    Form queryParams = null;
+    protected QueryResponse qR = null;
+    protected Context context = null;
+    protected RequestedSchema schema = null;
+    protected Form queryParams = null;
+    protected String cqlQuery = null;
 
     public SolrStringRepresenation (QueryResponse qR, Context context,Form queryParams, RequestedSchema schema) {
 
@@ -91,6 +88,8 @@ public class SolrStringRepresenation extends SRUBasicRepresentation {
         this.schema = schema;
 
         this.queryParams = queryParams;
+
+        this.cqlQuery =  queryParams.getFirstValue("query");
 
 
 
@@ -103,8 +102,12 @@ public class SolrStringRepresenation extends SRUBasicRepresentation {
 
 
 
+        SolrDocumentList result =  qR.getResults();
+        startPage = result.getStart();
+        long incrementalStart = result.getStart();
 
-        startPage = qR.getResults().getStart();
+
+
 
         Iterator<SolrDocument> iterator =  qR.getResults().iterator();
         String uH =  queryParams.getFirstValue("x-info-10-get-holdings");
@@ -142,18 +145,34 @@ public class SolrStringRepresenation extends SRUBasicRepresentation {
                 case dcNS:
                     break;
                 case marcNoNs:
-                    sB.append(createMarcNoNS(doc,startPage,useHoldings));
+                    sB.append(createMarcNoNS(doc,incrementalStart,useHoldings));
                     break;
                 case marcNS:
-                    sB.append(createMarcNS(doc,startPage,useHoldings));
+                    sB.append(createMarcNS(doc,incrementalStart,useHoldings));
                     break;
                 default:
 
             }
-            startPage++;
+            incrementalStart++;
 
         }
         sB.append("</records>\n");
+
+        if (startPage + result.size() < result.getNumFound() -1) {
+            sB.append("<nextRecordPosition>").append(startPage + result.size()).append("</nextRecordPosition>\n");
+        }
+
+        sB.append("<echoedSearchRetrieveRequest>\n");
+        sB.append("<version>1.1</version>\n");
+        sB.append("<query>").append("<![CDATA[").append(this.cqlQuery).append("]]>").append("</query>\n");
+        sB.append("<startRecord>").append(startPage).append("</startRecord>");
+        sB.append("<maximumRecords>").append(result.size()).append("</maximumRecords>\n");
+        sB.append("<recordPacking>").append(queryParams.getFirstValue("recordPacking")).append("</recordPacking>\n");
+        sB.append("<recordSchema>").append(schema.toString()).append("</recordSchema>\n");
+        sB.append("<resultSetTTL>0</resultSetTTL>\n");
+        sB.append("</echoedSearchRetrieveRequest>\n");
+        sB.append("<sortKeys/>\n");
+
         sB.append("</searchRetrieveResponse>\n");
 
         return new StringRepresentation(sB.toString(),MediaType.TEXT_XML);

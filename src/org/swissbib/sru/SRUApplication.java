@@ -59,8 +59,8 @@ public class SRUApplication extends Application {
         //sruServer.start();
 
         Component sruComponent = new Component();
-        //sruComponent.getServers().add(Protocol.HTTP, 8111);
-        sruComponent.getServers().add(Protocol.HTTP, 80);
+        sruComponent.getServers().add(Protocol.HTTP, 8111);
+        //sruComponent.getServers().add(Protocol.HTTP, 80);
         sruComponent.getClients().add(Protocol.CLAP);
         sruComponent.getClients().add(Protocol.FILE);
         sruComponent.getDefaultHost().attach(new SRUApplication());
@@ -76,8 +76,8 @@ public class SRUApplication extends Application {
 
 
         //todo: make this configurable
-        HttpSolrServer  solrServer = new HttpSolrServer("http://search.swissbib.ch/solr/sb-biblio");
-        //HttpSolrServer  solrServer = new HttpSolrServer("http://localhost:8080/solr/sb-biblio");
+        //HttpSolrServer  solrServer = new HttpSolrServer("http://search.swissbib.ch/solr/sb-biblio");
+        HttpSolrServer  solrServer = new HttpSolrServer("http://localhost:8080/solr/sb-biblio");
 
         HashMap<String,Object>  hM =  new HashMap<String, Object>();
         hM.put("solrServer",solrServer);
@@ -87,8 +87,8 @@ public class SRUApplication extends Application {
         final TransformerFactory tF = TransformerFactory.newInstance();
 
         //todo: load templates resources with RESTlet means
-        //final Source marc2DCNoNamespace = new StreamSource(new File("/home/swissbib/environment/code/sruRestlet/resources/xslt/MARC21slim2OAIDC.nonamespace.xsl"));
-        final Source marc2DCNoNamespace = new StreamSource(new File("/swissbib_index/sru/resources/xslt/MARC21slim2OAIDC.nonamespace.xsl"));
+        final Source marc2DCNoNamespace = new StreamSource(new File("/home/swissbib/environment/code/sruRestlet/resources/xslt/MARC21slim2OAIDC.nonamespace.xsl"));
+        //final Source marc2DCNoNamespace = new StreamSource(new File("/swissbib_index/sru/resources/xslt/MARC21slim2OAIDC.nonamespace.xsl"));
 
         try {
             Templates templates =  tF.newTemplates(marc2DCNoNamespace);
@@ -174,7 +174,9 @@ public class SRUApplication extends Application {
                 SRUFileResources.class);
 
         //todo: look for a better way to load resources
-        Directory directory = new Directory(getContext(), "file:///swissbib_index/sru/src/org/swissbib/sru/resources/diagnose/");
+        //Directory directory = new Directory(getContext(), "file:///swissbib_index/sru/src/org/swissbib/sru/resources/diagnose/");
+        Directory directory = new Directory(getContext(), "file:///home/swissbib/environment/code/sruRestlet/src/org/swissbib/sru/resources/diagnose/");
+
         router.attach("/diagnose", directory);
 
 
