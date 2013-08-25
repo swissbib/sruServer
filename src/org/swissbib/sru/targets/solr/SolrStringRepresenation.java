@@ -176,6 +176,7 @@ public class SolrStringRepresenation extends SRUBasicRepresentation {
         sB.append("</searchRetrieveResponse>\n");
 
         return new StringRepresentation(sB.toString(),MediaType.TEXT_XML);
+        //return new StringRepresentation(sB.toString(),MediaType.TEXT_PLAIN);
     }
 
 
@@ -281,7 +282,7 @@ public class SolrStringRepresenation extends SRUBasicRepresentation {
 
         if (useHoldings) {
             sB.append("<extraRecordData>");
-
+            sB.append("<ns2:extraData  xmlns=\"http://oclc.org/srw/extraData\"  xmlns:ns2=\"http://oclc.org/srw/extraData\" >");
             sB.append("<ns4:holdings xmlns=\"urn:oclc-srw:holdings\" xmlns:ns4=\"urn:oclc-srw:holdings\">");
 
             String holdings = (String) doc.getFieldValue("holdings");
@@ -298,6 +299,7 @@ public class SolrStringRepresenation extends SRUBasicRepresentation {
             }
 
             sB.append("</ns4:holdings>");
+            sB.append("</ns2:extraData>");
             sB.append("</extraRecordData>");
 
         }
