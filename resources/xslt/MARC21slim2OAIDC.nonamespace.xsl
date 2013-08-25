@@ -30,6 +30,11 @@
 		<xsl:variable name="leader6" select="substring($leader,7,1)"/>
 		<xsl:variable name="leader7" select="substring($leader,8,1)"/>
 		<xsl:variable name="controlField008" select="controlfield[@tag=008]"/>
+        
+        <dc:id>
+            <xsl:value-of select="./controlfield[@tag='001']/text()" />
+        </dc:id>
+        
 		<xsl:for-each select="datafield[@tag=245]">
 			<dc:title>
 				<xsl:call-template name="subfieldSelect">
@@ -189,6 +194,9 @@
 				<xsl:value-of select="subfield[@code='a']"/>
 			</dc:rights>
 		</xsl:for-each>
+
+
+
 		<!--</oai_dc:dc>-->
 	</xsl:template>
 </xsl:stylesheet>
