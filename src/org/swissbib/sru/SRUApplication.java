@@ -14,9 +14,10 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -58,9 +59,10 @@ public class SRUApplication extends Application {
         //sruServer.setNext(new SRUApplication());
         //sruServer.start();
 
+        String listenerPort = System.getProperty("listenerHTTPPort","80");
+
         Component sruComponent = new Component();
-        sruComponent.getServers().add(Protocol.HTTP, 8111);
-        //sruComponent.getServers().add(Protocol.HTTP, 80);
+        sruComponent.getServers().add(Protocol.HTTP, Integer.parseInt(listenerPort));
         sruComponent.getClients().add(Protocol.CLAP);
         sruComponent.getClients().add(Protocol.FILE);
         sruComponent.getDefaultHost().attach(new SRUApplication());
@@ -75,20 +77,28 @@ public class SRUApplication extends Application {
     public Restlet createInboundRoot() {
 
 
-        //todo: make this configurable
-        //HttpSolrServer  solrServer = new HttpSolrServer("http://search.swissbib.ch/solr/sb-biblio");
-        HttpSolrServer  solrServer = new HttpSolrServer("http://localhost:8080/solr/sb-biblio");
+        //get the properties for resources
+        String marc2DC =  System.getProperty("marc2DublinCoreTemplate","/home/swissbib/environment/code/sruRestlet/resources/xslt/MARC21slim2OAIDC.nonamespace.xsl");
+        String diagnoseDir =  System.getProperty("diagnoseDir","file:///home/swissbib/environment/code/sruRestlet/src/org/swissbib/sru/resources/diagnose/");
+        String configuredSOLRServer =  System.getProperty("solrServer","http://localhost:8080/solr/sb-biblio");
+        String mappingFieldsProps =  System.getProperty("mappingFieldsProps","/home/swissbib/environment/code/sruRestlet/resources/xslt/MARC21slim2OAIDC.nonamespace.xsl");
 
+
+        //Connection to Solr server
         HashMap<String,Object>  hM =  new HashMap<String, Object>();
+
+
+        HttpSolrServer  solrServer = new HttpSolrServer(configuredSOLRServer);
         hM.put("solrServer",solrServer);
 
-        ConcurrentHashMap<String,Templates> templatesMap = new ConcurrentHashMap<String, Templates>();
 
+        ConcurrentHashMap<String,Templates> templatesMap = new ConcurrentHashMap<String, Templates>();
         final TransformerFactory tF = TransformerFactory.newInstance();
 
+
+        //load the templates
         //todo: load templates resources with RESTlet means
-        final Source marc2DCNoNamespace = new StreamSource(new File("/home/swissbib/environment/code/sruRestlet/resources/xslt/MARC21slim2OAIDC.nonamespace.xsl"));
-        //final Source marc2DCNoNamespace = new StreamSource(new File("/swissbib_index/sru/resources/xslt/MARC21slim2OAIDC.nonamespace.xsl"));
+        final Source marc2DCNoNamespace = new StreamSource(new File(marc2DC));
 
         try {
             Templates templates =  tF.newTemplates(marc2DCNoNamespace);
@@ -103,86 +113,56 @@ public class SRUApplication extends Application {
 
         hM.put("templatesMap",templatesMap);
 
-        //hM.put("representationClass","org.swissbib.sru.solr.SolrXSLTTransRepresentation");
         hM.put("representationClass","org.swissbib.sru.solr.SolrStringRepresenation");
 
-        /*
 
-    var searchFieldNamesOptions = {
-        "dc.anywhere"               :       "dc.anywhere",
-        "dc.corporateName"          :       "dc.corporateName",
-        "dc.creator"                :       "dc.creator",
-        "dc.date"                   :       "dc.date",
-        "dc.genreForm"              :       "dc.genreForm",
-        "dc.identifier"             :       "dc.identifier",
-        "dc.id"                     :       "dc.id",
-        "dc.language"               :       "dc.language",
-        "dc.medium"                 :       "dc.medium",
-        "dc.personalName"           :       "dc.personalName",
-        "dc.possessingInstitution"  :       "dc.possessingInstitution",
-        "dc.subject"                :       "dc.subject",
-        "dc.title"                  :       "dc.title",
-        "dc.topicalSubject"         :       "dc.topicalSubject",
-        "dc.uniformTitle"           :       "dc.uniformTitle",
-        "dc.xNetwork"               :       "dc.xNetwork",
-        "dc.xonline"                :       "dc.xonline"
+        //load the sru search / index field ampping
+        try {
 
-    };
+            File configMapFile = new File(mappingFieldsProps);
+
+            FileInputStream fi = new FileInputStream(configMapFile);
+            Properties configProps = new Properties();
+            configProps.load(fi);
+
+            Enumeration<Object> propKeys  = configProps.keys();
+
+            HashMap<String,ArrayList<String>> searchFieldMapping = new HashMap<String,ArrayList<String>>();
+            while (propKeys.hasMoreElements()) {
+
+                String sruFieldAsKey = (String) propKeys.nextElement();
+                String mappedIndexFieldsForKey = configProps.getProperty(sruFieldAsKey);
+
+                ArrayList<String>  indexFields =  new ArrayList<String>();
+                indexFields.addAll(Arrays.asList(mappedIndexFieldsForKey.split("##")));
+                searchFieldMapping.put(sruFieldAsKey,indexFields);
+
+            }
+
+            hM.put("searchMapping",searchFieldMapping);
+            getContext().setAttributes(hM);
+
+        }  catch (IOException ioEx) {
+
+
+            //todo: how to handle Exceptions in Restlet createInboundRoot
+            ioEx.printStackTrace();
+        }
 
 
 
-         */
-
-
-        HashMap<String,ArrayList<String>> searchFieldMapping = new HashMap<String,ArrayList<String>>();
-
-        searchFieldMapping.put("dc.anywhere",new ArrayList<String>( Arrays.asList("title_short","title_full_unstemmed",
-                                                                       "title_full","title","title_alt","title_new",
-                                                                        "series","author","author_fuller","contents","topic",
-                                                                        "fulltext")));
-        searchFieldMapping.put("dc.creator",new ArrayList<String>( Arrays.asList("author","author_fuller", "author_additional")));
-        searchFieldMapping.put("dc.corporateName",new ArrayList<String>( Arrays.asList("author","author_fuller", "author_additional")));
-        searchFieldMapping.put("dc.date",new ArrayList<String>( Arrays.asList("publishDate")));
-        searchFieldMapping.put("dc.genreForm",new ArrayList<String>( Arrays.asList("title_full")));
-        searchFieldMapping.put("dc.identifier",new ArrayList<String>( Arrays.asList("ctrlnum")));
-        searchFieldMapping.put("dc.id",new ArrayList<String>( Arrays.asList("id")));
-        searchFieldMapping.put("dc.language",new ArrayList<String>( Arrays.asList("language")));
-        searchFieldMapping.put("dc.medium",new ArrayList<String>( Arrays.asList("navMediatype")));
-        searchFieldMapping.put("dc.personalName",new ArrayList<String>( Arrays.asList("author","author_fuller", "author_additional")));
-        searchFieldMapping.put("dc.possessingInstitution",new ArrayList<String>( Arrays.asList("institution")));
-        searchFieldMapping.put("dc.subject",new ArrayList<String>( Arrays.asList("topic_unstemmed","topic", "geographic","era")));
-        searchFieldMapping.put("dc.title",new ArrayList<String>( Arrays.asList("title_short","title_full_unstemmed",
-                "title_full","title","title_alt","title_new",
-                "series","series2")));
-        searchFieldMapping.put("dc.topicalSubject",new ArrayList<String>( Arrays.asList("topic_unstemmed","topic", "geographic","era")));
-        searchFieldMapping.put("dc.uniformTitle",new ArrayList<String>( Arrays.asList("title_short","title_full_unstemmed",
-                "title_full","title","title_alt","title_new",
-                "series","series2")));
-        searchFieldMapping.put("dc.xNetwork",new ArrayList<String>( Arrays.asList("union")));
-        searchFieldMapping.put("dc.xonline",new ArrayList<String>( Arrays.asList("union")));
-
-        hM.put("searchMapping",searchFieldMapping);
-
-        getContext().setAttributes(hM);
-
+        //configure the router
+        //todo: should this be more configurable
         Router router = new Router(getContext());
-
         router.attach("/search",
                 SearchRetrieveSolr.class);
 
         router.attach("/xslfiles/{filename}",
                 SRUFileResources.class);
 
-        //todo: look for a better way to load resources
-        //Directory directory = new Directory(getContext(), "file:///swissbib_index/sru/src/org/swissbib/sru/resources/diagnose/");
-        Directory directory = new Directory(getContext(), "file:///home/swissbib/environment/code/sruRestlet/src/org/swissbib/sru/resources/diagnose/");
 
+        Directory directory = new Directory(getContext(), diagnoseDir);
         router.attach("/diagnose", directory);
-
-
-
-
-
 
         return router;
 
