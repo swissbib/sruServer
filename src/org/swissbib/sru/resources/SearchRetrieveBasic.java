@@ -72,12 +72,14 @@ public class SearchRetrieveBasic extends ServerResource{
                     schemaType = RequestedSchema.dcNoNS;
                     break;
                 case "dcns":
+                case "info:srw/schema/1/dc-v1.1":
                     schemaType = RequestedSchema.dcNS;
                     break;
                 case "marcnons":
                     schemaType = RequestedSchema.marcNoNs;
                     break;
                 case "marcns":
+                case "info:srw/schema/1/marcxml-v1.1":
                     schemaType = RequestedSchema.marcNS;
                     break;
                 case "jsonnons":
