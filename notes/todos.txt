@@ -19,3 +19,10 @@ anderen SearchServern ist
 5) Tests mit PHP client für swissbib mobile
 
 6) resultlists mit weniger als 10 Treffern scheinen nicht übertragen zu werden (zumindest dublin core)
+
+
+7) JSon conversion
+http://json.org/java/
+http://json-lib.sourceforge.net/
+
+-> after short look up seem to be the library used for conversion from xml to java
