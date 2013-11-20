@@ -4,18 +4,13 @@ import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.restlet.Context;
 import org.restlet.data.Form;
-import org.restlet.ext.xml.DomRepresentation;
-import org.restlet.ext.xml.SaxRepresentation;
 import org.restlet.representation.Representation;
-import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.Get;
-import org.restlet.resource.ServerResource;
 import org.swissbib.sru.targets.common.SRUBasicRepresentation;
-import org.swissbib.sru.targets.solr.SolrStringRepresenation;
+import org.swissbib.sru.targets.solr.SolrStringRepresentation;
 
 import org.swissbib.sru.targets.solr.SOLRQueryTransformation;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -85,7 +80,7 @@ public class SearchRetrieveSolr extends SearchRetrieveBasic {
             String repClass =  (String) attributes.get("representationClass");
 
             //we had differentiation between String and XSLT transformation - I guess no longer needed
-            SRUBasicRepresentation basicRepresenation = new SolrStringRepresenation(qR,context,queryParams, this.schemaType);
+            SRUBasicRepresentation basicRepresenation = new SolrStringRepresentation(qR,context,queryParams, this.schemaType);
 
             rep =  basicRepresenation.getRepresentation();
 

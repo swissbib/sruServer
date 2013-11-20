@@ -56,7 +56,7 @@ import java.util.regex.Pattern;
  */
 
 
-public class SolrStringRepresenation extends SRUBasicRepresentation {
+public class SolrStringRepresentation extends SRUBasicRepresentation {
 
 
     private final static Pattern pNoXMLDeclaration = Pattern.compile("<record.*?</record>",Pattern.MULTILINE | Pattern.DOTALL);
@@ -80,7 +80,7 @@ public class SolrStringRepresenation extends SRUBasicRepresentation {
     protected Form queryParams = null;
     protected String cqlQuery = null;
 
-    public SolrStringRepresenation (QueryResponse qR, Context context,Form queryParams, RequestedSchema schema) {
+    public SolrStringRepresentation(QueryResponse qR, Context context, Form queryParams, RequestedSchema schema) {
 
         super();
         this.qR = qR;

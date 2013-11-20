@@ -113,7 +113,7 @@ public class SRUApplication extends Application {
 
         hM.put("templatesMap",templatesMap);
 
-        hM.put("representationClass","org.swissbib.sru.solr.SolrStringRepresenation");
+        hM.put("representationClass","org.swissbib.sru.solr.SolrStringRepresentation");
 
 
         //load the sru search / index field ampping
