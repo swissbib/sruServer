@@ -65,7 +65,8 @@ public abstract class BasicQueryTransformation implements CQLQueryTransformation
         this.searchMapping = searchMapping;
 
         this.searchServer = solrServer;
-        System.out.println(this.cqlQuery);
+        //todo logging system
+        //System.out.println(this.cqlQuery);
 
         CQLParser cqlP = new CQLParser();
         try {

@@ -26,3 +26,11 @@ http://json.org/java/
 http://json-lib.sourceforge.net/
 
 -> after short look up seem to be the library used for conversion from xml to java
+
+
+8) Ueberarbeitung von explain
+- ich muss die operation einbauen und muss das Mappingf im server darauf ausrichten
+(nicht mehr den Endpunkt diagnose mit dem das Formular angezeigt wird!)
+
+- diagnose muss ich bei Fehlern unterstützen! (jetzt wir einfach eine Exception geworfen)
+

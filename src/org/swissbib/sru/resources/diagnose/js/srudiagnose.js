@@ -77,6 +77,23 @@ function collectFormValues() {
 
 $(function () {
 
+/*
+    $('#frmSRUcql').keydown(function(e) {
+        if (e.keyCode == 13) {
+            $('.querysubmit').click();
+        }
+    });
+
+
+    $('#frmSRUsend').keydown(function(e) {
+        if (e.keyCode == 13) {
+            $('.querysubmit').click();;
+        }
+    });
+
+*/
+
+
 
     var searchFieldNamesOptions = {
         "dc.anywhere"               :       "dc.anywhere",

@@ -63,7 +63,7 @@ public class SRUApplication extends Application {
 
         Component sruComponent = new Component();
         sruComponent.getServers().add(Protocol.HTTP, Integer.parseInt(listenerPort));
-        sruComponent.getClients().add(Protocol.CLAP);
+        //sruComponent.getClients().add(Protocol.CLAP);
         sruComponent.getClients().add(Protocol.FILE);
         sruComponent.getDefaultHost().attach(new SRUApplication());
         sruComponent.start();
@@ -81,7 +81,7 @@ public class SRUApplication extends Application {
         String marc2DC =  System.getProperty("marc2DublinCoreTemplate","/home/swissbib/environment/code/sruRestlet/resources/xslt/MARC21slim2OAIDC.nonamespace.xsl");
         String diagnoseDir =  System.getProperty("diagnoseDir","file:///home/swissbib/environment/code/sruRestlet/src/org/swissbib/sru/resources/diagnose/");
         String configuredSOLRServer =  System.getProperty("solrServer","http://localhost:8080/solr/sb-biblio");
-        String mappingFieldsProps =  System.getProperty("mappingFieldsProps","/home/swissbib/environment/code/sruRestlet/resources/xslt/MARC21slim2OAIDC.nonamespace.xsl");
+        String mappingFieldsProps =  System.getProperty("mappingFieldsProps","/home/swissbib/environment/code/sruRestlet/src/org/swissbib/sru/resources/mapping/mapping.solr.properties");
 
 
         //Connection to Solr server
@@ -113,7 +113,8 @@ public class SRUApplication extends Application {
 
         hM.put("templatesMap",templatesMap);
 
-        hM.put("representationClass","org.swissbib.sru.solr.SolrStringRepresentation");
+        //at the moment fixed class for SOLR server
+        //hM.put("representationClass","org.swissbib.sru.solr.SolrStringRepresentation");
 
 
         //load the sru search / index field ampping
@@ -145,7 +146,7 @@ public class SRUApplication extends Application {
         }  catch (IOException ioEx) {
 
 
-            //todo: how to handle Exceptions in Restlet createInboundRoot
+            //todo: how to handle Exceptions in Restlet createInboundRoot -> diagnose message!
             ioEx.printStackTrace();
         }
 

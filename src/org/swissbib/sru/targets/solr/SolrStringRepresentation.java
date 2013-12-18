@@ -72,6 +72,11 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
     private final static Pattern pEndLeaderTag = Pattern.compile("</leader>");
     private final static Pattern pHoldingsPattern = Pattern.compile("<record>(.*?)</record>");
 
+    private final static Pattern pWrongSubfieldstructure = Pattern.compile("<subfielddatafield.*?</subfielddatafield>",Pattern.MULTILINE | Pattern.DOTALL);
+    private final static Pattern pWrongSubfieldDubstructure = Pattern.compile("<subfielddubfield.*?</subfielddubfield>",Pattern.MULTILINE | Pattern.DOTALL);
+
+
+
 
     protected long startPage = 0;
     protected QueryResponse qR = null;
@@ -175,6 +180,8 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
 
         sB.append("</searchRetrieveResponse>\n");
 
+        //System.out.println("next result");
+        //System.out.println(sB.toString());
         return new StringRepresentation(sB.toString(),MediaType.TEXT_XML);
         //return new StringRepresentation(sB.toString(),MediaType.TEXT_PLAIN);
     }
@@ -202,7 +209,10 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
 
         }
 
-        sB.append(transformedRecord);
+
+
+        //sB.append(transformedRecord);
+        sB.append(replaceWrongStructure(transformedRecord));
         sB.append("</recordData>");
         sB.append("<recordPosition>").append(position).append("</recordPosition>");
 
@@ -237,6 +247,18 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
 
     }
 
+    private String replaceWrongStructure(String recordToAnalyze) {
+
+        Matcher matcher = pWrongSubfieldstructure.matcher(recordToAnalyze);
+        String intermediate = matcher.replaceAll("");
+
+        matcher = pWrongSubfieldDubstructure.matcher(intermediate);
+        String toReturn = matcher.replaceAll("");
+
+
+        return toReturn;
+    }
+
 
     private String createMarcNS (SolrDocument doc, long position, boolean useHoldings)  {
 
@@ -262,6 +284,7 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
         if (found) {
 
             transformedRecord = m.group();
+            transformedRecord = replaceWrongStructure(transformedRecord);
             transformedRecord =  pStartRecordTag.matcher(transformedRecord).replaceAll("<srw_marc:record xmlns:marc=\"http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd\" xmlns:srw_marc=\"info:srw/schema/1/marcxml-v1.1\">");
             transformedRecord =  pEndRecordTag.matcher(transformedRecord).replaceAll("</srw_marc:record>");
             transformedRecord =  pStartDataTag.matcher(transformedRecord).replaceAll("<marc:datafield");

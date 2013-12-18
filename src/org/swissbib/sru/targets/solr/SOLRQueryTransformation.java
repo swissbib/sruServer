@@ -90,7 +90,7 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
             ex.printStackTrace();
         }
 
-        //for backward compatibility - was 1 i the former version
+        //for backward compatibility - was 1 in the former version
         startRecord = startRecord == 1 ? 0 : startRecord;
 
         parameters.set("start",startRecord);
@@ -112,6 +112,7 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
     }
 
 
+    //for indexes used by OCLC look at http://oclc.org/developer/documentation/worldcat-search-api/complete-list-indexes
     private void makeLuceneQuery(CQLNode node, StringBuffer sb) {
         if(node instanceof CQLBooleanNode) {
             CQLBooleanNode cbn=(CQLBooleanNode)node;
@@ -135,10 +136,10 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
             //String newIndex=(String)indexMappings.get(index);
 
 
-            String newIndex=index;
+            //String newIndex=index;
 
-            if(newIndex!=null)
-                index=newIndex;
+            //if(newIndex!=null)
+            //    index=newIndex;
 
             ArrayList <String> searchFields = this.searchMapping.get(index);
 
@@ -179,6 +180,8 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
                     }
                     else
                         sb.append(ctn.getTerm());
+                } else if (ctn.getRelation().getBase().equals("exact")) {
+                    sb.append('"').append(term).append('"');
                 }
                 else
                     sb.append("Unsupported Relation: ").append(ctn.getRelation().getBase());
