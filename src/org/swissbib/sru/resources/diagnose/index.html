@@ -201,8 +201,8 @@
 
 </form>
 
-<form id="frmSRUsend"  action="http://localhost:8111/search" method="GET" class="well form-inline">
-<!--<form id="frmSRUsend"  action="http://sb-s13.swissbib.unibas.ch/search" method="GET" class="well form-inline"> -->
+<!--<form id="frmSRUsend"  action="http://localhost:8111/search" method="GET" class="well form-inline"> -->
+<form id="frmSRUsend"  action="http://srutest.swissbib.ch/search" method="GET" class="well form-inline">
 
 
         <input name="query"  value="" type="hidden" />
@@ -223,9 +223,12 @@
                         <div class="controls">
                             <select name="recordSchema">
 
-                                <option value="dcnons">Dublin Core</option>
-                                <option value="marcns">MARC XML</option>
-                                <option value="jsonnons">JSON</option>
+                                <option value="info:srw/schema/1/dc-v1.1">Dublin Core - oclc</option>
+                                <option value="info:sru/schema/1/dc-v1.1-light">Dublin Core - swissbib</option>
+                                <option value="info:srw/schema/1/marcxml-v1.1">MARC XML - more namespaces</option>
+                                <option value="info:srw/schema/1/marcxml-v1.1-light">MARC XML - less namespaces</option>
+
+                                <!-- <option value="jsonnons">JSON</option> -->
                                 <!--<option value="info:srw/schema/1/dc-v1.1">Dublin Core</option>
                                 <option value="info:srw/schema/1/marcxml-v1.1">MARC XML</option>  -->
                             </select>
@@ -322,7 +325,7 @@
                         <div class="controls">
                             <select name="recordPacking">
                                 <option value="XML">XML</option>
-                                <option value="JSON">JSON</option>
+                                <!--<option value="JSON">JSON</option>-->
                             </select>
                         </div>
                     </div>

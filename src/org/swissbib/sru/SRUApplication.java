@@ -78,7 +78,9 @@ public class SRUApplication extends Application {
 
 
         //get the properties for resources
-        String marc2DC =  System.getProperty("marc2DublinCoreTemplate","/home/swissbib/environment/code/sruRestlet/resources/xslt/MARC21slim2OAIDC.nonamespace.xsl");
+        String marc2DC =  System.getProperty("marc2DublinCoreTemplate","/home/swissbib/environment/code/sruRestlet/resources/xslt/MARC21slim2OAIDC.swissbib.xsl");
+        String marc2DCOCLC =  System.getProperty("marc2DublinCoreTemplateOCLC","/home/swissbib/environment/code/sruRestlet/resources/xslt/MARC21slim2OAIDC.oclc.xsl");
+
         String diagnoseDir =  System.getProperty("diagnoseDir","file:///home/swissbib/environment/code/sruRestlet/src/org/swissbib/sru/resources/diagnose/");
         String configuredSOLRServer =  System.getProperty("solrServer","http://localhost:8080/solr/sb-biblio");
         String mappingFieldsProps =  System.getProperty("mappingFieldsProps","/home/swissbib/environment/code/sruRestlet/src/org/swissbib/sru/resources/mapping/mapping.solr.properties");
@@ -98,12 +100,15 @@ public class SRUApplication extends Application {
 
         //load the templates
         //todo: load templates resources with RESTlet means
-        final Source marc2DCNoNamespace = new StreamSource(new File(marc2DC));
+        final Source marc2DCswissbib = new StreamSource(new File(marc2DC));
+        final Source marc2DCoclc = new StreamSource(new File(marc2DCOCLC));
 
         try {
-            Templates templates =  tF.newTemplates(marc2DCNoNamespace);
-            templatesMap.put("m2DCnoNs",templates);
+            Templates templates =  tF.newTemplates(marc2DCswissbib);
+            templatesMap.put("m2DCswissbib",templates);
 
+            templates =  tF.newTemplates(marc2DCoclc);
+            templatesMap.put("m2DCoclc",templates);
 
         } catch (TransformerConfigurationException trConfiguration) {
 

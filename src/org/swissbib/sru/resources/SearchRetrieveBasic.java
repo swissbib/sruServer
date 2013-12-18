@@ -63,34 +63,37 @@ public class SearchRetrieveBasic extends ServerResource{
 
         String recordSchema = queryParams.getFirstValue("recordSchema");
         if (null == recordSchema) {
-            schemaType = RequestedSchema.marcNoNs;
+            schemaType = RequestedSchema.dcOCLC;
         } else {
+
+
 
             switch (recordSchema) {
 
-                case "dcnons":
-                    schemaType = RequestedSchema.dcNoNS;
+                case "info:sru/schema/1/dc-v1.1-light":
+                    schemaType = RequestedSchema.dcswissbib;
                     break;
-                case "dcns":
                 case "info:srw/schema/1/dc-v1.1":
-                    schemaType = RequestedSchema.dcNS;
+                    schemaType = RequestedSchema.dcOCLC;
                     break;
-                case "marcnons":
-                    schemaType = RequestedSchema.marcNoNs;
+                case "info:srw/schema/1/marcxml-v1.1-light":
+                    schemaType = RequestedSchema.marcswissbib;
                     break;
-                case "marcns":
                 case "info:srw/schema/1/marcxml-v1.1":
-                    schemaType = RequestedSchema.marcNS;
+                    schemaType = RequestedSchema.marcOCLC;
                     break;
+
+                /*
+                JSON not supported so far
                 case "jsonnons":
                     schemaType = RequestedSchema.jsonNoNS;
                     break;
                 case "jsonns":
                     schemaType = RequestedSchema.jsonNS;
                     break;
-
+                */
                 default:
-                    schemaType = RequestedSchema.marcNoNs;
+                    schemaType = RequestedSchema.dcOCLC;
             }
         }
 

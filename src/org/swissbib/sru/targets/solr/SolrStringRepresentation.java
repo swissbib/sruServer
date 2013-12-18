@@ -126,12 +126,21 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
         //sB.append("<?xml-stylesheet type=\"text/xsl\" href=\"/xslfiles/searchRetrieveResponse.xsl\"?>");
 
         //sB.append("<searchRetrieveResponse xmlns=\"http://www.loc.gov/zing/srw/\">\n");
-        sB.append("<searchRetrieveResponse>\n");
+        if (schema == RequestedSchema.dcOCLC || schema == RequestedSchema.marcOCLC) {
+            sB.append("<searchRetrieveResponse xmlns=\"http://www.loc.gov/zing/srw\" >\n");
+        } else {
+            sB.append("<searchRetrieveResponse>\n");
+        }
+
         sB.append("<version>1.1</version>");
         sB.append("<numberOfRecords>");
         sB.append(qR.getResults().getNumFound());
         sB.append("</numberOfRecords>");
-        sB.append("<records>\n");
+        if (schema == RequestedSchema.dcOCLC || schema == RequestedSchema.marcOCLC) {
+            sB.append("<records xmlns:ns1=\"http://www.loc.gov/zing/srw\" >\n");
+        } else {
+            sB.append("<records>\n");
+        }
         //sB.append("<extraRecordData>\n";
         //sB.append("<rel:qure xmlns:rel=\"xmlns:rob=\"info:srw/extension/2/relevancy\">0.965</rel:rank>\n" +
         //        "    </extraRecordData> ")
@@ -144,15 +153,16 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
             SolrDocument doc = iterator.next();
 
             switch (schema) {
-                case dcNoNS:
-                    sB.append(createDCNoNS(doc));
+                case dcswissbib:
+                    sB.append(createDCswissbib(doc));
                     break;
-                case dcNS:
+                case dcOCLC:
+                    sB.append(createDCoclc(doc));
                     break;
-                case marcNoNs:
+                case marcswissbib:
                     sB.append(createMarcNoNS(doc,incrementalStart,useHoldings));
                     break;
-                case marcNS:
+                case marcOCLC:
                     sB.append(createMarcNS(doc,incrementalStart,useHoldings));
                     break;
                 default:
@@ -336,11 +346,11 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
 
 
     @SuppressWarnings("unchecked")
-    private String createDCNoNS (SolrDocument doc)  {
+    private String createDCswissbib (SolrDocument doc)  {
 
 
         ConcurrentMap<String,Object> attributes = context.getAttributes();
-        Templates template =  ((ConcurrentHashMap<String,Templates>) attributes.get("templatesMap")).get("m2DCnoNs");
+        Templates template =  ((ConcurrentHashMap<String,Templates>) attributes.get("templatesMap")).get("m2DCswissbib");
         StringBuilder sB = new StringBuilder();
 
         try {
@@ -349,8 +359,8 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
 
 
             sB.append("<record>");
-            sB.append("<recordSchema>info:srw/schema/1/marcxml-v1.1</recordSchema>");
-            sB.append("<recordPacking>dc</recordPacking>");
+            sB.append("<recordSchema>info:srw/schema/1/marcxml-v1.1-light</recordSchema>");
+            sB.append("<recordPacking>xml</recordPacking>");
 
             sB.append("<recordData>");
 
@@ -378,6 +388,48 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
         return sB.toString();
     }
 
+    @SuppressWarnings("unchecked")
+    private String createDCoclc (SolrDocument doc)  {
+
+
+        ConcurrentMap<String,Object> attributes = context.getAttributes();
+        Templates template =  ((ConcurrentHashMap<String,Templates>) attributes.get("templatesMap")).get("m2DCoclc");
+        StringBuilder sB = new StringBuilder();
+
+        try {
+
+            final Transformer transformer = template.newTransformer();
+
+
+            sB.append("<record>");
+            sB.append("<recordSchema>info:srw/schema/1/marcxml-v1.1</recordSchema>");
+            sB.append("<recordPacking>xml</recordPacking>");
+
+            sB.append("<recordData>");
+
+            String record = (String) doc.getFieldValue("fullrecord");
+            Source sourceRecord =  new StreamSource(new StringReader(record));
+
+            StringWriter sw = new StringWriter() ;
+            Result streamResult = new StreamResult(sw);
+
+            transformer.transform(sourceRecord,streamResult);
+
+            sB.append(sw.toString().substring(38)) ;
+            //sB.append(sw.toString()) ;
+
+
+            sB.append("</recordData>");
+            sB.append("</record>");
+
+            return sB.toString();
+        } catch (TransformerException tE ) {
+            tE.printStackTrace();
+        }
+
+
+        return sB.toString();
+    }
 
 
 }

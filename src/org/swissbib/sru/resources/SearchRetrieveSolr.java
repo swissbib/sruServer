@@ -77,7 +77,8 @@ public class SearchRetrieveSolr extends SearchRetrieveBasic {
             QueryResponse qR = sQ.runQuery();
 
 
-            String repClass =  (String) attributes.get("representationClass");
+            //not generic
+            //String repClass =  (String) attributes.get("representationClass");
 
             //we had differentiation between String and XSLT transformation - I guess no longer needed
             SRUBasicRepresentation basicRepresenation = new SolrStringRepresentation(qR,context,queryParams, this.schemaType);
