@@ -67,34 +67,19 @@ public class SearchRetrieveBasic extends ServerResource{
         } else {
 
 
-
-            switch (recordSchema) {
-
-                case "info:sru/schema/1/dc-v1.1-light":
-                    schemaType = RequestedSchema.dcswissbib;
-                    break;
-                case "info:srw/schema/1/dc-v1.1":
-                    schemaType = RequestedSchema.dcOCLC;
-                    break;
-                case "info:srw/schema/1/marcxml-v1.1-light":
-                    schemaType = RequestedSchema.marcswissbib;
-                    break;
-                case "info:srw/schema/1/marcxml-v1.1":
-                    schemaType = RequestedSchema.marcOCLC;
-                    break;
-
-                /*
-                JSON not supported so far
-                case "jsonnons":
-                    schemaType = RequestedSchema.jsonNoNS;
-                    break;
-                case "jsonns":
-                    schemaType = RequestedSchema.jsonNS;
-                    break;
-                */
-                default:
-                    schemaType = RequestedSchema.dcOCLC;
+            if (recordSchema.equalsIgnoreCase("info:sru/schema/1/dc-v1.1-light")) {
+                schemaType = RequestedSchema.dcswissbib;
+            } else if (recordSchema.equalsIgnoreCase("info:srw/schema/1/dc-v1.1")) {
+                schemaType = RequestedSchema.dcOCLC;
+            } else if (recordSchema.equalsIgnoreCase("info:srw/schema/1/marcxml-v1.1-light")) {
+                schemaType = RequestedSchema.marcswissbib;
+            } else if ( recordSchema.equalsIgnoreCase("info:srw/schema/1/marcxml-v1.1")) {
+                schemaType = RequestedSchema.marcOCLC;
+            } else {
+                schemaType = RequestedSchema.dcOCLC;
             }
+
+
         }
 
     }
