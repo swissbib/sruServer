@@ -74,16 +74,16 @@ public class SRUApplication extends Application {
 
 
     @Override
-    public Restlet createInboundRoot() {
+    public synchronized Restlet createInboundRoot() {
 
 
         //get the properties for resources
-        String marc2DC =  System.getProperty("marc2DublinCoreTemplate","/home/swissbib/environment/code/sruRestlet/resources/xslt/MARC21slim2OAIDC.swissbib.xsl");
-        String marc2DCOCLC =  System.getProperty("marc2DublinCoreTemplateOCLC","/home/swissbib/environment/code/sruRestlet/resources/xslt/MARC21slim2OAIDC.oclc.xsl");
+        String marc2DC =  System.getProperty("marc2DublinCoreTemplate","/home/swissbib/environment/code/sruWebAppRestLet/resources/xslt/MARC21slim2OAIDC.swissbib.xsl");
+        String marc2DCOCLC =  System.getProperty("marc2DublinCoreTemplateOCLC","/home/swissbib/environment/code/sruWebAppRestLet/resources/xslt/MARC21slim2OAIDC.oclc.xsl");
 
-        String diagnoseDir =  System.getProperty("diagnoseDir","file:///home/swissbib/environment/code/sruRestlet/src/org/swissbib/sru/resources/diagnose/");
-        String configuredSOLRServer =  System.getProperty("solrServer","http://localhost:8080/solr/sb-biblio");
-        String mappingFieldsProps =  System.getProperty("mappingFieldsProps","/home/swissbib/environment/code/sruRestlet/src/org/swissbib/sru/resources/mapping/mapping.solr.properties");
+        String diagnoseDir =  System.getProperty("diagnoseDir","file:///home/swissbib/environment/code/sruWebAppRestLet/src/org/swissbib/sru/resources/diagnose/");
+        String configuredSOLRServer =  System.getProperty("solrServer","http://search.swissbib.ch/solr/sb-biblio");
+        String mappingFieldsProps =  System.getProperty("mappingFieldsProps","/home/swissbib/environment/code/sruWebAppRestLet/src/org/swissbib/sru/resources/mapping/mapping.solr.properties");
 
 
         //Connection to Solr server
