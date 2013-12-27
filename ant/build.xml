@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="swissbib SRU server" default="build-war" basedir="..">
+
+    <property name="author" value="Guenter Hipler" />
+    <property name="builder" value="project swissbib www.swissbib.org, UB Basel, author: ${author}" />
+    <property name="web.dir" value="${basedir}/web/WEB-INF" />
+
+
+    <path id="sruServerDependenciesClasspath">
+        <fileset dir="/home/swissbib/environment/develop.deploy/globalcomponents/solrj">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="/home/swissbib/Downloads/restlet/ee/restlet-jee-2.1.6/lib">
+            <include name="org.restlet.jar"/>
+            <include name="org.restlet.ext.servlet.jar" />
+        </fileset>
+        <fileset dir="/opt/swissbib/tools/java.tools/sru-cql">
+            <include name="cql-java-1.11.jar"/>
+        </fileset>
+    </path>
+
+    <path id="sruServerJar">
+        <fileset dir="build/jar">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+
+
+    <target name="clean">
+        <delete dir="build"/>
+    </target>
+
+    <target name="prepare">
+        <mkdir dir="build/classes"/>
+        <mkdir dir="build/lib"/>
+        <mkdir dir="build/war"/>
+        <mkdir dir="build/resources/resources/xslt"/>
+        <mkdir dir="build/resources/resources/mapping"/>
+        <mkdir dir="build/resources/resources/diagnose"/>
+
+        <copy todir="build/lib">
+
+            <path refid="sruServerDependenciesClasspath"/>
+
+        </copy>
+
+        <copy todir="build/resources/resources/xslt">
+            <fileset dir="web/WEB-INF/classes/resources/xslt">
+                <include name="MARC21slim2OAIDC.oclc.xsl"/>
+                <include name="MARC21slim2OAIDC.swissbib.xsl"/>
+                <include name="MARC21slimUtils.nonamespace.xsl"/>
+            </fileset>
+        </copy>
+
+        <copy todir="build/resources/resources/mapping">
+            <fileset dir="web/WEB-INF/classes/resources/mapping">
+                <include name="mapping.solr.properties"/>
+            </fileset>
+        </copy>
+
+        <copy todir="build/resources/resources/diagnose">
+            <fileset dir="web/WEB-INF/classes/resources/diagnose">
+                <include name="**/**"/>
+            </fileset>
+        </copy>
+
+    </target>
+
+    <target name="copyCreatedJar">
+        <copy todir="build/lib">
+
+            <path refid="sruServerJar"/>
+
+        </copy>
+
+    </target>
+
+
+    <target name="compile">
+        <javac
+                srcdir="src"
+                destdir="build/classes"
+                classpathref="sruServerDependenciesClasspath" />
+    </target>
+
+
+    <tstamp prefix="build-info">
+        <format property="current-date" pattern="d-MMMM-yyyy" locale="en" />
+        <format property="current-time" pattern="hh:mm:ss a z" locale="en" />
+    </tstamp>
+
+
+    <target name="jar" >
+        <mkdir dir="build/jar"/>
+        <jar destfile="build/jar/swissbibSRUserver.jar" basedir="build/classes">
+            <manifest>
+                <attribute name="Built-By" value="${builder}" />
+                <attribute name="Built-On" value="${build-info.current-date}" />
+                <attribute name="Built-At" value="${build-info.current-time}" />
+                <attribute name="Application-Name" value="swissbib SRU server core functionality" />
+            </manifest>
+        </jar>
+    </target>
+
+
+    <target name="build-war" depends="clean,prepare,compile,jar,copyCreatedJar">
+        <war destfile="build/war/sru.war" webxml="${web.dir}/web.xml">
+            <manifest>
+                <attribute name="Built-By" value="${builder}" />
+                <attribute name="Built-On" value="${build-info.current-date}" />
+                <attribute name="Built-At" value="${build-info.current-time}" />
+                <attribute name="Application-Name" value="Web Application swissbib SRU server" />
+            </manifest>
+            <lib dir="build/lib"/>
+            <classes dir="build/resources"/>
+        </war>
+    </target>
+
+
+</project>
