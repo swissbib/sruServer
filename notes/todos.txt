@@ -13,7 +13,7 @@ anderen SearchServern ist
 3) es gibt noch feste Dateilinks auf Ressourcen (z.B. xslt -> mach dies konfigurierbar)
 
 
-4) logging mit Restlet
+4) logging mit Restlet   !
 
 
 5) Tests mit PHP client für swissbib mobile
@@ -33,4 +33,18 @@ http://json-lib.sourceforge.net/
 (nicht mehr den Endpunkt diagnose mit dem das Formular angezeigt wird!)
 
 - diagnose muss ich bei Fehlern unterstützen! (jetzt wir einfach eine Exception geworfen)
+
+
+zur zeit am wichtigsten:
+- besseres CQL Parsing -> besser abgestimmt auf SOLR Syntax
+- Übernahme der noch fehlenden indices
+- gebe ich alles zurück wie bei OCL DC? dort werden noch INstitutionen mit ihren codes zurückgegeben
+- konsistente URLs -> ich muss nur die operation abfragen?
+- Angabe einer Datenbank?
+-> so kann ich zum Beispiel filter für bestimmte Teilmengen setzen
+- Parsen der explain response und damit die Mapping Felder bestimmen
+- unterschiedliche explain responses für unterschiedlcihe requests (XML oder HTML Form)
+- blocke ich eine response wenn startpage zu gross -> Restlet Filter!
+
+
 
