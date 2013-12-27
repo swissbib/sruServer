@@ -15,7 +15,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -85,10 +84,14 @@ public class SRUApplication extends Application {
         String configuredSOLRServer =  System.getProperty("solrServer","http://search.swissbib.ch/solr/sb-biblio");
         String mappingFieldsProps =  System.getProperty("mappingFieldsProps","/home/swissbib/environment/code/sruWebAppRestLet/src/org/swissbib/sru/resources/mapping/mapping.solr.properties");
 
+        System.out.println("marc2DublinCoreTemplate: " + marc2DC);
+        System.out.println("marc2DublinCoreTemplateOCLC: " + marc2DCOCLC);
+        System.out.println("diagnoseDir: " + diagnoseDir);
+        System.out.println("solrServer: " + configuredSOLRServer);
+        System.out.println("mappingFieldsProps: " + mappingFieldsProps);
 
         //Connection to Solr server
         HashMap<String,Object>  hM =  new HashMap<String, Object>();
-
 
         HttpSolrServer  solrServer = new HttpSolrServer(configuredSOLRServer);
         hM.put("solrServer",solrServer);
@@ -122,7 +125,7 @@ public class SRUApplication extends Application {
         //hM.put("representationClass","org.swissbib.sru.solr.SolrStringRepresentation");
 
 
-        //load the sru search / index field ampping
+        //load the sru search / index field mapping
         try {
 
             File configMapFile = new File(mappingFieldsProps);
