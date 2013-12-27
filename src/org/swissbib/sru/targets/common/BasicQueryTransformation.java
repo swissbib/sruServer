@@ -53,11 +53,17 @@ public abstract class BasicQueryTransformation implements CQLQueryTransformation
     @Override
     public void init(Form inputParams, HttpSolrServer solrServer, HashMap<String,ArrayList<String>> searchMapping) throws Exception {
 
+        //nur wenn icht null und length ==  0
+        //setze dies in abgeleiteter Klasse für leeren String
         this.cqlQuery = inputParams.getFirstValue("query");
 
 
         if (null == this.cqlQuery) {
-            throw new Exception("no query");
+            //todo what if empty query -> how to transform it into *:* for CQL??
+            //do this in derived class because it depends on the target
+            //overwrite init!
+
+            throw new SRUException("missing query parameter", "missing query parameter");
 
         }
 
@@ -72,8 +78,16 @@ public abstract class BasicQueryTransformation implements CQLQueryTransformation
         try {
             cqlNode = cqlP.parse(this.cqlQuery);
         } catch (CQLParseException pE) {
-            cqlNode = null;
-            pE.printStackTrace();
+
+            SRUException sruex = new SRUException("cql parse Exception", "cql parse Exception", pE);
+            sruex.setUseExceptionMessage(true);
+            throw sruex;
+
+        } catch (Throwable throwable) {
+            SRUException sruex = new SRUException("undefined details", "undefined message", throwable);
+            sruex.setUseExceptionMessage(true);
+            throw sruex;
+
         }
     }
 
