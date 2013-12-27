@@ -7,6 +7,7 @@ import org.restlet.data.Form;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 import org.swissbib.sru.targets.common.SRUBasicRepresentation;
+import org.swissbib.sru.targets.common.SRUException;
 import org.swissbib.sru.targets.solr.SolrStringRepresentation;
 
 import org.swissbib.sru.targets.solr.SOLRQueryTransformation;
@@ -52,25 +53,19 @@ public class SearchRetrieveSolr extends SearchRetrieveBasic {
         //s. auch http://restlet.org/learn/2.0/firstResource
         //ich kann  @Get("xml") angeben - schneller?
 
-
-        super.init();
-
-
-
-        Context context =  getContext();
-        ConcurrentMap<String,Object> attributes = context.getAttributes();
-        HttpSolrServer solrServer =  (HttpSolrServer) attributes.get("solrServer");
-
-
-        SOLRQueryTransformation sQ = new SOLRQueryTransformation();
         Representation rep = null;
 
         try {
+            super.init();
+
+            Context context =  getContext();
+            ConcurrentMap<String,Object> attributes = context.getAttributes();
+            HttpSolrServer solrServer =  (HttpSolrServer) attributes.get("solrServer");
 
 
+            SOLRQueryTransformation sQ = new SOLRQueryTransformation();
 
             Form queryParams = getRequest().getResourceRef().getQueryAsForm();
-
             HashMap<String,ArrayList<String>> searchMapping = (HashMap<String,ArrayList<String>>)    attributes.get("searchMapping");
 
             sQ.init(queryParams,solrServer, searchMapping);
@@ -85,9 +80,13 @@ public class SearchRetrieveSolr extends SearchRetrieveBasic {
 
             rep =  basicRepresenation.getRepresentation();
 
+        } catch (SRUException sruException) {
+            rep = sruException.getRepresentation();
         }
         catch (Exception ex) {
-            ex.printStackTrace();
+            SRUException sruex = new SRUException(null, null, ex);
+            sruex.setUseExceptionMessage(true);
+            rep = sruex.getRepresentation();
         }
 
         return rep;

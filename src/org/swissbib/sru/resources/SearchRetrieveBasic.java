@@ -4,6 +4,7 @@ import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.restlet.Context;
 import org.restlet.data.Form;
 import org.restlet.resource.ServerResource;
+import org.swissbib.sru.targets.common.SRUException;
 
 import java.util.concurrent.ConcurrentMap;
 
@@ -54,7 +55,7 @@ public class SearchRetrieveBasic extends ServerResource{
         String q = queryParams.getFirstValue("query");
 
         if (null == q) {
-            throw new Exception("no query");
+            throw new SRUException("missing query parameter", "missing query parameter");
 
         } else {
             this.query = q;
