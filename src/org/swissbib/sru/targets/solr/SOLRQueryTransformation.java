@@ -5,6 +5,7 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
 import org.swissbib.sru.targets.common.BasicQueryTransformation;
+import org.swissbib.sru.targets.common.SRUException;
 import org.z3950.zing.cql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,41 +60,64 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
     @Override
     public QueryResponse runQuery() throws Exception {
 
-        if (null == cqlNode)
-            throw new Exception ("target not initialzed");
-
-        //StringBuffer luceneStringQuery = new StringBuffer().append("/sb-biblio/select?");
-        StringBuffer luceneStringQuery = new StringBuffer();
-        makeLuceneQuery(cqlNode,luceneStringQuery);
-
-
-        SolrQuery parameters = new SolrQuery();
-        parameters.set("q", luceneStringQuery.toString());
-        parameters.set("qt","dismax") ;
-        parameters.set("defType","edismax") ;
-        String sR = inputParams.getFirstValue("startRecord");
-        int startRecord = 0;
+        QueryResponse response = null;
 
         try {
-             startRecord =  sR != null && sR.length() > 0 ? Integer.parseInt(sR) : 0;
-        } catch (Exception ex)  {
-            ex.printStackTrace();
+
+            if (null == cqlNode)  {
+                throw new SRUException("no cqlNode -> target not initialized", "no cqlNode -> target not initialized");
+            }
+
+
+            //StringBuffer luceneStringQuery = new StringBuffer().append("/sb-biblio/select?");
+            StringBuffer luceneStringQuery = new StringBuffer();
+            makeLuceneQuery(cqlNode,luceneStringQuery);
+
+
+            SolrQuery parameters = new SolrQuery();
+            parameters.set("q", luceneStringQuery.toString());
+            parameters.set("qt","dismax") ;
+            parameters.set("defType","edismax") ;
+            String sR = inputParams.getFirstValue("startRecord");
+            int startRecord = 0;
+
+            try {
+                 startRecord =  sR != null && sR.length() > 0 ? Integer.parseInt(sR) : 0;
+            } catch (Exception ex)  {
+
+                System.out.println("invalid start parameter -> use 0 as default");
+            }
+
+            //for backward compatibility - was 1 in the former version
+            startRecord = startRecord == 1 ? 0 : startRecord;
+
+            parameters.set("start",startRecord);
+            parameters.set("rows", inputParams.getFirstValue("maximumRecords")) ;
+
+
+            //seems that edismax needs a default query field
+            //todo: have a closer look into the pre condition
+            parameters.set("df","bla") ; //should be a default field if no one is defined in the configuration of the server
+
+            response = this.searchServer.query(parameters);
+
+        } catch (SRUException sruException) {
+            throw sruException;
+
+        } catch (Exception excep) {
+
+            SRUException sruex = new SRUException("undefined details", "undefined message", excep);
+            sruex.setUseExceptionMessage(true);
+            throw sruex;
+
+        } catch (Throwable throwable) {
+
+            SRUException sruex = new SRUException("undefined details", "undefined message", throwable);
+            sruex.setUseExceptionMessage(true);
+            throw sruex;
         }
 
-        //for backward compatibility - was 1 in the former version
-        startRecord = startRecord == 1 ? 0 : startRecord;
-
-        parameters.set("start",startRecord);
-        parameters.set("rows", inputParams.getFirstValue("maximumRecords")) ;
-
-
-        //seems that edismax needs a default query field
-        //todo: have a closer look into the pre condition
-        parameters.set("df","bla") ; //should be a default field if no one is defined in the configuration of the server
-
-        return this.searchServer.query(parameters);
-
-
+        return response;
     }
 
     @Override
@@ -103,7 +127,7 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
 
 
     //for indexes used by OCLC look at http://oclc.org/developer/documentation/worldcat-search-api/complete-list-indexes
-    private void makeLuceneQuery(CQLNode node, StringBuffer sb) {
+    private void makeLuceneQuery(CQLNode node, StringBuffer sb) throws Exception{
         if(node instanceof CQLBooleanNode) {
             CQLBooleanNode cbn=(CQLBooleanNode)node;
             sb.append("(");
@@ -130,6 +154,13 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
 
             //if(newIndex!=null)
             //    index=newIndex;
+
+            if (! this.searchMapping.containsKey(index)) {
+
+                throw new SRUException("index: " + index + " not supported","index: " + index + " not supported");
+
+
+            }
 
             ArrayList <String> searchFields = this.searchMapping.get(index);
 

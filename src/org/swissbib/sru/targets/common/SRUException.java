@@ -127,7 +127,18 @@ public class SRUException extends Exception {
         StringBuilder message = new StringBuilder();
         if (this.useExceptionMessage && this.throwable != null) {
             if (null != this.diagMessage) {
-                message.append(this.diagMessage).append("\n").append(this.throwable.getMessage());
+                message.append(this.diagMessage);
+                if (this.throwable.getMessage() != null) {
+                    message.append(this.throwable.getMessage());
+                } else if (this.throwable.getLocalizedMessage() != null) {
+                    message.append(this.throwable.getLocalizedMessage());
+                }
+                else {
+                    for (StackTraceElement sE : this.throwable.getStackTrace()) {
+                        message.append(sE.toString());
+                    }
+                }
+
             } else {
                 message.append(this.throwable.getMessage());
             }
