@@ -2,6 +2,8 @@ package org.swissbib.sru.targets.solr;
 
 
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.impl.BinaryRequestWriter;
+import org.apache.solr.client.solrj.impl.BinaryResponseParser;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
 import org.swissbib.sru.targets.common.BasicQueryTransformation;
@@ -69,15 +71,13 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
             }
 
 
-            //StringBuffer luceneStringQuery = new StringBuffer().append("/sb-biblio/select?");
             StringBuffer luceneStringQuery = new StringBuffer();
             makeLuceneQuery(cqlNode,luceneStringQuery);
 
 
             SolrQuery parameters = new SolrQuery();
             parameters.set("q", luceneStringQuery.toString());
-            parameters.set("qt","dismax") ;
-            parameters.set("defType","edismax") ;
+
             String sR = inputParams.getFirstValue("startRecord");
             int startRecord = 0;
 
@@ -97,7 +97,10 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
 
             //seems that edismax needs a default query field
             //todo: have a closer look into the pre condition
-            parameters.set("df","bla") ; //should be a default field if no one is defined in the configuration of the server
+            //parameters.set("df","title_short") ; //should be a default field if no one is defined in the configuration of the server
+
+            this.searchServer.setParser(new BinaryResponseParser());
+            this.searchServer.setRequestWriter(new BinaryRequestWriter());
 
             response = this.searchServer.query(parameters);
 
@@ -147,81 +150,20 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
             CQLTermNode ctn=(CQLTermNode)node;
             String index=ctn.getIndex();
 
-            //String newIndex=(String)indexMappings.get(index);
-
-
-            //String newIndex=index;
-
-            //if(newIndex!=null)
-            //    index=newIndex;
+            //bei exact: term: "dc.anywhere exact hello world" und index ist cql.serverChoice
+            //hier muss ich also etwas herausfischen
 
             if (! this.searchMapping.containsKey(index)) {
-
                 throw new SRUException("index: " + index + " not supported","index: " + index + " not supported");
-
-
             }
 
             ArrayList <String> searchFields = this.searchMapping.get(index);
 
-            if (searchFields.size() > 1) {
-                sb.append(" ( ");
-            }
+            EdismaxSolrQueryClause edismaxClause = new EdismaxSolrQueryClause(ctn,searchFields);
 
-            int count = 1;
-
-            for (String sF : searchFields ) {
-
-                sb.append(sF).append(":");
-
-                String term=ctn.getTerm();
-                if(ctn.getRelation().getBase().equals("=") ||
-                        ctn.getRelation().getBase().equals("scr")) {
-                    if(term.indexOf(' ')>=0)
-                        sb.append('"').append(term).append('"');
-                    else
-                        sb.append(ctn.getTerm());
-                }
-                else if(ctn.getRelation().getBase().equals("any")) {
-                    if(term.indexOf(' ')>=0)
-                        sb.append('(').append(term).append(')');
-                    else
-                        sb.append(ctn.getTerm());
-                }
-                else if(ctn.getRelation().getBase().equals("all")) {
-                    if(term.indexOf(' ')>=0) {
-                        sb.append('(');
-                        StringTokenizer st=new StringTokenizer(term);
-                        while(st.hasMoreTokens()) {
-                            sb.append(st.nextToken());
-                            if(st.hasMoreTokens())
-                                sb.append(" AND ");
-                        }
-                        sb.append(')');
-                    }
-                    else
-                        sb.append(ctn.getTerm());
-                } else if (ctn.getRelation().getBase().equals("exact")) {
-                    sb.append('"').append(term).append('"');
-                }
-                else
-                    sb.append("Unsupported Relation: ").append(ctn.getRelation().getBase());
-
-                count++;
-                if (count <= searchFields.size())
-                    sb.append(" OR ");
-            }
-
-            if (searchFields.size() > 1) {
-                sb.append(" ) ");
-            }
-
-
-            //if(!index.equals(""))
-            //    sb.append(index).append(":");
-
+            sb.append(edismaxClause.getQueryClause());
         }
-        else sb.append("UnknownCQLNode(").append(node).append(")");
+
     }
 
 
