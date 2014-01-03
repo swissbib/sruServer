@@ -59,7 +59,7 @@ public class EdismaxSolrQueryClause extends BasicSolrQuery {
 
 
         StringBuilder clause = new StringBuilder();
-        clause.append("{!edismax qf=\"");
+        clause.append("({!edismax qf=\"");
 
         int numberQueryFields = 1;
         for (String field: this.queryFields) {
@@ -72,12 +72,7 @@ public class EdismaxSolrQueryClause extends BasicSolrQuery {
 
             numberQueryFields++;
         }
-
-
-        //clause.append("\" q.op=").append(this.mapCQLRelationToSOLRBooleanOperator()).append(" v=$userQuery}");
-        //clause.append("\" q.op=").append(this.mapCQLRelationToSOLRBooleanOperator()).append(" v='").append(this.cqlTermNode.getTerm()).append("'}");
-        clause.append("\" q.op=").append(this.mapCQLRelationToSOLRBooleanOperator()).append(" df=title_short v='").append(this.createQueryTerm()).append("'}");
-        //clause.append("&userQuery=").append(this.cqlTermNode.getTerm()).append(" ");
+        clause.append("\" q.op=").append(this.mapCQLRelationToSOLRBooleanOperator()).append(" df=title_short v='").append(this.createQueryTerm()).append("'})");
 
         return clause.toString();
     }

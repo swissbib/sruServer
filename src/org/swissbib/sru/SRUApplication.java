@@ -5,6 +5,8 @@ import org.restlet.*;
 import org.restlet.data.Protocol;
 import org.restlet.resource.Directory;
 import org.restlet.routing.Router;
+import org.swissbib.sru.resources.SRUDiagnoseForm;
+import org.swissbib.sru.resources.SRUDiagnoseJS;
 import org.swissbib.sru.resources.SRUFileResources;
 import org.swissbib.sru.resources.SearchRetrieveSolr;
 
@@ -84,17 +86,30 @@ public class SRUApplication extends Application {
         String configuredSOLRServer =  System.getProperty("solrServer","http://search.swissbib.ch/solr/sb-biblio");
         String mappingFieldsProps =  System.getProperty("mappingFieldsProps","/home/swissbib/environment/code/sruWebAppRestLet/src/org/swissbib/sru/resources/mapping/mapping.solr.properties");
 
+        String formResource =  System.getProperty("formResource","/home/swissbib/environment/code/sruWebAppRestLet/web/WEB-INF/classes/resources/diagnose/index.html");
+        String jsResource =  System.getProperty("jsResource","/home/swissbib/environment/code/sruWebAppRestLet/web/WEB-INF/classes/resources/diagnose/js/srudiagnose.js");
+        String sruSearchURL =  System.getProperty("sruSearchURL","http://sb-vf7.swissbib.unibas.ch/sru/search");
+
+
+
         System.out.println("marc2DublinCoreTemplate: " + marc2DC);
         System.out.println("marc2DublinCoreTemplateOCLC: " + marc2DCOCLC);
         System.out.println("diagnoseDir: " + diagnoseDir);
         System.out.println("solrServer: " + configuredSOLRServer);
         System.out.println("mappingFieldsProps: " + mappingFieldsProps);
+        System.out.println("formResource: " + formResource);
+        System.out.println("jsResource: " + jsResource);
+        System.out.println("sruSearchURL: " + sruSearchURL);
 
         //Connection to Solr server
         HashMap<String,Object>  hM =  new HashMap<String, Object>();
 
         HttpSolrServer  solrServer = new HttpSolrServer(configuredSOLRServer);
         hM.put("solrServer",solrServer);
+
+        hM.put("formResource",formResource);
+        hM.put("jsResource",jsResource);
+        hM.put("sruSearchURL",sruSearchURL);
 
 
         ConcurrentHashMap<String,Templates> templatesMap = new ConcurrentHashMap<String, Templates>();
@@ -169,9 +184,17 @@ public class SRUApplication extends Application {
         router.attach("/xslfiles/{filename}",
                 SRUFileResources.class);
 
+        router.attach("/form",
+                SRUDiagnoseForm.class);
+        router.attach("/js",
+                SRUDiagnoseJS.class);
+
+
 
         Directory directory = new Directory(getContext(), diagnoseDir);
         router.attach("/diagnose", directory);
+
+
 
         return router;
 

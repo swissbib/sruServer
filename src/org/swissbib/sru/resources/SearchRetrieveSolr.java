@@ -4,7 +4,12 @@ import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.restlet.Context;
 import org.restlet.data.Form;
+import org.restlet.data.LocalReference;
+import org.restlet.data.MediaType;
+import org.restlet.data.Reference;
+import org.restlet.ext.velocity.TemplateRepresentation;
 import org.restlet.representation.Representation;
+import org.restlet.resource.ClientResource;
 import org.restlet.resource.Get;
 import org.swissbib.sru.targets.common.SRUBasicRepresentation;
 import org.swissbib.sru.targets.common.SRUException;
@@ -52,6 +57,8 @@ public class SearchRetrieveSolr extends SearchRetrieveBasic {
 
         //s. auch http://restlet.org/learn/2.0/firstResource
         //ich kann  @Get("xml") angeben - schneller?
+
+
 
         Representation rep = null;
 

@@ -24,6 +24,7 @@
         <init-param>
             <param-name>org.restlet.clients</param-name>
             <param-value>HTTP FILE</param-value>
+            <!-- <param-value>HTTP</param-value> -->
         </init-param>
     </servlet>
 

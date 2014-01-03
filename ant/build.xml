@@ -13,10 +13,18 @@
         <fileset dir="/home/swissbib/Downloads/restlet/ee/restlet-jee-2.1.6/lib">
             <include name="org.restlet.jar"/>
             <include name="org.restlet.ext.servlet.jar" />
+            <include name="org.restlet.ext.velocity.jar" />
         </fileset>
         <fileset dir="/opt/swissbib/tools/java.tools/sru-cql">
             <include name="cql-java-1.11.jar"/>
         </fileset>
+        <fileset dir="/opt/swissbib/tools/java.tools/velocity">
+            <include name="velocity-1.7.jar"/>
+            <include name="velocity-1.7-dep.jar"/>
+        </fileset>
+
+
+
     </path>
 
     <path id="sruServerJar">

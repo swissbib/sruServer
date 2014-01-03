@@ -96,23 +96,11 @@ $(function () {
 
 
     var searchFieldNamesOptions = {
-        "dc.anywhere"               :       "dc.anywhere",
-        "dc.corporateName"          :       "dc.corporateName",
-        "dc.creator"                :       "dc.creator",
-        "dc.date"                   :       "dc.date",
-        "dc.genreForm"              :       "dc.genreForm",
-        "dc.identifier"             :       "dc.identifier",
-        "dc.id"                     :       "dc.id",
-        "dc.language"               :       "dc.language",
-        "dc.medium"                 :       "dc.medium",
-        "dc.personalName"           :       "dc.personalName",
-        "dc.possessingInstitution"  :       "dc.possessingInstitution",
-        "dc.subject"                :       "dc.subject",
-        "dc.title"                  :       "dc.title",
-        "dc.topicalSubject"         :       "dc.topicalSubject",
-        "dc.uniformTitle"           :       "dc.uniformTitle",
-        "dc.xNetwork"               :       "dc.xNetwork",
-        "dc.xonline"                :       "dc.xonline"
+
+            //is created dynamically using velocity templates
+            #foreach( $sruIndex in $sruIndexes )
+               "$sruIndex" :  "$sruIndex",
+            #end
 
     };
 
