@@ -89,6 +89,8 @@ public class SRUApplication extends Application {
         String formResource =  System.getProperty("formResource","/home/swissbib/environment/code/sruWebAppRestLet/web/WEB-INF/classes/resources/diagnose/index.html");
         String jsResource =  System.getProperty("jsResource","/home/swissbib/environment/code/sruWebAppRestLet/web/WEB-INF/classes/resources/diagnose/js/srudiagnose.js");
         String sruSearchURL =  System.getProperty("sruSearchURL","http://sb-vf7.swissbib.unibas.ch/sru/search");
+        String sruExplain =  System.getProperty("sruExplain","/home/swissbib/environment/code/sruWebAppRestLet/web/WEB-INF/classes/resources/explain/explain.swissbib.default.xml");
+
 
 
 
@@ -100,6 +102,7 @@ public class SRUApplication extends Application {
         System.out.println("formResource: " + formResource);
         System.out.println("jsResource: " + jsResource);
         System.out.println("sruSearchURL: " + sruSearchURL);
+        System.out.println("sruExplain: " + sruExplain);
 
         //Connection to Solr server
         HashMap<String,Object>  hM =  new HashMap<String, Object>();
@@ -110,6 +113,7 @@ public class SRUApplication extends Application {
         hM.put("formResource",formResource);
         hM.put("jsResource",jsResource);
         hM.put("sruSearchURL",sruSearchURL);
+        hM.put("sruExplain",sruExplain);
 
 
         ConcurrentHashMap<String,Templates> templatesMap = new ConcurrentHashMap<String, Templates>();

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<explainResponse xmlns="http://www.loc.gov/zing/srw/">
+    <version>1.1</version>
+    <record>
+        <recordSchema>http://explain.z3950.org/dtd/2.0/</recordSchema>
+        <recordData>
+            <ns:explain xmlns:ns="http://explain.z3950.org/dtd/2.0/"
+                id="Projekt swissbib, UB Basel, Switzerland">
+                <ns:serverInfo protocol="sru" version="1.1">
+                    <ns:host>srutest.swissbib.ch</ns:host>
+                    <ns:port>80</ns:port>
+                    <ns:database>/default</ns:database>
+                </ns:serverInfo>
+                <ns:databaseInfo>
+                    <ns:title lang="de" primary="true">Metadaten des Projekts swissbib</ns:title>
+                    <ns:author>Projekt swissbib</ns:author>
+                    <ns:contact>swissbib-ub@unibas.ch</ns:contact>
+                    <ns:implementation version="1.1"/>
+                </ns:databaseInfo>
+                <ns:indexInfo>
+                    <ns:set identifier="info:srw/schema/1/dc-v1.1" name="dc-oclc"/>
+                    <ns:set identifier="info:sru/schema/1/dc-v1.1-light" name="dc-swissbib"/>
+                    <ns:set identifier="info:srw/schema/1/marcxml-v1.1" name="marc-oclc"/>
+                    <ns:set identifier="info:srw/schema/1/marcxml-v1.1-light" name="marc-swissbib"/>
+
+                    #foreach( $index in $allIndexes )
+                        <ns:index search="true" scan="false" sort="false" id="$index.id">
+                            <ns:title lang="de" primary="true">$index.id</ns:title>
+                            <ns:map>
+                                <ns:name set="solr-fields-to-sru-index">$index.fields</ns:name>
+                            </ns:map>
+                        </ns:index>
+                    #end
+            </ns:indexInfo>
+                <ns:schemaInfo>
+                    <ns:schema retrieve="true" sort="false"
+                        identifier="http://www.d-nb.de/standards/xMetaDiss/"
+                        location="http://files.dnb.de/standards/xmetadiss/xmetadiss.xsd"
+                        name="xMetaDiss">
+                        <ns:title lang="de" primary="true">xMetaDiss fuer Hochschulschriften /
+                            DNB-intern</ns:title>
+                    </ns:schema>
+                    <ns:schema retrieve="true" sort="false"
+                        identifier="http://www.editeur.org/onix/2.1/short/ONIX_BookProduct_Release2.1_short"
+                        location="http://www.editeur.org/onix/2.1/short/ONIX_BookProduct_Release2.1_short.xsd"
+                        name="ONIX-xml">
+                        <ns:title lang="de" primary="true">Auswahl von ONIX-Elementen /
+                            DNB-intern</ns:title>
+                    </ns:schema>
+                    <ns:schema retrieve="true" sort="false"
+                        identifier="http://www.d-nb.de/schemas/syncrepo"
+                        location="http://files.dnb.de/standards/formate/syncrepo.xsd"
+                        name="sync-repo-xml">
+                        <ns:title lang="de" primary="true">Statusinformationen fuer Repository /
+                            DNB-intern</ns:title>
+                    </ns:schema>
+                    <ns:schema retrieve="true" sort="false"
+                        identifier="http://www.openarchives.org/OAI/2.0/oai_dc/"
+                        location="http://www.openarchives.org/OAI/2.0/oai_dc.xsd" name="oai_dc">
+                        <ns:title lang="de" primary="true">Auswahl von Dublin-Core-Elementen /
+                            DNB-Titeldaten, ZDB-Titeldaten</ns:title>
+                    </ns:schema>
+                    <ns:schema retrieve="true" sort="false"
+                        identifier="http://www.oclcpica.org/xmlns/ppxml-1.0"
+                        location="http://files.dnb.de/standards/formate/ppxml-1.0.xsd"
+                        name="PicaPlus-xml">
+                        <ns:title lang="de" primary="true">XML-Variante von PicaPlus /
+                            Bibliotheksadressen / DNB-intern, Bibliotheksverbuende</ns:title>
+                    </ns:schema>
+                    <ns:schema retrieve="true" sort="false"
+                        identifier="http://www.ddb.de/professionell/MARC21/plus"
+                        location="http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd"
+                        name="MARC21plus-xml">
+                        <ns:title lang="de" primary="true">XML-Variante von MARC21 inkl.
+                            ausgewaehlter Inhalte von Exemplardaten / ZDB-Titeldaten</ns:title>
+                    </ns:schema>
+                    <ns:schema retrieve="true" sort="false"
+                        identifier="http://www.loc.gov/MARC21/slim"
+                        location="http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd"
+                        name="MARC21-Test-xml">
+                        <ns:title lang="de" primary="true">XML-Variante von MARC21 /
+                            DNB-intern</ns:title>
+                    </ns:schema>
+                    <ns:schema retrieve="true" sort="false"
+                        identifier="http://www.loc.gov/MARC21/slim"
+                        location="http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd"
+                        name="MARC21-xml">
+                        <ns:title lang="de" primary="true">XML-Variante von MARC21 / DNB-Titeldaten,
+                            ZDB-Titeldaten, Normdaten</ns:title>
+                    </ns:schema>
+                    <ns:schema retrieve="true" sort="false"
+                        identifier="http://www.w3.org/1999/02/22-rdf-syntax-ns"
+                        location="http://www.w3.org/2000/07/rdf.xsd" name="RDFxml">
+                        <ns:title lang="de" primary="true">PicaPlus to RDF Konversion /
+                            DNB-Titeldaten, ZDB-Titeldaten, Normdaten</ns:title>
+                    </ns:schema>
+                    <ns:schema retrieve="true" sort="false"
+                        identifier="http://www.w3.org/1999/02/22-rdf-syntax-ns"
+                        location="http://www.w3.org/2000/07/rdf.xsd" name="BibframeRDFxml">
+                        <ns:title lang="de" primary="true">PicaPlus to Bibframe-RDF Konversion /
+                            DNB-Titeldaten</ns:title>
+                    </ns:schema>
+                </ns:schemaInfo>
+                <ns:configInfo>
+                    <ns:default type="numberOfRecords">10</ns:default>
+                    <ns:default type="retrieveSchema">oai_dc</ns:default>
+                    <ns:supports type="resultsets"/>
+                    <ns:supports type="relation">>=</ns:supports>
+                    <ns:supports type="relation">encloses</ns:supports>
+                    <ns:supports type="relation">&lt;></ns:supports>
+                    <ns:supports type="relation">&lt;=</ns:supports>
+                    <ns:supports type="relation">exact</ns:supports>
+                    <ns:supports type="relation">any</ns:supports>
+                    <ns:supports type="relation">src</ns:supports>
+                    <ns:supports type="relation">within</ns:supports>
+                    <ns:supports type="relation">></ns:supports>
+                    <ns:supports type="relation">=</ns:supports>
+                    <ns:supports type="relation">all</ns:supports>
+                    <ns:supports type="relation">&lt;</ns:supports>
+                </ns:configInfo>
+            </ns:explain>
+        </recordData>
+    </record>
+</explainResponse>
