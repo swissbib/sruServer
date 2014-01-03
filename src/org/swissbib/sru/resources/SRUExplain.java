@@ -43,6 +43,11 @@ import java.util.concurrent.ConcurrentMap;
  * @link http://www.swissbib.org
  * @link https://github.com/swissbib/xml2SearchDoc
  */
+
+
+
+
+
 public class SRUExplain extends ServerResource {
 
     private Context context;
@@ -58,6 +63,11 @@ public class SRUExplain extends ServerResource {
     @Get()
     @SuppressWarnings("unchecked")
     public Representation getSRUExplanation() throws Exception {
+
+        //Beipiel für den Zugriff auf explain operation DNB
+        //wget -Otest.xml 'http://services.dnb.de/sru/authorities?version=1.1&operation=searchRetrieve&query=WOE%3Dsozialistenkongress%20and%20COD%3Ds&recordSchema=RDFxml'
+        //nur auf sb-coai1 und sb-coai2
+
 
         TemplateRepresentation tr  = null;
 
@@ -91,13 +101,11 @@ public class SRUExplain extends ServerResource {
 
         }
 
-
         myhash.put("allIndexes", indexDescriptions);
 
         tr = new TemplateRepresentation(templateFile,
                 myhash, MediaType.TEXT_XML);
 
-        final String result = tr.getText();
         return tr;
     }
 
