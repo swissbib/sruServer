@@ -115,9 +115,9 @@ public class SRUException extends Exception {
         StringBuilder details = new StringBuilder();
 
         if (this.diagDetails == null) {
-            details.append("unknown details");
+            details.append("unknown details ");
         }else {
-            details.append(this.diagDetails);
+            details.append(this.diagDetails).append(" ");
         }
 
         return details.toString();
@@ -127,26 +127,26 @@ public class SRUException extends Exception {
         StringBuilder message = new StringBuilder();
         if (this.useExceptionMessage && this.throwable != null) {
             if (null != this.diagMessage) {
-                message.append(this.diagMessage);
+                message.append(this.diagMessage).append(" ");
                 if (this.throwable.getMessage() != null) {
-                    message.append(this.throwable.getMessage());
+                    message.append(this.throwable.getMessage()).append(" ");
                 } else if (this.throwable.getLocalizedMessage() != null) {
-                    message.append(this.throwable.getLocalizedMessage());
+                    message.append(this.throwable.getLocalizedMessage()).append(" ");
                 }
                 else {
                     for (StackTraceElement sE : this.throwable.getStackTrace()) {
-                        message.append(sE.toString());
+                        message.append(sE.toString()).append(" ");
                     }
                 }
 
             } else {
-                message.append(this.throwable.getMessage());
+                message.append(this.throwable.getMessage()).append(" ");
             }
 
         }else if (null != this.diagMessage) {
-            message.append(this.diagMessage);
+            message.append(this.diagMessage).append(" ");
         } else {
-            message.append("unknown message");
+            message.append("unknown message ");
         }
 
         return message.toString();
