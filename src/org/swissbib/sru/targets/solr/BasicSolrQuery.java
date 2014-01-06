@@ -53,7 +53,10 @@ abstract public class BasicSolrQuery implements QueryInterface {
         String solrOperator = "AND";
         String cqlString = cqlTermNode.getRelation().toCQL();
 
-        if (cqlString.equalsIgnoreCase("=") || cqlString.equalsIgnoreCase("ALL")) {
+        if (cqlString.equalsIgnoreCase("=") || cqlString.equalsIgnoreCase("ALL") ||
+                cqlString.equalsIgnoreCase(">") || cqlString.equalsIgnoreCase("<") ||
+                cqlString.equalsIgnoreCase(">=") || cqlString.equalsIgnoreCase("<=") ||
+                cqlString.equalsIgnoreCase("NOT")) {
 
             /*
                 This is the default relation, and the server can choose any appropriate relation or means of comparing the query term
@@ -86,6 +89,16 @@ abstract public class BasicSolrQuery implements QueryInterface {
 
         if (cqlString.equalsIgnoreCase("exact")) {
             queryTerm.append("\"").append(this.cqlTermNode.getTerm()).append("\"");
+        } else if (cqlString.equalsIgnoreCase(">")) {
+
+            queryTerm.append("{").append(this.cqlTermNode.getTerm()).append(" TO *]");
+        } else if (cqlString.equalsIgnoreCase("<")) {
+            queryTerm.append("[* TO ").append(this.cqlTermNode.getTerm()).append("}");
+        } else if (cqlString.equalsIgnoreCase(">=")) {
+
+            queryTerm.append("[").append(this.cqlTermNode.getTerm()).append(" TO *]");
+        } else if (cqlString.equalsIgnoreCase("<=")) {
+            queryTerm.append("[* TO ").append(this.cqlTermNode.getTerm()).append("]");
         } else {
             queryTerm.append(this.cqlTermNode.getTerm());
         }

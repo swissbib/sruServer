@@ -55,15 +55,15 @@ public abstract class BasicQueryTransformation implements CQLQueryTransformation
 
         //nur wenn icht null und length ==  0
         //setze dies in abgeleiteter Klasse für leeren String
-        this.cqlQuery = inputParams.getFirstValue("query");
+        this.cqlQuery = inputParams.getFirstValue("query").trim();
 
 
-        if (null == this.cqlQuery) {
+        if (this.cqlQuery.equals("")) {
             //todo what if empty query -> how to transform it into *:* for CQL??
             //do this in derived class because it depends on the target
             //overwrite init!
-
-            throw new SRUException("missing query parameter", "missing query parameter");
+            this.cqlQuery = "dc.anywhere=*:*";
+            //throw new SRUException("missing query parameter", "missing query parameter");
 
         }
 
