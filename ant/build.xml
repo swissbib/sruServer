@@ -64,6 +64,7 @@
         <copy todir="build/resources/resources/mapping">
             <fileset dir="web/WEB-INF/classes/resources/mapping">
                 <include name="mapping.solr.properties"/>
+                <include name="mapping.cqlrelations.properties"/>
             </fileset>
         </copy>
 
