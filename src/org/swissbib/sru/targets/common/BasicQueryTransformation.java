@@ -7,9 +7,11 @@ import org.restlet.data.Form;
 import org.z3950.zing.cql.CQLNode;
 import org.z3950.zing.cql.CQLParseException;
 import org.z3950.zing.cql.CQLParser;
+import org.z3950.zing.cql.CQLTermNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 /**
  * [...description of the type ...]
@@ -38,6 +40,21 @@ import java.util.HashMap;
 
 public abstract class BasicQueryTransformation implements CQLQueryTransformationInterface {
 
+
+    protected class IndexTermStructure {
+
+        public String index;
+        public String term;
+        public String relation;
+
+        public IndexTermStructure(String index, String term, String relation) {
+            this.index = index;
+            this.term = term;
+            this.relation = relation;
+
+        }
+    }
+
     /**
      * CQLNode to be processed by target
       */
@@ -46,6 +63,10 @@ public abstract class BasicQueryTransformation implements CQLQueryTransformation
     protected Form inputParams = null;
     protected HashMap<String,ArrayList<String>> searchMapping = null;
     protected String cqlQuery = "";
+
+
+    private Pattern exactPhrase = Pattern.compile(" exact ",Pattern.CASE_INSENSITIVE);
+
 
 
 
@@ -101,6 +122,55 @@ public abstract class BasicQueryTransformation implements CQLQueryTransformation
 
     public String getCQLQuery() {
         return this.cqlQuery;
+    }
+
+    protected IndexTermStructure getIndex(CQLTermNode cqlTermNode) throws SRUException{
+
+        //String relation = cqlTermNode.getRelation().toCQL();
+        String indexNode = cqlTermNode.getIndex();
+        String term = cqlTermNode.getTerm();
+        String relation = cqlTermNode.getRelation().toCQL();
+
+        IndexTermStructure iTS = null;
+
+        if (indexNode.equalsIgnoreCase("cql.serverChoice") && exactPhrase.matcher(term).find()) {
+            /* example for exact
+            term: "dc.creator exact eins zwei"
+            relation: =
+            index: cql.serverChoice
+             */
+
+            String[] indexTerm  = term.split("exact");
+            if (indexTerm.length != 2) {
+                throw new SRUException("wrong format of expected cqlNode",indexNode);
+
+            }
+
+
+            String indexExactPhrase = indexTerm[0].trim();
+            String termExactPhrase = indexTerm[1].trim();
+
+            if (! this.searchMapping.containsKey(indexExactPhrase)) {
+                throw new SRUException("index: " + indexExactPhrase + " not supported","index: " + indexExactPhrase + " not supported");
+            }
+
+
+            iTS = new IndexTermStructure(indexExactPhrase,termExactPhrase,"exact");
+
+
+
+        } else {
+
+            if (! this.searchMapping.containsKey(indexNode)) {
+                throw new SRUException("index: " + indexNode + " not supported","index: " + indexNode + " not supported");
+            }
+            iTS = new IndexTermStructure(indexNode,term,relation);
+
+        }
+
+        return iTS;
+
+
     }
 
 }

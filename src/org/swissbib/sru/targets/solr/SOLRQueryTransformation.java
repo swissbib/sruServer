@@ -148,18 +148,12 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
         }
         else if(node instanceof CQLTermNode) {
             CQLTermNode ctn=(CQLTermNode)node;
-            String index=ctn.getIndex();
+            IndexTermStructure iTS = this.getIndex(ctn);
 
-            //bei exact: term: "dc.anywhere exact hello world" und index ist cql.serverChoice
-            //hier muss ich also etwas herausfischen
 
-            if (! this.searchMapping.containsKey(index)) {
-                throw new SRUException("index: " + index + " not supported","index: " + index + " not supported");
-            }
+            ArrayList <String> searchFields = this.searchMapping.get(iTS.index);
 
-            ArrayList <String> searchFields = this.searchMapping.get(index);
-
-            EdismaxSolrQueryClause edismaxClause = new EdismaxSolrQueryClause(ctn,searchFields);
+            EdismaxSolrQueryClause edismaxClause = new EdismaxSolrQueryClause(iTS.index,iTS.relation,iTS.term,searchFields);
 
             sb.append(edismaxClause.getQueryClause());
         }

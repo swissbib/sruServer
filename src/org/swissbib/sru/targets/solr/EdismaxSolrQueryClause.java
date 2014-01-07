@@ -39,13 +39,13 @@ public class EdismaxSolrQueryClause extends BasicSolrQuery {
     protected ArrayList<String> queryFields;
 
 
-    public EdismaxSolrQueryClause(CQLTermNode cqlTermNode ) {
-        super(cqlTermNode);
+    public EdismaxSolrQueryClause(String cqlIndexName, String cqlRelation, String cqlTerm ) {
+        super(cqlIndexName,cqlRelation,cqlTerm);
     }
 
 
-    public EdismaxSolrQueryClause(CQLTermNode cqlTermNode,  ArrayList<String> queryFields) {
-        super(cqlTermNode);
+    public EdismaxSolrQueryClause(String cqlIndexName, String cqlRelation, String cqlTerm,  ArrayList<String> queryFields) {
+        super(cqlIndexName,cqlRelation,cqlTerm);
 
         this.queryFields = queryFields;
 
