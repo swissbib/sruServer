@@ -13,6 +13,7 @@ import org.restlet.resource.ClientResource;
 import org.restlet.resource.Get;
 import org.swissbib.sru.targets.common.SRUBasicRepresentation;
 import org.swissbib.sru.targets.common.SRUException;
+import org.swissbib.sru.targets.common.UtilsCQLRelationsIndexMapping;
 import org.swissbib.sru.targets.solr.SolrStringRepresentation;
 
 import org.swissbib.sru.targets.solr.SOLRQueryTransformation;
@@ -90,7 +91,9 @@ public class SearchRetrieveSolr extends SearchRetrieveBasic {
 
                 HashMap<String,ArrayList<String>> searchMapping = (HashMap<String,ArrayList<String>>)    attributes.get("searchMapping");
 
-                sQ.init(queryParams,solrServer, searchMapping);
+                UtilsCQLRelationsIndexMapping rM = (UtilsCQLRelationsIndexMapping) attributes.get("cqlRelationsMapping");
+
+                sQ.init(queryParams,solrServer, searchMapping,rM);
                 QueryResponse qR = sQ.runQuery();
 
 

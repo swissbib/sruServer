@@ -63,6 +63,7 @@ public abstract class BasicQueryTransformation implements CQLQueryTransformation
     protected Form inputParams = null;
     protected HashMap<String,ArrayList<String>> searchMapping = null;
     protected String cqlQuery = "";
+    protected UtilsCQLRelationsIndexMapping allowedRelationIndexMapping;
 
 
     private Pattern exactPhrase = Pattern.compile(" exact ",Pattern.CASE_INSENSITIVE);
@@ -72,11 +73,14 @@ public abstract class BasicQueryTransformation implements CQLQueryTransformation
 
 
     @Override
-    public void init(Form inputParams, HttpSolrServer solrServer, HashMap<String,ArrayList<String>> searchMapping) throws Exception {
+    public void init(Form inputParams, HttpSolrServer solrServer, HashMap<String,ArrayList<String>> searchMapping,
+                     UtilsCQLRelationsIndexMapping rM) throws Exception {
 
         //nur wenn icht null und length ==  0
         //setze dies in abgeleiteter Klasse für leeren String
         this.cqlQuery = inputParams.getFirstValue("query").trim();
+
+        this.allowedRelationIndexMapping = rM;
 
 
         if (this.cqlQuery.equals("")) {

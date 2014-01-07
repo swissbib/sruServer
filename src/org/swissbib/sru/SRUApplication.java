@@ -9,6 +9,7 @@ import org.swissbib.sru.resources.SRUDiagnoseForm;
 import org.swissbib.sru.resources.SRUDiagnoseJS;
 import org.swissbib.sru.resources.SRUFileResources;
 import org.swissbib.sru.resources.SearchRetrieveSolr;
+import org.swissbib.sru.targets.common.UtilsCQLRelationsIndexMapping;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
@@ -85,6 +86,7 @@ public class SRUApplication extends Application {
         String diagnoseDir =  System.getProperty("diagnoseDir","file:///home/swissbib/environment/code/sruWebAppRestLet/src/org/swissbib/sru/resources/diagnose/");
         String configuredSOLRServer =  System.getProperty("solrServer","http://search.swissbib.ch/solr/sb-biblio");
         String mappingFieldsProps =  System.getProperty("mappingFieldsProps","/home/swissbib/environment/code/sruWebAppRestLet/src/org/swissbib/sru/resources/mapping/mapping.solr.properties");
+        String mappingCQLRelations =  System.getProperty("mappingCQLRelations","/home/swissbib/environment/code/sruWebAppRestLet/src/org/swissbib/sru/resources/mapping/mapping.cqlrelations.properties");
 
         String formResource =  System.getProperty("formResource","/home/swissbib/environment/code/sruWebAppRestLet/web/WEB-INF/classes/resources/diagnose/index.html");
         String jsResource =  System.getProperty("jsResource","/home/swissbib/environment/code/sruWebAppRestLet/web/WEB-INF/classes/resources/diagnose/js/srudiagnose.js");
@@ -99,6 +101,7 @@ public class SRUApplication extends Application {
         System.out.println("diagnoseDir: " + diagnoseDir);
         System.out.println("solrServer: " + configuredSOLRServer);
         System.out.println("mappingFieldsProps: " + mappingFieldsProps);
+        System.out.println("mappingCQLRelationsProps: " + mappingCQLRelations);
         System.out.println("formResource: " + formResource);
         System.out.println("jsResource: " + jsResource);
         System.out.println("sruSearchURL: " + sruSearchURL);
@@ -167,8 +170,7 @@ public class SRUApplication extends Application {
 
             }
 
-            hM.put("searchMapping",searchFieldMapping);
-            getContext().setAttributes(hM);
+            hM.put("searchMapping", searchFieldMapping);
 
         }  catch (IOException ioEx) {
 
@@ -177,6 +179,41 @@ public class SRUApplication extends Application {
             ioEx.printStackTrace();
         }
 
+
+
+        //load the mapping for allowed CQL relations for every defined index
+        try {
+
+            File configCQLRelatuonsFile = new File(mappingCQLRelations);
+
+            FileInputStream fi = new FileInputStream(configCQLRelatuonsFile);
+            Properties configProps = new Properties();
+            configProps.load(fi);
+
+            Enumeration<Object> propKeys  = configProps.keys();
+
+            UtilsCQLRelationsIndexMapping riMapping = new UtilsCQLRelationsIndexMapping();
+            while (propKeys.hasMoreElements()) {
+
+
+
+
+                String sruFieldAsKey = (String) propKeys.nextElement();
+                String mappedRelations = configProps.getProperty(sruFieldAsKey);
+
+                riMapping.addMapping(sruFieldAsKey,mappedRelations);
+            }
+
+            hM.put("cqlRelationsMapping", riMapping);
+
+        }  catch (IOException ioEx) {
+
+
+            //todo: how to handle Exceptions in Restlet createInboundRoot -> diagnose message!
+            ioEx.printStackTrace();
+        }
+
+        getContext().setAttributes(hM);
 
 
         //configure the router

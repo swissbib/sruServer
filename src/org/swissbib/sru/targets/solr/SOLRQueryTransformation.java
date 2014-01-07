@@ -153,7 +153,10 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
 
             ArrayList <String> searchFields = this.searchMapping.get(iTS.index);
 
-            EdismaxSolrQueryClause edismaxClause = new EdismaxSolrQueryClause(iTS.index,iTS.relation,iTS.term,searchFields);
+            String relationToUse = this.allowedRelationIndexMapping.isRelationAllowed(iTS.index,iTS.relation) ?
+                                iTS.relation : this.allowedRelationIndexMapping.getDefaultRelation(iTS.index);
+
+            EdismaxSolrQueryClause edismaxClause = new EdismaxSolrQueryClause(iTS.index,relationToUse,iTS.term,searchFields);
 
             sb.append(edismaxClause.getQueryClause());
         }

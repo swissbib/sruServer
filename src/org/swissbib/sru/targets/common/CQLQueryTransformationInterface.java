@@ -36,7 +36,8 @@ import java.util.HashMap;
 
 public interface CQLQueryTransformationInterface {
 
-    public void init(Form inputParams, HttpSolrServer sorlServer, HashMap<String,ArrayList<String>> searchMapping) throws Exception;
+    public void init(Form inputParams, HttpSolrServer sorlServer, HashMap<String,ArrayList<String>> searchMapping,
+                     UtilsCQLRelationsIndexMapping rM) throws Exception;
 
     public QueryResponse runQuery() throws Exception;
 

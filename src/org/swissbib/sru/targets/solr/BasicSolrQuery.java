@@ -1,5 +1,6 @@
 package org.swissbib.sru.targets.solr;
 
+import org.swissbib.sru.targets.common.UtilsCQLRelationsIndexMapping;
 import org.swissbib.sru.targets.syntaxtransformation.QueryInterface;
 import org.z3950.zing.cql.CQLTermNode;
 
@@ -41,7 +42,7 @@ abstract public class BasicSolrQuery implements QueryInterface {
     protected String cqlRelation;
     protected String cqlTerm;
 
-    public BasicSolrQuery(String cqlIndexName, String cqlRelation, String cqlTerm )  {
+    public BasicSolrQuery(String cqlIndexName, String cqlRelation, String cqlTerm)  {
 
         this.cqlTerm = cqlTerm;
         this.cqlRelation = cqlRelation;
