@@ -45,6 +45,8 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
 
     protected ArrayList<HashMap<String,String>> listOfResults = new ArrayList<HashMap<String, String>>();
 
+    protected String generalFilterQuery = null;
+
 
     //private final static SolrServer solrServer;
 
@@ -53,6 +55,10 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
     //}
 
 
+    public void setGeneralFilterQuery(String fq) {
+
+        this.generalFilterQuery = fq;
+    }
 
 
     //private final String serverURL = "http://search.swissbib.ch/solr/sb-biblio/select?";
@@ -93,6 +99,15 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
 
             parameters.set("start",startRecord);
             parameters.set("rows", inputParams.getFirstValue("maximumRecords")) ;
+
+            if (this.generalFilterQuery != null) {
+
+                //SOLR needs this df parameter on the local as well as on the general level
+                //grr - SOLR syntax...
+                parameters.set("df","title_short");
+                parameters.set("fq",this.generalFilterQuery);
+
+            }
 
 
             //seems that edismax needs a default query field

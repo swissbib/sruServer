@@ -5,10 +5,7 @@ import org.restlet.*;
 import org.restlet.data.Protocol;
 import org.restlet.resource.Directory;
 import org.restlet.routing.Router;
-import org.swissbib.sru.resources.SRUDiagnoseForm;
-import org.swissbib.sru.resources.SRUDiagnoseJS;
-import org.swissbib.sru.resources.SRUFileResources;
-import org.swissbib.sru.resources.SearchRetrieveSolr;
+import org.swissbib.sru.resources.*;
 import org.swissbib.sru.targets.common.UtilsCQLRelationsIndexMapping;
 
 import javax.xml.transform.Source;
@@ -84,7 +81,7 @@ public class SRUApplication extends Application {
         String marc2DCOCLC =  System.getProperty("marc2DublinCoreTemplateOCLC","/home/swissbib/environment/code/sruWebAppRestLet/resources/xslt/MARC21slim2OAIDC.oclc.xsl");
 
         String diagnoseDir =  System.getProperty("diagnoseDir","file:///home/swissbib/environment/code/sruWebAppRestLet/src/org/swissbib/sru/resources/diagnose/");
-        String configuredSOLRServer =  System.getProperty("solrServer","http://search.swissbib.ch/solr/sb-biblio");
+        String configuredSOLRServer =  System.getProperty("solrServer","http://search.swissbib.ch/solr/sb-biblio###defaultdb");
         String mappingFieldsProps =  System.getProperty("mappingFieldsProps","/home/swissbib/environment/code/sruWebAppRestLet/src/org/swissbib/sru/resources/mapping/mapping.solr.properties");
         String mappingCQLRelations =  System.getProperty("mappingCQLRelations","/home/swissbib/environment/code/sruWebAppRestLet/src/org/swissbib/sru/resources/mapping/mapping.cqlrelations.properties");
 
@@ -92,6 +89,7 @@ public class SRUApplication extends Application {
         String jsResource =  System.getProperty("jsResource","/home/swissbib/environment/code/sruWebAppRestLet/web/WEB-INF/classes/resources/diagnose/js/srudiagnose.js");
         String sruSearchURL =  System.getProperty("sruSearchURL","http://sb-vf7.swissbib.unibas.ch/sru/search");
         String sruExplain =  System.getProperty("sruExplain","/home/swissbib/environment/code/sruWebAppRestLet/web/WEB-INF/classes/resources/explain/explain.swissbib.default.xml");
+        String filterDBs = System.getProperty("filterDBs","institution:Z16 OR institution:A208 OR institution:A196 OR institution:B463 OR institution:B464 OR institution:B465 OR institution:B466 OR union:RE71 OR itemid_isn_mv:HSG_P* OR itemid_isn_mv:HSG_AL875* OR     itemid_isn_mv:HSG_AL304* OR itemid_isn_mv:HSG_AL414* OR itemid_isn_mv:HSG_AN701* OR itemid_isn_mv:HSG_AL220* OR itemid_isn_mv:HSG_AL221* OR itemid_isn_mv:HSG_AL222* OR itemid_isn_mv:HSG_AL304* OR itemid_    isn_mv:HSG_AL414* OR itemid_isn_mv:HSG_AN701* OR itemid_isn_mv:HSG_MB3300* OR itemid_isn_mv:HSG_MD4* OR itemid_isn_mv:HSG_ME2* OR itemid_isn_mv:HSG_ME3* OR itemid_isn_mv:HSG_ME4* OR itemid_isn_mv:HSG_ME8*     OR itemid_isn_mv:HSG_MF43* OR itemid_isn_mv:HSG_MF7050 OR itemid_isn_mv:HSG_MF8* OR itemid_isn_mv:HSG_MK16* OR itemid_isn_mv:HSG_MK17* OR itemid_isn_mv:HSG_MK38* OR itemid_isn_mv:HSG_MK7* OR itemid_isn_m    v:HSG_QD030 OR itemid_isn_mv:HSG_QD050 OR itemid_isn_mv:HSG_QP44* OR itemid_isn_mv:HSG_QP45* OR itemid_isn_mv:HSG_QP82* OR itemid_isn_mv:HSG_Jus* OR itemid_isn_mv:HSG_GHug* OR itemid_isn_mv:LUUHL_P* OR cl    assif_ddc:34* OR classif_udc:34* OR classif_udc:04* OR classif_rvk:P* OR classif_072:s1dr OR classif_072:s2dr OR classif_912:rw OR classif_912:rs OR classif_912:dr OR classif_912:/8[0-9]0/ OR classif_912:    ZB34* OR classif_912:M11* OR classif_912:M12* OR classif_912:M91 OR sublocal:340###jusdb");
 
 
 
@@ -110,8 +108,9 @@ public class SRUApplication extends Application {
         //Connection to Solr server
         HashMap<String,Object>  hM =  new HashMap<String, Object>();
 
-        HttpSolrServer  solrServer = new HttpSolrServer(configuredSOLRServer);
-        hM.put("solrServer",solrServer);
+        //HttpSolrServer  solrServer = new HttpSolrServer(configuredSOLRServer);
+        hM.put("solrServer",configureSearchServer(configuredSOLRServer));
+        hM.put("filterDBs",configureFilterDBs(filterDBs));
 
         hM.put("formResource",formResource);
         hM.put("jsResource",jsResource);
@@ -222,6 +221,11 @@ public class SRUApplication extends Application {
         router.attach("/search",
                 SearchRetrieveSolr.class);
 
+        router.attach("/search/{subdb}",
+                SearchRetrieveSolrSubDB.class);
+
+
+
         router.attach("/xslfiles/{filename}",
                 SRUFileResources.class);
 
@@ -241,5 +245,45 @@ public class SRUApplication extends Application {
 
     }
 
+    private HashMap <String,HttpSolrServer> configureSearchServer(String configurations) {
+
+
+        String[]  configuration = configurations.split("####");
+        HashMap <String,HttpSolrServer> configuredSolrServers = new HashMap<String, HttpSolrServer>();
+        for (String server: configuration) {
+
+            String[] nameAndURL = server.split("###");
+
+            configuredSolrServers.put(nameAndURL[1],new HttpSolrServer(nameAndURL[0]));
+
+
+
+        }
+
+        return configuredSolrServers;
+
+    }
+
+
+    private HashMap <String,String> configureFilterDBs(String configurations) {
+
+        HashMap<String, String> filterDBs = new HashMap<String, String>();
+
+        if (configurations != null) {
+
+            String[]  configuration = configurations.split("####");
+
+            for (String server: configuration) {
+
+                String[] nameAndFilter = server.split("###");
+
+                filterDBs.put(nameAndFilter[1],nameAndFilter[0]);
+
+            }
+
+        }
+
+        return filterDBs;
+    }
 
 }

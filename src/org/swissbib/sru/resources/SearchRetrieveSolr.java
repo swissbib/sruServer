@@ -68,10 +68,6 @@ public class SearchRetrieveSolr extends SearchRetrieveBasic {
 
             Context context =  getContext();
             ConcurrentMap<String,Object> attributes = context.getAttributes();
-            HttpSolrServer solrServer =  (HttpSolrServer) attributes.get("solrServer");
-
-
-            SOLRQueryTransformation sQ = new SOLRQueryTransformation();
 
             Form queryParams = getRequest().getResourceRef().getQueryAsForm();
 
@@ -88,6 +84,11 @@ public class SearchRetrieveSolr extends SearchRetrieveBasic {
             }else if (operation != null && operation.equalsIgnoreCase("searchRetrieve")) {
                 //if no explain operation return a search result
                 //search operation is default
+
+                HttpSolrServer solrServer =  this.getSearchServer();
+                SOLRQueryTransformation sQ = new SOLRQueryTransformation();
+
+                sQ.setGeneralFilterQuery(this.getGeneralFilterQuery());
 
                 HashMap<String,ArrayList<String>> searchMapping = (HashMap<String,ArrayList<String>>)    attributes.get("searchMapping");
 
@@ -128,5 +129,22 @@ public class SearchRetrieveSolr extends SearchRetrieveBasic {
     }
 
 
+    @SuppressWarnings("unchecked")
+    protected HttpSolrServer getSearchServer () {
+
+
+
+        Context context =  getContext();
+        ConcurrentMap<String,Object> attributes = context.getAttributes();
+        HashMap <String,HttpSolrServer>  solrServers =  (HashMap <String,HttpSolrServer> ) attributes.get("solrServer");
+
+
+        return solrServers.get("defaultdb");
+    }
+
+
+    protected String getGeneralFilterQuery () {
+        return null;
+    }
 
 }
