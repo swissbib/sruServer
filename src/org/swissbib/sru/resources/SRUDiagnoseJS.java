@@ -76,6 +76,7 @@ public class SRUDiagnoseJS extends ServerResource {
         }
 
 
+        myhash.put("basicActionValue", "http://localhost:8080/sru/search/");
         myhash.put("sruIndexes", aL);
 
         tr = new TemplateRepresentation(templateFile,

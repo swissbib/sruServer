@@ -26,9 +26,8 @@
             <a class="brand" href="#">swissbib SRU server</a>
             <div class="nav-collapse collapse">
                 <ul class="nav">
-                    <li class="active"><a href="#">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="https://github.com/swissbib/sruServer/" target="_blank" >About</a></li>
+                    <li><a href="http://www.swissbib.org" target="_blank">Contact</a></li>
                     <li class="rowadd"><a href="#plus">add search row<i class="icon-plus"></i> </a></li>
                     <li class="rowremove"><a href="#minus">remove search row<i class="icon-minus"></i> </a></li>
                     <li class="querysubmit"><a href="#querysubmit">submit query<i class="icon-minus"></i> </a></li>
@@ -222,7 +221,7 @@
                 <div  class="span3">
                     <div class="control-group">
                         <div class="controls">
-                            <label>RecordSchema</label>
+                            <label>RecordSchema <br/> (RDF is on the roadmap)</label>
                         </div>
                     </div>
                 </div>
@@ -230,12 +229,12 @@
                 <div  class="span3">
                     <div class="control-group">
                         <div class="controls">
-                            <select name="recordSchema">
+                            <select style="width: 400px;" name="recordSchema">
 
-                                <option value="info:srw/schema/1/dc-v1.1">Dublin Core - oclc</option>
+                                <option selected="selected" value="info:srw/schema/1/marcxml-v1.1-light">MARC XML - swissbib (less namespaces)</option>
                                 <option value="info:sru/schema/1/dc-v1.1-light">Dublin Core - swissbib</option>
-                                <option value="info:srw/schema/1/marcxml-v1.1">MARC XML - more namespaces</option>
-                                <option value="info:srw/schema/1/marcxml-v1.1-light">MARC XML - less namespaces</option>
+                                <option value="info:srw/schema/1/dc-v1.1">DC - (backward compatible with older OCLC based SRU server)</option>
+                                <option value="info:srw/schema/1/marcxml-v1.1">MARC-XML - (backward compatible with older OCLC based SRU server - more namespaces)</option>
 
                                 <!-- <option value="jsonnons">JSON</option> -->
                                 <!--<option value="info:srw/schema/1/dc-v1.1">Dublin Core</option>
@@ -324,7 +323,7 @@
                 <div  class="span3">
                     <div class="control-group">
                         <div class="controls">
-                            <label>Record Packaging</label>
+                            <label>Record Packaging <br/> (JSON is on the roadmap)</label>
                         </div>
                     </div>
                 </div>
@@ -345,21 +344,32 @@
 
 
         <div class="row-fluid">
-            <div  class="span3">
-                <div class="control-group">
-                    <div class="controls">
-                        <label >Sort Keys</label>
-                    </div>
-                </div>
-            </div>
 
             <div  class="span3">
                 <div class="control-group">
                     <div class="controls">
-                        <input name="sortKeys"  value="" type="text" class="input-append" placeholder="some sortkey">
+                        <label>available DBs</label>
                     </div>
                 </div>
             </div>
+
+
+            <div  class="span3">
+                <div class="control-group">
+                    <div class="controls">
+
+                        <select id="selectedSubDB" name="availableDBs">
+                            <option selected="selected" value="defaultdb">swissbib green - defaultdb  </option>
+                            <option  value="bbdb">Basel / Bern - bbdb </option>
+                            <option  value="bbdb">Basel / Bern - bbdb </option>
+                            <option  value="jusdb">content related to legal literature</option>
+                        </select>
+
+
+                    </div>
+                </div>
+            </div>
+
 
 
         </div>

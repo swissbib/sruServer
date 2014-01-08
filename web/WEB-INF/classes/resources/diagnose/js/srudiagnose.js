@@ -67,7 +67,11 @@ function collectFormValues() {
         $("form#frmSRUsend").submit();
 
     } else {
-        alert ("you have to fill in at least the value for one search field")
+
+        //alert ("you have to fill in at least the value for one search field");
+        //no nothing to do for now; if query parameter is empty the SRU server replaces it with the correct lucene syntax for all items
+        $("form#frmSRUsend").submit();
+
     }
     //alert (query);
 
@@ -76,6 +80,9 @@ function collectFormValues() {
 
 
 $(function () {
+
+
+    var basicActionValue = "$basicActionValue";
 
 /*
     $('#frmSRUcql').keydown(function(e) {
@@ -94,6 +101,12 @@ $(function () {
 */
 
 
+    var replaceActionValue = function () {
+
+        var newActionValue  =  basicActionValue +  $("#selectedSubDB").val();
+        $("#frmSRUsend").attr("action",newActionValue);
+
+    };
 
     var searchFieldNamesOptions = {
 
@@ -119,10 +132,13 @@ $(function () {
 
 
     $("ul.nav li.querysubmit a").click(function () {
+
+        replaceActionValue();
         collectFormValues();
     });
 
     $("#submitCQL").click(function () {
+        replaceActionValue();
         collectFormValues();
     });
 
