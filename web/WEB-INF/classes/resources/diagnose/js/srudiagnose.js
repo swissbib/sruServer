@@ -103,7 +103,7 @@ $(function () {
 
     var replaceActionValue = function () {
 
-        var newActionValue  =  basicActionValue +  $("#selectedSubDB").val();
+        var newActionValue  =  basicActionValue + "/" + $("#selectedSubDB").val();
         $("#frmSRUsend").attr("action",newActionValue);
 
     };
