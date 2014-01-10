@@ -46,6 +46,7 @@
         <mkdir dir="build/resources/resources/xslt"/>
         <mkdir dir="build/resources/resources/mapping"/>
         <mkdir dir="build/resources/resources/diagnose"/>
+        <mkdir dir="build/resources/resources/explain"/>
 
         <copy todir="build/lib">
 
@@ -74,6 +75,11 @@
             </fileset>
         </copy>
 
+        <copy todir="build/resources/resources/explain">
+            <fileset dir="web/WEB-INF/classes/resources/explain">
+                <include name="**/**"/>
+            </fileset>
+        </copy>
     </target>
 
     <target name="copyCreatedJar">

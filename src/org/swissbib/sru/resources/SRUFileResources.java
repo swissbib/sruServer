@@ -1,12 +1,16 @@
 package org.swissbib.sru.resources;
 
+import org.restlet.Context;
 import org.restlet.data.LocalReference;
 import org.restlet.data.MediaType;
+import org.restlet.data.Reference;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
+
+import java.util.concurrent.ConcurrentMap;
 
 
 /**
@@ -39,23 +43,16 @@ public class SRUFileResources extends ServerResource {
     @Get()
     public Representation getFiles() throws Exception {
 
-        getAttribute("filename");
+        String test = getAttribute("filename");
+        Context context =  getContext();
+        ConcurrentMap<String,Object> attributes = context.getAttributes();
+        String xsltDir = (String)   attributes.get("xsltDir");
 
-        StringRepresentation r = null;
-        try {
+        Reference ref = LocalReference.createFileReference(xsltDir + test);
+        ClientResource r = new ClientResource(ref);
+        Representation sR =  r.get();
+        return new StringRepresentation(sR.getText(),MediaType.TEXT_XML);
 
-            Representation file = new ClientResource(
-                    LocalReference.createClapReference(getClass().getPackage())
-                            + "/xslfiles/" + getAttribute("filename")).get();
-
-            r = new StringRepresentation(file.getText(),MediaType.APPLICATION_W3C_XSLT);
-
-
-        } catch (Exception ioE) {
-            ioE.printStackTrace();
-        }
-
-        return r;
 
     }
 

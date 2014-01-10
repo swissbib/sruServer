@@ -9,7 +9,7 @@
                 <ns:serverInfo protocol="sru" version="1.1">
                     <ns:host>srutest.swissbib.ch</ns:host>
                     <ns:port>80</ns:port>
-                    <ns:database>/default</ns:database>
+                    <ns:database>/defaultdb</ns:database>
                 </ns:serverInfo>
                 <ns:databaseInfo>
                     <ns:title lang="de" primary="true">Metadaten des Projekts swissbib</ns:title>
@@ -18,10 +18,9 @@
                     <ns:implementation version="1.1"/>
                 </ns:databaseInfo>
                 <ns:indexInfo>
-                    <ns:set identifier="info:srw/schema/1/dc-v1.1" name="dc-oclc"/>
-                    <ns:set identifier="info:sru/schema/1/dc-v1.1-light" name="dc-swissbib"/>
-                    <ns:set identifier="info:srw/schema/1/marcxml-v1.1" name="marc-oclc"/>
-                    <ns:set identifier="info:srw/schema/1/marcxml-v1.1-light" name="marc-swissbib"/>
+
+                    <ns:set identifier="info:srw/cql-context-set/1/dc-v1.1" name="dc"/>
+                    <ns:set identifier="info:srw/cql-context-set/1/cql-v1.1" name="cql"/>
 
                     #foreach( $index in $allIndexes )
                         <ns:index search="true" scan="false" sort="false" id="$index.id">
@@ -33,10 +32,18 @@
                     #end
             </ns:indexInfo>
                 <ns:schemaInfo>
+
+                    <ns:set identifier="info:srw/schema/1/dc-v1.1" name="dc-oclc"/>
+                    <ns:set identifier="info:sru/schema/1/dc-v1.1-light" name="dc-swissbib"/>
+                    <ns:set identifier="info:srw/schema/1/marcxml-v1.1" name="marc-oclc"/>
+                    <ns:set identifier="info:srw/schema/1/marcxml-v1.1-light" name="marc-swissbib"/>
+
+
+
                     <ns:schema retrieve="true" sort="false"
-                        identifier="http://www.d-nb.de/standards/xMetaDiss/"
+                        identifier="info:sru/schema/1/dc-v1.1-light"
                         location="http://files.dnb.de/standards/xmetadiss/xmetadiss.xsd"
-                        name="xMetaDiss">
+                        name="dc-swissbib">
                         <ns:title lang="de" primary="true">xMetaDiss fuer Hochschulschriften /
                             DNB-intern</ns:title>
                     </ns:schema>

@@ -53,8 +53,10 @@ public class SearchRetrieveBasic extends ServerResource{
         //todo: no schema: default dc
 
         String q = queryParams.getFirstValue("query");
+        String operation = queryParams.getFirstValue("operation");
 
-        if (null == q) {
+        if ((null == q && null == operation) ||
+                (null == q && !operation.equalsIgnoreCase("explain"))) {
             throw new SRUException("missing query parameter", "missing query parameter");
 
         } else {
