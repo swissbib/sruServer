@@ -33,97 +33,47 @@
             </ns:indexInfo>
                 <ns:schemaInfo>
 
-                    <ns:set identifier="info:srw/schema/1/dc-v1.1" name="dc-oclc"/>
-                    <ns:set identifier="info:sru/schema/1/dc-v1.1-light" name="dc-swissbib"/>
-                    <ns:set identifier="info:srw/schema/1/marcxml-v1.1" name="marc-oclc"/>
-                    <ns:set identifier="info:srw/schema/1/marcxml-v1.1-light" name="marc-swissbib"/>
-
-
-
                     <ns:schema retrieve="true" sort="false"
                         identifier="info:sru/schema/1/dc-v1.1-light"
-                        location="http://files.dnb.de/standards/xmetadiss/xmetadiss.xsd"
+                        location="http://srutest.swissbib.ch/xslfiles/MARC21slim2OAIDC.swissbib.xsl"
                         name="dc-swissbib">
-                        <ns:title lang="de" primary="true">xMetaDiss fuer Hochschulschriften /
-                            DNB-intern</ns:title>
+                        <ns:title lang="de" primary="true">transformation of MARC records into Dublin core</ns:title>
                     </ns:schema>
                     <ns:schema retrieve="true" sort="false"
-                        identifier="http://www.editeur.org/onix/2.1/short/ONIX_BookProduct_Release2.1_short"
-                        location="http://www.editeur.org/onix/2.1/short/ONIX_BookProduct_Release2.1_short.xsd"
-                        name="ONIX-xml">
-                        <ns:title lang="de" primary="true">Auswahl von ONIX-Elementen /
-                            DNB-intern</ns:title>
+                               identifier="info:srw/schema/1/dc-v1.1"
+                               location="http://srutest.swissbib.ch/xslfiles/xslt/MARC21slim2OAIDC.oclc.xsl"
+                               name="dc-oclc">
+                        <ns:title lang="de" primary="true">transformation of MARC records into Dublin core (namespaces are compatible to the former used OCLC style
+                            but quite chatty which makes it more expensive for developers to use it which isn't necessary)
+                        </ns:title>
                     </ns:schema>
                     <ns:schema retrieve="true" sort="false"
-                        identifier="http://www.d-nb.de/schemas/syncrepo"
-                        location="http://files.dnb.de/standards/formate/syncrepo.xsd"
-                        name="sync-repo-xml">
-                        <ns:title lang="de" primary="true">Statusinformationen fuer Repository /
-                            DNB-intern</ns:title>
+                               identifier="info:srw/schema/1/marcxml-v1.1-light"
+                               name="marc-swissbib">
+                        <ns:title lang="de" primary="true">content is provided in MARC format with as less namespaces as possible</ns:title>
                     </ns:schema>
                     <ns:schema retrieve="true" sort="false"
-                        identifier="http://www.openarchives.org/OAI/2.0/oai_dc/"
-                        location="http://www.openarchives.org/OAI/2.0/oai_dc.xsd" name="oai_dc">
-                        <ns:title lang="de" primary="true">Auswahl von Dublin-Core-Elementen /
-                            DNB-Titeldaten, ZDB-Titeldaten</ns:title>
-                    </ns:schema>
-                    <ns:schema retrieve="true" sort="false"
-                        identifier="http://www.oclcpica.org/xmlns/ppxml-1.0"
-                        location="http://files.dnb.de/standards/formate/ppxml-1.0.xsd"
-                        name="PicaPlus-xml">
-                        <ns:title lang="de" primary="true">XML-Variante von PicaPlus /
-                            Bibliotheksadressen / DNB-intern, Bibliotheksverbuende</ns:title>
-                    </ns:schema>
-                    <ns:schema retrieve="true" sort="false"
-                        identifier="http://www.ddb.de/professionell/MARC21/plus"
-                        location="http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd"
-                        name="MARC21plus-xml">
-                        <ns:title lang="de" primary="true">XML-Variante von MARC21 inkl.
-                            ausgewaehlter Inhalte von Exemplardaten / ZDB-Titeldaten</ns:title>
-                    </ns:schema>
-                    <ns:schema retrieve="true" sort="false"
-                        identifier="http://www.loc.gov/MARC21/slim"
-                        location="http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd"
-                        name="MARC21-Test-xml">
-                        <ns:title lang="de" primary="true">XML-Variante von MARC21 /
-                            DNB-intern</ns:title>
-                    </ns:schema>
-                    <ns:schema retrieve="true" sort="false"
-                        identifier="http://www.loc.gov/MARC21/slim"
-                        location="http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd"
-                        name="MARC21-xml">
-                        <ns:title lang="de" primary="true">XML-Variante von MARC21 / DNB-Titeldaten,
-                            ZDB-Titeldaten, Normdaten</ns:title>
-                    </ns:schema>
-                    <ns:schema retrieve="true" sort="false"
-                        identifier="http://www.w3.org/1999/02/22-rdf-syntax-ns"
-                        location="http://www.w3.org/2000/07/rdf.xsd" name="RDFxml">
-                        <ns:title lang="de" primary="true">PicaPlus to RDF Konversion /
-                            DNB-Titeldaten, ZDB-Titeldaten, Normdaten</ns:title>
-                    </ns:schema>
-                    <ns:schema retrieve="true" sort="false"
-                        identifier="http://www.w3.org/1999/02/22-rdf-syntax-ns"
-                        location="http://www.w3.org/2000/07/rdf.xsd" name="BibframeRDFxml">
-                        <ns:title lang="de" primary="true">PicaPlus to Bibframe-RDF Konversion /
-                            DNB-Titeldaten</ns:title>
+                               identifier="info:srw/schema/1/marcxml-v1.1"
+                               name="marc-oclc">
+                        <ns:title lang="de" primary="true">content is provided in MARC format with namespaces compatible (namespaces are compatible to the former used OCLC style
+                            but quite chatty which makes it more expensive for developers to use it which isn't necessary)</ns:title>
                     </ns:schema>
                 </ns:schemaInfo>
                 <ns:configInfo>
                     <ns:default type="numberOfRecords">10</ns:default>
-                    <ns:default type="retrieveSchema">oai_dc</ns:default>
+                    <ns:default type="retrieveSchema">info:srw/schema/1/dc-v1.1</ns:default>
                     <ns:supports type="resultsets"/>
-                    <ns:supports type="relation">>=</ns:supports>
-                    <ns:supports type="relation">encloses</ns:supports>
-                    <ns:supports type="relation">&lt;></ns:supports>
-                    <ns:supports type="relation">&lt;=</ns:supports>
+                    <ns:supports type="relation">=</ns:supports>
                     <ns:supports type="relation">exact</ns:supports>
                     <ns:supports type="relation">any</ns:supports>
-                    <ns:supports type="relation">src</ns:supports>
-                    <ns:supports type="relation">within</ns:supports>
-                    <ns:supports type="relation">></ns:supports>
-                    <ns:supports type="relation">=</ns:supports>
                     <ns:supports type="relation">all</ns:supports>
                     <ns:supports type="relation">&lt;</ns:supports>
+                    <ns:supports type="relation">&gt;</ns:supports>
+                    <ns:supports type="relation">&lt;=</ns:supports>
+                    <ns:supports type="relation">&gt;=</ns:supports>
+                    <ns:supports type="relation">&lt;&gt;</ns:supports>
+
+
                 </ns:configInfo>
             </ns:explain>
         </recordData>
