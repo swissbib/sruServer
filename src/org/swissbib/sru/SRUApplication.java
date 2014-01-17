@@ -15,6 +15,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -89,7 +90,8 @@ public class SRUApplication extends Application {
         String jsResource =  System.getProperty("jsResource","/home/swissbib/environment/code/sruWebAppRestLet/web/WEB-INF/classes/resources/diagnose/js/srudiagnose.js");
         String sruSearchURL =  System.getProperty("sruSearchURL","http://localhost:8080/sru/search");
         String sruExplain =  System.getProperty("sruExplain","/home/swissbib/environment/code/sruWebAppRestLet/web/WEB-INF/classes/resources/explain/explain.swissbib.default.xml");
-        String filterDBs = System.getProperty("filterDBs","institution:Z16 OR institution:A208 OR institution:A196 OR institution:B463 OR institution:B464 OR institution:B465 OR institution:B466 OR union:RE71 OR itemid_isn_mv:HSG_P* OR itemid_isn_mv:HSG_AL875* OR     itemid_isn_mv:HSG_AL304* OR itemid_isn_mv:HSG_AL414* OR itemid_isn_mv:HSG_AN701* OR itemid_isn_mv:HSG_AL220* OR itemid_isn_mv:HSG_AL221* OR itemid_isn_mv:HSG_AL222* OR itemid_isn_mv:HSG_AL304* OR itemid_    isn_mv:HSG_AL414* OR itemid_isn_mv:HSG_AN701* OR itemid_isn_mv:HSG_MB3300* OR itemid_isn_mv:HSG_MD4* OR itemid_isn_mv:HSG_ME2* OR itemid_isn_mv:HSG_ME3* OR itemid_isn_mv:HSG_ME4* OR itemid_isn_mv:HSG_ME8*     OR itemid_isn_mv:HSG_MF43* OR itemid_isn_mv:HSG_MF7050 OR itemid_isn_mv:HSG_MF8* OR itemid_isn_mv:HSG_MK16* OR itemid_isn_mv:HSG_MK17* OR itemid_isn_mv:HSG_MK38* OR itemid_isn_mv:HSG_MK7* OR itemid_isn_m    v:HSG_QD030 OR itemid_isn_mv:HSG_QD050 OR itemid_isn_mv:HSG_QP44* OR itemid_isn_mv:HSG_QP45* OR itemid_isn_mv:HSG_QP82* OR itemid_isn_mv:HSG_Jus* OR itemid_isn_mv:HSG_GHug* OR itemid_isn_mv:LUUHL_P* OR cl    assif_ddc:34* OR classif_udc:34* OR classif_udc:04* OR classif_rvk:P* OR classif_072:s1dr OR classif_072:s2dr OR classif_912:rw OR classif_912:rs OR classif_912:dr OR classif_912:/8[0-9]0/ OR classif_912:    ZB34* OR classif_912:M11* OR classif_912:M12* OR classif_912:M91 OR sublocal:340###jusdb");
+        //String filterDBs = System.getProperty("filterDBs","institution:Z16 OR institution:A208 OR institution:A196 OR institution:B463 OR institution:B464 OR institution:B465 OR institution:B466 OR union:RE71 OR itemid_isn_mv:HSG_P* OR itemid_isn_mv:HSG_AL875* OR     itemid_isn_mv:HSG_AL304* OR itemid_isn_mv:HSG_AL414* OR itemid_isn_mv:HSG_AN701* OR itemid_isn_mv:HSG_AL220* OR itemid_isn_mv:HSG_AL221* OR itemid_isn_mv:HSG_AL222* OR itemid_isn_mv:HSG_AL304* OR itemid_    isn_mv:HSG_AL414* OR itemid_isn_mv:HSG_AN701* OR itemid_isn_mv:HSG_MB3300* OR itemid_isn_mv:HSG_MD4* OR itemid_isn_mv:HSG_ME2* OR itemid_isn_mv:HSG_ME3* OR itemid_isn_mv:HSG_ME4* OR itemid_isn_mv:HSG_ME8*     OR itemid_isn_mv:HSG_MF43* OR itemid_isn_mv:HSG_MF7050 OR itemid_isn_mv:HSG_MF8* OR itemid_isn_mv:HSG_MK16* OR itemid_isn_mv:HSG_MK17* OR itemid_isn_mv:HSG_MK38* OR itemid_isn_mv:HSG_MK7* OR itemid_isn_m    v:HSG_QD030 OR itemid_isn_mv:HSG_QD050 OR itemid_isn_mv:HSG_QP44* OR itemid_isn_mv:HSG_QP45* OR itemid_isn_mv:HSG_QP82* OR itemid_isn_mv:HSG_Jus* OR itemid_isn_mv:HSG_GHug* OR itemid_isn_mv:LUUHL_P* OR cl    assif_ddc:34* OR classif_udc:34* OR classif_udc:04* OR classif_rvk:P* OR classif_072:s1dr OR classif_072:s2dr OR classif_912:rw OR classif_912:rs OR classif_912:dr OR classif_912:/8[0-9]0/ OR classif_912:    ZB34* OR classif_912:M11* OR classif_912:M12* OR classif_912:M91 OR sublocal:340###jusdb");
+        String filterDBs = System.getProperty("filterDBs","/home/swissbib/environment/code/sruWebAppRestLet/web/WEB-INF/classes/resources/mapping/mapping.views.properties");
 
         String xsltDir =  System.getProperty("xsltDir","/home/swissbib/environment/code/sruWebAppRestLet/web/WEB-INF/classes/resources/xslt/");
 
@@ -263,8 +265,36 @@ public class SRUApplication extends Application {
     }
 
 
-    private HashMap <String,String> configureFilterDBs(String configurations) {
+    private HashMap <String,String> configureFilterDBs(String mappingViews) {
 
+        HashMap<String, String> filterDBs = new HashMap<String, String>();
+
+        try {
+
+        File configCQLRelatuonsFile = new File(mappingViews);
+
+        FileInputStream fi = new FileInputStream(configCQLRelatuonsFile);
+        Properties configProps = new Properties();
+        configProps.load(fi);
+
+        Enumeration<Object> propKeys  = configProps.keys();
+
+        while (propKeys.hasMoreElements()) {
+
+            String viewName = (String) propKeys.nextElement();
+            String viewFilter = configProps.getProperty(viewName);
+
+            filterDBs.put(viewName,viewFilter);
+        }
+
+
+        } catch (FileNotFoundException fnFEx) {
+            fnFEx.printStackTrace();
+        } catch (IOException ioExc) {
+            ioExc.printStackTrace();
+        }
+
+        /*
         HashMap<String, String> filterDBs = new HashMap<String, String>();
 
         if (configurations != null) {
@@ -280,6 +310,7 @@ public class SRUApplication extends Application {
             }
 
         }
+        */
 
         return filterDBs;
     }
