@@ -84,21 +84,6 @@ $(function () {
 
     var basicActionValue = "$basicActionValue";
 
-/*
-    $('#frmSRUcql').keydown(function(e) {
-        if (e.keyCode == 13) {
-            $('.querysubmit').click();
-        }
-    });
-
-
-    $('#frmSRUsend').keydown(function(e) {
-        if (e.keyCode == 13) {
-            $('.querysubmit').click();;
-        }
-    });
-
-*/
 
 
     var replaceActionValue = function () {
@@ -141,6 +126,21 @@ $(function () {
         replaceActionValue();
         collectFormValues();
     });
+
+
+    $("#explainSelector").change(function () {
+
+        var basicActionValue = "$basicActionValue";
+
+        var explainResource = basicActionValue + "/{database}?operation=explain";
+
+        explainResource =  explainResource.replace("{database}",$(this).val());
+        window.open(explainResource, "explain operation");
+
+
+
+    });
+
 
 
     $("ul.nav li.rowadd a").click(function () {
