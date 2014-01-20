@@ -83,6 +83,7 @@ $(function () {
 
 
     var basicActionValue = "$basicActionValue";
+    var basicActionExplainValue = "$basicActionExplainValue";
 
 
 
@@ -130,9 +131,9 @@ $(function () {
 
     $("#explainSelector").change(function () {
 
-        var basicActionValue = "$basicActionValue";
+        var basicActionExplainValue = "$basicActionExplainValue";
 
-        var explainResource = basicActionValue + "/{database}?operation=explain";
+        var explainResource = basicActionExplainValue + "/{database}?operation=explain";
 
         explainResource =  explainResource.replace("{database}",$(this).val());
         window.open(explainResource, "explain operation");

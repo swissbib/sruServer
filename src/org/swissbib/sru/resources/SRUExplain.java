@@ -1,6 +1,7 @@
 package org.swissbib.sru.resources;
 
 import org.restlet.Context;
+import org.restlet.data.Form;
 import org.restlet.data.LocalReference;
 import org.restlet.data.MediaType;
 import org.restlet.data.Reference;
@@ -9,6 +10,7 @@ import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
+import org.swissbib.sru.targets.common.SRUException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,13 +52,13 @@ import java.util.concurrent.ConcurrentMap;
 
 public class SRUExplain extends ServerResource {
 
-    private Context context;
+    //private Context context;
 
-    public SRUExplain(Context context) {
+    //public SRUExplain(Context context) {
 
-        this.context = context;
+    //    this.context = context;
 
-    }
+    //}
 
 
 
@@ -64,47 +66,74 @@ public class SRUExplain extends ServerResource {
     @SuppressWarnings("unchecked")
     public Representation getSRUExplanation() throws Exception {
 
-        //Beipiel für den Zugriff auf explain operation DNB
-        //wget -Otest.xml 'http://services.dnb.de/sru/authorities?version=1.1&operation=searchRetrieve&query=WOE%3Dsozialistenkongress%20and%20COD%3Ds&recordSchema=RDFxml'
-        //nur auf sb-coai1 und sb-coai2
+        Representation tr  = null;
 
 
-        TemplateRepresentation tr  = null;
+        try {
 
-        ConcurrentMap<String,Object> attributes = this.context.getAttributes();
-        String sruExplain = (String)   attributes.get("sruExplain");
+            Context context =  getContext();
 
-        Reference ref = LocalReference.createFileReference(sruExplain);
-        ClientResource r = new ClientResource(ref);
-        Representation templateFile = r.get();
+            Form queryParams = getRequest().getResourceRef().getQueryAsForm();
 
-        HashMap<String, Object> myhash = new HashMap<String,Object>();
+            String operation = queryParams.getFirstValue("operation");
 
-        ArrayList<String> aL = new ArrayList<String>();
+            if (operation != null &&  operation.equalsIgnoreCase("explain")) {
 
-        HashMap<String,ArrayList<String>> searchMapping = (HashMap<String,ArrayList<String>>)    attributes.get("searchMapping");
-        //HashMap<String,HashMap<String,String>> searchMapping = (HashMap<String,ArrayList<String>>)    attributes.get("searchMapping");
+                //Beipiel für den Zugriff auf explain operation DNB
+                //wget -Otest.xml 'http://services.dnb.de/sru/authorities?version=1.1&operation=searchRetrieve&query=WOE%3Dsozialistenkongress%20and%20COD%3Ds&recordSchema=RDFxml'
+                //nur auf sb-coai1 und sb-coai2
 
-        //ArrayList<IndexDescription>  indexDescriptions = new ArrayList<IndexDescription>();
-        ArrayList<HashMap<String,String>>  indexDescriptions = new ArrayList<HashMap<String, String>>();
-        for ( String key :  searchMapping.keySet()) {
-            ArrayList keyValues = searchMapping.get(key);
-            String keyValuesS = keyValues.toString();
+                //todo: different explain responses for special subDBs - if no subdb one defaultdb
+                //perhaps sub type similar to search
+                final String subdb = getAttribute("subdb");
 
-            HashMap<String,String> hm = new HashMap<String, String>();
-            hm.put("id", key);
-            hm.put("fields", keyValuesS);
-            //Zugriff auf Objektproperties in Velocity???
-            //IndexDescription id = new IndexDescription(key , keyValuesS);
 
-            indexDescriptions.add(hm);
+                ConcurrentMap<String,Object> attributes = context.getAttributes();
+                String sruExplain = (String)   attributes.get("sruExplain");
 
+                Reference ref = LocalReference.createFileReference(sruExplain);
+                ClientResource r = new ClientResource(ref);
+                Representation templateFile = r.get();
+
+                HashMap<String, Object> myhash = new HashMap<String,Object>();
+
+                ArrayList<String> aL = new ArrayList<String>();
+
+                HashMap<String,ArrayList<String>> searchMapping = (HashMap<String,ArrayList<String>>)    attributes.get("searchMapping");
+                //HashMap<String,HashMap<String,String>> searchMapping = (HashMap<String,ArrayList<String>>)    attributes.get("searchMapping");
+
+                //ArrayList<IndexDescription>  indexDescriptions = new ArrayList<IndexDescription>();
+                ArrayList<HashMap<String,String>>  indexDescriptions = new ArrayList<HashMap<String, String>>();
+                for ( String key :  searchMapping.keySet()) {
+                    ArrayList keyValues = searchMapping.get(key);
+                    String keyValuesS = keyValues.toString();
+
+                    HashMap<String,String> hm = new HashMap<String, String>();
+                    hm.put("id", key);
+                    hm.put("fields", keyValuesS);
+                    //Zugriff auf Objektproperties in Velocity???
+                    //IndexDescription id = new IndexDescription(key , keyValuesS);
+
+                    indexDescriptions.add(hm);
+
+                }
+
+                myhash.put("allIndexes", indexDescriptions);
+
+                tr = new TemplateRepresentation(templateFile,
+                        myhash, MediaType.TEXT_XML);
+
+            } else {
+                throw new SRUException("used operation: " + (operation != null ? operation: ""), "wrong or missing operation");
+            }
+        } catch (SRUException sruException) {
+            tr = sruException.getRepresentation();
+        } catch (Exception ex) {
+            SRUException sruex = new SRUException(null, null, ex);
+            sruex.setUseExceptionMessage(true);
+            tr = sruex.getRepresentation();
         }
 
-        myhash.put("allIndexes", indexDescriptions);
-
-        tr = new TemplateRepresentation(templateFile,
-                myhash, MediaType.TEXT_XML);
 
         return tr;
     }

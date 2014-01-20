@@ -76,8 +76,10 @@ public class SRUDiagnoseJS extends ServerResource {
         }
 
         String sruSearchURL = (String)   attributes.get("sruSearchURL");
+        String sruExplainURL = (String)   attributes.get("sruExplainURL");
 
         myhash.put("basicActionValue", sruSearchURL);
+        myhash.put("basicActionExplainValue", sruExplainURL);
         myhash.put("sruIndexes", aL);
 
         tr = new TemplateRepresentation(templateFile,

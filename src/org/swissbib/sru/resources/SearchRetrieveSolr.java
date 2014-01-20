@@ -73,15 +73,7 @@ public class SearchRetrieveSolr extends SearchRetrieveBasic {
 
             String operation = queryParams.getFirstValue("operation");
 
-            if (operation != null && operation.equalsIgnoreCase("explain")) {
-
-                rep = new SRUExplain(context).getSRUExplanation();
-
-                //in case users want to see the explanation of the SRU service
-                //return the appropriate information
-
-
-            }else if (operation != null && operation.equalsIgnoreCase("searchRetrieve")) {
+            if (operation != null && operation.equalsIgnoreCase("searchRetrieve")) {
                 //if no explain operation return a search result
                 //search operation is default
 
