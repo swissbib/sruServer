@@ -80,6 +80,10 @@ public abstract class BasicQueryTransformation implements CQLQueryTransformation
         //setze dies in abgeleiteter Klasse für leeren String
         this.cqlQuery = inputParams.getFirstValue("query").trim();
 
+        //this.cqlQuery = this.cqlQuery.replaceAll("\"","\\\\\"");
+        //" causes errors in CQL parser -> perhaps I have to find a way to change terms with phrases into exact relation
+        this.cqlQuery = this.cqlQuery.replaceAll("\"","");
+
         this.allowedRelationIndexMapping = rM;
 
 

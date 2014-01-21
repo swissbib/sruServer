@@ -95,10 +95,19 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
             }
 
             //for backward compatibility - was 1 in the former version
-            startRecord = startRecord == 1 ? 0 : startRecord;
+
+            String rows = inputParams.getFirstValue("maximumRecords");
+            int maxRows = 10;
+            try {
+                maxRows =  rows != null && rows.length() > 0 ? Integer.parseInt(rows) : 0;
+            } catch (Exception ex)  {
+
+                System.out.println("invalid rows parameter -> use 10 as default");
+            }
+
 
             parameters.set("start",startRecord);
-            parameters.set("rows", inputParams.getFirstValue("maximumRecords")) ;
+            parameters.set("rows", maxRows) ;
 
             if (this.generalFilterQuery != null) {
 
