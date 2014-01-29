@@ -2,8 +2,6 @@ package org.swissbib.sru.targets.solr;
 
 
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.impl.BinaryRequestWriter;
-import org.apache.solr.client.solrj.impl.BinaryResponseParser;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
 import org.swissbib.sru.targets.common.BasicQueryTransformation;
@@ -11,7 +9,6 @@ import org.swissbib.sru.targets.common.SRUException;
 import org.z3950.zing.cql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.StringTokenizer;
 
 /**
  * [...description of the type ...]
@@ -88,7 +85,8 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
             int startRecord = 0;
 
             try {
-                 startRecord =  sR != null && sR.length() > 0 ? Integer.parseInt(sR) : 0;
+                startRecord =  sR != null && sR.length() > 0 ? Integer.parseInt(sR) : 0;
+                startRecord = startRecord == 1 ? 0 : startRecord;
             } catch (Exception ex)  {
 
                 System.out.println("invalid start parameter -> use 0 as default");
@@ -123,8 +121,8 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
             //todo: have a closer look into the pre condition
             //parameters.set("df","title_short") ; //should be a default field if no one is defined in the configuration of the server
 
-            this.searchServer.setParser(new BinaryResponseParser());
-            this.searchServer.setRequestWriter(new BinaryRequestWriter());
+            //this.searchServer.setParser(new BinaryResponseParser());
+            //this.searchServer.setRequestWriter(new BinaryRequestWriter());
 
             response = this.searchServer.query(parameters);
 

@@ -1,5 +1,7 @@
 package org.swissbib.sru;
 
+import org.apache.solr.client.solrj.impl.BinaryRequestWriter;
+import org.apache.solr.client.solrj.impl.BinaryResponseParser;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.restlet.*;
 import org.restlet.data.Protocol;
@@ -266,7 +268,13 @@ public class SRUApplication extends Application {
 
             String[] nameAndURL = server.split("###");
 
-            configuredSolrServers.put(nameAndURL[1],new HttpSolrServer(nameAndURL[0]));
+            HttpSolrServer searchServer =  new HttpSolrServer(nameAndURL[0]);
+
+            searchServer.setParser(new BinaryResponseParser());
+            searchServer.setRequestWriter(new BinaryRequestWriter());
+
+
+            configuredSolrServers.put(nameAndURL[1],searchServer);
 
 
 
