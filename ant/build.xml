@@ -10,15 +10,15 @@
         <fileset dir="/home/swissbib/environment/develop.deploy/globalcomponents/solrj">
             <include name="*.jar"/>
         </fileset>
-        <fileset dir="/home/swissbib/Downloads/restlet/ee/restlet-jee-2.1.6/lib">
+        <fileset dir="/home/swissbib/environment/develop.deploy/globalcomponents/restlet">
             <include name="org.restlet.jar"/>
             <include name="org.restlet.ext.servlet.jar" />
             <include name="org.restlet.ext.velocity.jar" />
         </fileset>
-        <fileset dir="/opt/swissbib/tools/java.tools/sru-cql">
+        <fileset dir="/home/swissbib/environment/develop.deploy/globalcomponents/restlet">
             <include name="cql-java-1.11.jar"/>
         </fileset>
-        <fileset dir="/opt/swissbib/tools/java.tools/velocity">
+        <fileset dir="/home/swissbib/environment/develop.deploy/globalcomponents/restlet">
             <include name="velocity-1.7.jar"/>
             <include name="velocity-1.7-dep.jar"/>
         </fileset>
@@ -43,10 +43,10 @@
         <mkdir dir="build/classes"/>
         <mkdir dir="build/lib"/>
         <mkdir dir="build/war"/>
-        <mkdir dir="build/resources/resources/xslt"/>
-        <mkdir dir="build/resources/resources/mapping"/>
-        <mkdir dir="build/resources/resources/diagnose"/>
-        <mkdir dir="build/resources/resources/explain"/>
+        <mkdir dir="build/resources/xslt"/>
+        <mkdir dir="build/resources/mapping"/>
+        <mkdir dir="build/resources/diagnose"/>
+        <mkdir dir="build/resources/explain"/>
 
         <copy todir="build/lib">
 
@@ -54,7 +54,7 @@
 
         </copy>
 
-        <copy todir="build/resources/resources/xslt">
+        <copy todir="build/resources/xslt">
             <fileset dir="web/WEB-INF/classes/resources/xslt">
                 <include name="MARC21slim2OAIDC.oclc.xsl"/>
                 <include name="MARC21slim2OAIDC.swissbib.xsl"/>
@@ -62,19 +62,19 @@
             </fileset>
         </copy>
 
-        <copy todir="build/resources/resources/mapping">
+        <copy todir="build/resources/mapping">
             <fileset dir="web/WEB-INF/classes/resources/mapping">
                 <include name="**/**"/>
             </fileset>
         </copy>
 
-        <copy todir="build/resources/resources/diagnose">
+        <copy todir="build/resources/diagnose">
             <fileset dir="web/WEB-INF/classes/resources/diagnose">
                 <include name="**/**"/>
             </fileset>
         </copy>
 
-        <copy todir="build/resources/resources/explain">
+        <copy todir="build/resources/explain">
             <fileset dir="web/WEB-INF/classes/resources/explain">
                 <include name="**/**"/>
             </fileset>

@@ -80,23 +80,25 @@ public class SRUApplication extends Application {
 
 
         //get the properties for resources
-        String marc2DC =  System.getProperty("marc2DublinCoreTemplate","/home/swissbib/environment/code/sruWebAppRestLet/resources/xslt/MARC21slim2OAIDC.swissbib.xsl");
-        String marc2DCOCLC =  System.getProperty("marc2DublinCoreTemplateOCLC","/home/swissbib/environment/code/sruWebAppRestLet/resources/xslt/MARC21slim2OAIDC.oclc.xsl");
+        String marc2DC =  System.getProperty("marc2DublinCoreTemplate","/home/swissbib/environment/code/sruWebAppRestLet/build/resources/xslt/MARC21slim2OAIDC.swissbib.xsl");
+        String marc2DCOCLC =  System.getProperty("marc2DublinCoreTemplateOCLC","/home/swissbib/environment/code/sruWebAppRestLet/build/resources/xslt/MARC21slim2OAIDC.oclc.xsl");
 
-        String diagnoseDir =  System.getProperty("diagnoseDir","file:///home/swissbib/environment/code/sruWebAppRestLet/src/org/swissbib/sru/resources/diagnose/");
-        String configuredSOLRServer =  System.getProperty("solrServer","http://search.swissbib.ch/solr/sb-biblio###defaultdb");
-        String mappingFieldsProps =  System.getProperty("mappingFieldsProps","/home/swissbib/environment/code/sruWebAppRestLet/src/org/swissbib/sru/resources/mapping/mapping.solr.properties");
-        String mappingCQLRelations =  System.getProperty("mappingCQLRelations","/home/swissbib/environment/code/sruWebAppRestLet/src/org/swissbib/sru/resources/mapping/mapping.cqlrelations.properties");
+        String diagnoseDir =  System.getProperty("diagnoseDir","file:///home/swissbib/environment/code/sruWebAppRestLet/build/resources/diagnose");
+        //String configuredSOLRServer =  System.getProperty("solrServer","http://search.swissbib.ch/solr/sb-biblio###defaultdb");
+        String configuredSOLRServer =  System.getProperty("solrServer","http://sb-s7.swissbib.unibas.ch:8080/solr/sb-biblio###defaultdb");
+        String mappingFieldsProps =  System.getProperty("mappingFieldsProps","/home/swissbib/environment/code/sruWebAppRestLet/build/resources/mapping/mapping.solr.properties");
+        String mappingCQLRelations =  System.getProperty("mappingCQLRelations","/home/swissbib/environment/code/sruWebAppRestLet/build/resources/mapping/mapping.cqlrelations.properties");
 
-        String formResource =  System.getProperty("formResource","/home/swissbib/environment/code/sruWebAppRestLet/web/WEB-INF/classes/resources/diagnose/index.html");
-        String jsResource =  System.getProperty("jsResource","/home/swissbib/environment/code/sruWebAppRestLet/web/WEB-INF/classes/resources/diagnose/js/srudiagnose.js");
+        String formResource =  System.getProperty("formResource","/home/swissbib/environment/code/sruWebAppRestLet/build/resources/diagnose/index.html");
+        String jsResource =  System.getProperty("jsResource","/home/swissbib/environment/code/sruWebAppRestLet/build/resources/diagnose/js/srudiagnose.js");
         String sruSearchURL =  System.getProperty("sruSearchURL","http://localhost:8080/sru/search");
         String sruExplainURL =  System.getProperty("sruExplainURL","http://localhost:8080/sru/explain");
-        String sruExplain =  System.getProperty("sruExplain","/home/swissbib/environment/code/sruWebAppRestLet/web/WEB-INF/classes/resources/explain/explain.swissbib.default.xml");
+        String sruExplain =  System.getProperty("sruExplain","/home/swissbib/environment/code/sruWebAppRestLet/build/resources/explain/explain.swissbib.default.xml");
         //String filterDBs = System.getProperty("filterDBs","institution:Z16 OR institution:A208 OR institution:A196 OR institution:B463 OR institution:B464 OR institution:B465 OR institution:B466 OR union:RE71 OR itemid_isn_mv:HSG_P* OR itemid_isn_mv:HSG_AL875* OR     itemid_isn_mv:HSG_AL304* OR itemid_isn_mv:HSG_AL414* OR itemid_isn_mv:HSG_AN701* OR itemid_isn_mv:HSG_AL220* OR itemid_isn_mv:HSG_AL221* OR itemid_isn_mv:HSG_AL222* OR itemid_isn_mv:HSG_AL304* OR itemid_    isn_mv:HSG_AL414* OR itemid_isn_mv:HSG_AN701* OR itemid_isn_mv:HSG_MB3300* OR itemid_isn_mv:HSG_MD4* OR itemid_isn_mv:HSG_ME2* OR itemid_isn_mv:HSG_ME3* OR itemid_isn_mv:HSG_ME4* OR itemid_isn_mv:HSG_ME8*     OR itemid_isn_mv:HSG_MF43* OR itemid_isn_mv:HSG_MF7050 OR itemid_isn_mv:HSG_MF8* OR itemid_isn_mv:HSG_MK16* OR itemid_isn_mv:HSG_MK17* OR itemid_isn_mv:HSG_MK38* OR itemid_isn_mv:HSG_MK7* OR itemid_isn_m    v:HSG_QD030 OR itemid_isn_mv:HSG_QD050 OR itemid_isn_mv:HSG_QP44* OR itemid_isn_mv:HSG_QP45* OR itemid_isn_mv:HSG_QP82* OR itemid_isn_mv:HSG_Jus* OR itemid_isn_mv:HSG_GHug* OR itemid_isn_mv:LUUHL_P* OR cl    assif_ddc:34* OR classif_udc:34* OR classif_udc:04* OR classif_rvk:P* OR classif_072:s1dr OR classif_072:s2dr OR classif_912:rw OR classif_912:rs OR classif_912:dr OR classif_912:/8[0-9]0/ OR classif_912:    ZB34* OR classif_912:M11* OR classif_912:M12* OR classif_912:M91 OR sublocal:340###jusdb");
-        String filterDBs = System.getProperty("filterDBs","/home/swissbib/environment/code/sruWebAppRestLet/web/WEB-INF/classes/resources/mapping/mapping.views.properties");
+        String filterDBs = System.getProperty("filterDBs","/home/swissbib/environment/code/sruWebAppRestLet/build/resources/mapping/mapping.views.properties");
 
-        String xsltDir =  System.getProperty("xsltDir","/home/swissbib/environment/code/sruWebAppRestLet/web/WEB-INF/classes/resources/xslt/");
+        String xsltDir =  System.getProperty("xsltDir","/home/swissbib/environment/code/sruWebAppRestLet/build/resources/xslt/");
+        String lastCommit = System.getProperty("lastCommit", "https://github.com/swissbib/sruServer");
 
 
 
@@ -112,6 +114,8 @@ public class SRUApplication extends Application {
         System.out.println("sruSearchURL: " + sruSearchURL);
         System.out.println("sruExplainURL: " + sruExplainURL);
         System.out.println("sruExplain: " + sruExplain);
+        System.out.println("lastCommit: " + lastCommit);
+
 
         //Connection to Solr server
         HashMap<String,Object>  hM =  new HashMap<String, Object>();
@@ -127,6 +131,7 @@ public class SRUApplication extends Application {
         hM.put("sruExplain",sruExplain);
 
         hM.put("xsltDir",xsltDir);
+        hM.put("lastCommit", lastCommit);
 
         ConcurrentHashMap<String,Templates> templatesMap = new ConcurrentHashMap<String, Templates>();
         final TransformerFactory tF = TransformerFactory.newInstance();

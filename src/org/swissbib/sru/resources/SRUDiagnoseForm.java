@@ -63,9 +63,11 @@ public class SRUDiagnoseForm extends ServerResource {
             HashMap<String, Object> myhash = new HashMap<String,Object>();
 
             String sruSearchURL = (String)   attributes.get("sruSearchURL");
+            String lastCommit = (String) attributes.get("lastCommit");
 
 
             myhash.put("sruSearchURL", sruSearchURL);
+            myhash.put("lastCommit", lastCommit);
             tr = new TemplateRepresentation(templateFile,
                     myhash, MediaType.TEXT_HTML);
             //final String result = tr.getText();
