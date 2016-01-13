@@ -1,10 +1,6 @@
 package org.swissbib.sru.targets.solr;
 
-import org.swissbib.sru.targets.common.UtilsCQLRelationsIndexMapping;
 import org.swissbib.sru.targets.syntaxtransformation.QueryInterface;
-import org.z3950.zing.cql.CQLTermNode;
-
-import java.util.ArrayList;
 
 /**
  * [...description of the type ...]

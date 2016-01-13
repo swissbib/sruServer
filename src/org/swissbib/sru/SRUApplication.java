@@ -2,7 +2,7 @@ package org.swissbib.sru;
 
 import org.apache.solr.client.solrj.impl.BinaryRequestWriter;
 import org.apache.solr.client.solrj.impl.BinaryResponseParser;
-import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.restlet.*;
 import org.restlet.data.Protocol;
 import org.restlet.resource.Directory;
@@ -85,7 +85,8 @@ public class SRUApplication extends Application {
 
         String diagnoseDir =  System.getProperty("diagnoseDir","file:///home/swissbib/environment/code/sruWebAppRestLet/build/resources/diagnose");
         //String configuredSOLRServer =  System.getProperty("solrServer","http://search.swissbib.ch/solr/sb-biblio###defaultdb");
-        String configuredSOLRServer =  System.getProperty("solrServer","http://sb-s7.swissbib.unibas.ch:8080/solr/sb-biblio###defaultdb");
+        //String configuredSOLRServer =  System.getProperty("solrServer","http://localhost:8081/solr/sb-biblio###defaultdb");
+        String configuredSOLRServer =  System.getProperty("solrServer","http://sb-s1.swissbib.unibas.ch:8080/solr/sb-biblio###defaultdb");
         String mappingFieldsProps =  System.getProperty("mappingFieldsProps","/home/swissbib/environment/code/sruWebAppRestLet/build/resources/mapping/mapping.solr.properties");
         String mappingCQLRelations =  System.getProperty("mappingCQLRelations","/home/swissbib/environment/code/sruWebAppRestLet/build/resources/mapping/mapping.cqlrelations.properties");
 
@@ -264,24 +265,18 @@ public class SRUApplication extends Application {
 
     }
 
-    private HashMap <String,HttpSolrServer> configureSearchServer(String configurations) {
+    private HashMap <String,HttpSolrClient> configureSearchServer(String configurations) {
 
 
         String[]  configuration = configurations.split("####");
-        HashMap <String,HttpSolrServer> configuredSolrServers = new HashMap<String, HttpSolrServer>();
+        HashMap <String,HttpSolrClient> configuredSolrServers = new HashMap<String, HttpSolrClient>();
         for (String server: configuration) {
 
             String[] nameAndURL = server.split("###");
-
-            HttpSolrServer searchServer =  new HttpSolrServer(nameAndURL[0]);
-
+            HttpSolrClient searchServer =  new HttpSolrClient(nameAndURL[0]);
             searchServer.setParser(new BinaryResponseParser());
             searchServer.setRequestWriter(new BinaryRequestWriter());
-
-
             configuredSolrServers.put(nameAndURL[1],searchServer);
-
-
 
         }
 

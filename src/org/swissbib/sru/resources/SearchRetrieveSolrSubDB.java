@@ -1,18 +1,10 @@
 package org.swissbib.sru.resources;
 
-import org.apache.solr.client.solrj.impl.HttpSolrServer;
-import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.restlet.Context;
-import org.restlet.data.Form;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
-import org.swissbib.sru.targets.common.SRUBasicRepresentation;
-import org.swissbib.sru.targets.common.SRUException;
-import org.swissbib.sru.targets.common.UtilsCQLRelationsIndexMapping;
-import org.swissbib.sru.targets.solr.SOLRQueryTransformation;
-import org.swissbib.sru.targets.solr.SolrStringRepresentation;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -56,13 +48,13 @@ public class SearchRetrieveSolrSubDB extends SearchRetrieveSolr {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected HttpSolrServer getSearchServer () {
+    protected HttpSolrClient getSearchServer () {
 
         final String subdb = getAttribute("subdb");
 
         Context context =  getContext();
         ConcurrentMap<String,Object> attributes = context.getAttributes();
-        HashMap <String,HttpSolrServer>  solrServers =  (HashMap <String,HttpSolrServer> ) attributes.get("solrServer");
+        HashMap <String,HttpSolrClient>  solrServers =  (HashMap <String,HttpSolrClient> ) attributes.get("solrServer");
 
         if (null != subdb && solrServers.containsKey(subdb)) {
             return solrServers.get(subdb);

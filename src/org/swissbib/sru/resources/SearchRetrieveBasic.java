@@ -1,12 +1,9 @@
 package org.swissbib.sru.resources;
 
-import org.apache.solr.client.solrj.impl.HttpSolrServer;
-import org.restlet.Context;
 import org.restlet.data.Form;
 import org.restlet.resource.ServerResource;
 import org.swissbib.sru.targets.common.SRUException;
 
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * [...description of the type ...]

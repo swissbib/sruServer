@@ -1,6 +1,6 @@
 package org.swissbib.sru.targets.common;
 
-import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
 import org.restlet.data.Form;
@@ -59,7 +59,7 @@ public abstract class BasicQueryTransformation implements CQLQueryTransformation
      * CQLNode to be processed by target
       */
     protected CQLNode cqlNode = null;
-    protected HttpSolrServer searchServer = null;
+    protected HttpSolrClient searchServer = null;
     protected Form inputParams = null;
     protected HashMap<String,ArrayList<String>> searchMapping = null;
     protected String cqlQuery = "";
@@ -73,7 +73,7 @@ public abstract class BasicQueryTransformation implements CQLQueryTransformation
 
 
     @Override
-    public void init(Form inputParams, HttpSolrServer solrServer, HashMap<String,ArrayList<String>> searchMapping,
+    public void init(Form inputParams, HttpSolrClient solrServer, HashMap<String,ArrayList<String>> searchMapping,
                      UtilsCQLRelationsIndexMapping rM) throws Exception {
 
         //nur wenn icht null und length ==  0

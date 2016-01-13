@@ -1,15 +1,10 @@
 package org.swissbib.sru.resources;
 
-import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.restlet.Context;
 import org.restlet.data.Form;
-import org.restlet.data.LocalReference;
-import org.restlet.data.MediaType;
-import org.restlet.data.Reference;
-import org.restlet.ext.velocity.TemplateRepresentation;
 import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
 import org.restlet.resource.Get;
 import org.swissbib.sru.targets.common.SRUBasicRepresentation;
 import org.swissbib.sru.targets.common.SRUException;
@@ -77,7 +72,7 @@ public class SearchRetrieveSolr extends SearchRetrieveBasic {
                 //if no explain operation return a search result
                 //search operation is default
 
-                HttpSolrServer solrServer =  this.getSearchServer();
+                HttpSolrClient solrServer =  this.getSearchServer();
                 SOLRQueryTransformation sQ = new SOLRQueryTransformation();
 
                 sQ.setGeneralFilterQuery(this.getGeneralFilterQuery());
@@ -122,13 +117,13 @@ public class SearchRetrieveSolr extends SearchRetrieveBasic {
 
 
     @SuppressWarnings("unchecked")
-    protected HttpSolrServer getSearchServer () {
+    protected HttpSolrClient getSearchServer () {
 
 
 
         Context context =  getContext();
         ConcurrentMap<String,Object> attributes = context.getAttributes();
-        HashMap <String,HttpSolrServer>  solrServers =  (HashMap <String,HttpSolrServer> ) attributes.get("solrServer");
+        HashMap <String,HttpSolrClient>  solrServers =  (HashMap <String,HttpSolrClient> ) attributes.get("solrServer");
 
 
         return solrServers.get("defaultdb");

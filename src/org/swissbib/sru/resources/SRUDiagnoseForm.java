@@ -6,12 +6,9 @@ import org.restlet.data.MediaType;
 import org.restlet.data.Reference;
 import org.restlet.ext.velocity.TemplateRepresentation;
 import org.restlet.representation.Representation;
-import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.ClientResource;
 import org.restlet.resource.Get;
 import org.restlet.resource.ServerResource;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentMap;
 

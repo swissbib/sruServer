@@ -1,6 +1,6 @@
 package org.swissbib.sru.targets.common;
 
-import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
 import org.restlet.data.Form;
@@ -36,7 +36,7 @@ import java.util.HashMap;
 
 public interface CQLQueryTransformationInterface {
 
-    public void init(Form inputParams, HttpSolrServer sorlServer, HashMap<String,ArrayList<String>> searchMapping,
+    public void init(Form inputParams, HttpSolrClient sorlServer, HashMap<String,ArrayList<String>> searchMapping,
                      UtilsCQLRelationsIndexMapping rM) throws Exception;
 
     public QueryResponse runQuery() throws Exception;

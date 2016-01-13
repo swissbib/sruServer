@@ -20,6 +20,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+
 /**
  * [...description of the type ...]
  *
@@ -239,6 +241,7 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
 
         sB.append("</record>");
 
+
         return sB.toString();
 
 
@@ -367,6 +370,10 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
 
             sB.append("</recordData>");
             sB.append("</record>");
+
+
+
+
 
             return sB.toString();
         } catch (TransformerException tE ) {
