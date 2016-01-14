@@ -75,6 +75,8 @@ public class SearchRetrieveBasic extends ServerResource{
                 schemaType = RequestedSchema.marcswissbib;
             } else if ( recordSchema.equalsIgnoreCase("info:srw/schema/1/marcxml-v1.1")) {
                 schemaType = RequestedSchema.marcOCLC;
+            } else if (recordSchema.equalsIgnoreCase("info:sru/schema/json")) {
+                schemaType = RequestedSchema.jsonswissbib;
             } else {
                 schemaType = RequestedSchema.dcOCLC;
             }

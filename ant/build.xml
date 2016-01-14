@@ -7,20 +7,14 @@
 
 
     <path id="sruServerDependenciesClasspath">
-        <fileset dir="/home/swissbib/environment/develop.deploy/globalcomponents/solrj">
+        <fileset dir="/home/swissbib/environment/develop.deploy/globalcomponents/solrj.2016">
             <include name="*.jar"/>
         </fileset>
-        <fileset dir="/home/swissbib/environment/develop.deploy/globalcomponents/restlet">
-            <include name="org.restlet.jar"/>
-            <include name="org.restlet.ext.servlet.jar" />
-            <include name="org.restlet.ext.velocity.jar" />
+        <fileset dir="/home/swissbib/environment/develop.deploy/globalcomponents/restlet.2016">
+            <include name="*.jar"/>
         </fileset>
-        <fileset dir="/home/swissbib/environment/develop.deploy/globalcomponents/restlet">
-            <include name="cql-java-1.11.jar"/>
-        </fileset>
-        <fileset dir="/home/swissbib/environment/develop.deploy/globalcomponents/restlet">
-            <include name="velocity-1.7.jar"/>
-            <include name="velocity-1.7-dep.jar"/>
+        <fileset dir="/home/swissbib/environment/develop.deploy/globalcomponents/xml2json">
+            <include name="*.jar"/>
         </fileset>
 
 

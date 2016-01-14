@@ -3,6 +3,9 @@ package org.swissbib.sru.targets.solr;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.marc4j.MarcXmlReader;
+import org.marc4j.marc.Record;
+import org.marcjson.MarcInJSON;
 import org.restlet.Context;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
@@ -113,30 +116,9 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
 
         StringBuilder sB = new StringBuilder();
 
-        sB.append("<?xml version=\"1.0\" ?>");
-        //sB.append("<?xml-stylesheet type=\"text/xsl\" href=\"/xslfiles/searchRetrieveResponse.xsl\"?>");
-
-        //sB.append("<searchRetrieveResponse xmlns=\"http://www.loc.gov/zing/srw/\">\n");
-        if (schema == RequestedSchema.dcOCLC || schema == RequestedSchema.marcOCLC) {
-            sB.append("<searchRetrieveResponse xmlns=\"http://www.loc.gov/zing/srw\" >\n");
-        } else {
-            sB.append("<searchRetrieveResponse>\n");
-        }
-
-        sB.append("<version>1.1</version>");
-        sB.append("<numberOfRecords>");
-        sB.append(qR.getResults().getNumFound());
-        sB.append("</numberOfRecords>");
-        if (schema == RequestedSchema.dcOCLC || schema == RequestedSchema.marcOCLC) {
-            sB.append("<records xmlns:ns1=\"http://www.loc.gov/zing/srw\" >\n");
-        } else {
-            sB.append("<records>\n");
-        }
-        //sB.append("<extraRecordData>\n";
-        //sB.append("<rel:qure xmlns:rel=\"xmlns:rob=\"info:srw/extension/2/relevancy\">0.965</rel:rank>\n" +
-        //        "    </extraRecordData> ")
-
-        //sB.append("<records xmlns:ns1=\"http://www.loc.gov/zing/srw/\">");
+        sB.append(schema != RequestedSchema.jsonswissbib ?
+                this.createSRUXMLHeader(String.valueOf(qR.getResults().getNumFound())):
+                this.createSRUJsonHeader(String.valueOf(qR.getResults().getNumFound())));
 
 
         while (iterator.hasNext()) {
@@ -156,35 +138,36 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
                 case marcOCLC:
                     sB.append(createMarcNS(doc,incrementalStart,useHoldings));
                     break;
+
+                case jsonswissbib:
+                    sB.append(createJson(doc,incrementalStart,useHoldings)).append(", ");
+                    break;
+
+
                 default:
 
             }
             incrementalStart++;
 
         }
-        sB.append("</records>\n");
 
-        if (startPage + result.size() < result.getNumFound() -1) {
-            sB.append("<nextRecordPosition>").append(startPage + result.size()).append("</nextRecordPosition>\n");
-        }
+        StringBuilder temB = new StringBuilder();
+        String t = sB.toString();
+        temB.append( t.substring(0,t.length() - 2));
 
-        sB.append("<echoedSearchRetrieveRequest>\n");
-        sB.append("<version>1.1</version>\n");
-        sB.append("<query>").append("<![CDATA[").append(this.cqlQuery).append("]]>").append("</query>\n");
-        sB.append("<startRecord>").append(startPage).append("</startRecord>");
-        sB.append("<maximumRecords>").append(result.size()).append("</maximumRecords>\n");
-        sB.append("<recordPacking>").append(queryParams.getFirstValue("recordPacking")).append("</recordPacking>\n");
-        sB.append("<recordSchema>").append(schema.toString()).append("</recordSchema>\n");
-        sB.append("<resultSetTTL>0</resultSetTTL>\n");
-        sB.append("</echoedSearchRetrieveRequest>\n");
-        sB.append("<sortKeys/>\n");
 
-        sB.append("</searchRetrieveResponse>\n");
+        String nextPage = (startPage + result.size() < result.getNumFound() -1) ?
+                String.valueOf(startPage + result.size()) : null;
 
-        //System.out.println("next result");
-        //System.out.println(sB.toString());
-        return new StringRepresentation(sB.toString(),MediaType.TEXT_XML);
-        //return new StringRepresentation(sB.toString(),MediaType.TEXT_PLAIN);
+
+        temB.append(schema != RequestedSchema.jsonswissbib ?
+                this.createSRUXMLFooter(String.valueOf(String.valueOf(result.size())),nextPage):
+                this.createSRUJsonFooter(String.valueOf(String.valueOf(result.size())),nextPage));
+
+
+        MediaType mt = schema != RequestedSchema.jsonswissbib ? MediaType.TEXT_XML : MediaType.APPLICATION_JSON;
+
+        return new StringRepresentation(temB.toString(),mt);
     }
 
 
@@ -248,6 +231,77 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
 
 
     }
+
+
+    private String createJson (SolrDocument doc, long position, boolean useHoldings)  {
+
+
+        StringBuilder sB = new StringBuilder();
+
+
+        String record = (String) doc.getFieldValue("fullrecord");
+
+        if (useHoldings) {
+
+            String holdings = (String) doc.getFieldValue("holdings");
+            Matcher hM = pHoldingsPattern.matcher(holdings);
+            if (hM.find()) {
+                String allHoldings = hM.group(1);
+
+
+                Pattern p =  Pattern.compile(   "<datafield\\s*?tag=\"949\".*?</datafield>|<datafield\\s*?tag=\"852\".*?</datafield>",
+                        Pattern.CASE_INSENSITIVE |
+                                Pattern.MULTILINE |
+                                Pattern.DOTALL);
+                Matcher match = p.matcher(record);
+                if (match.find()) {
+                    record = match.replaceAll("");
+                }
+
+
+                Pattern pi = Pattern.compile("(?<=</datafield>)\\s*?(?=</record>)");
+
+                Matcher mi = pi.matcher(record);
+                record = mi.replaceFirst(allHoldings);
+
+
+            }
+
+        }
+
+
+
+        // convert String into InputStream
+        InputStream is = new ByteArrayInputStream(record.getBytes());
+
+        // read it with BufferedReader
+        //BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
+        Record rec = null;
+
+        try {
+            MarcXmlReader reader = new MarcXmlReader(is);
+            rec =  reader.hasNext() ? reader.next() : null;
+        } catch (Throwable th) {
+            th.printStackTrace();
+        }
+
+
+        if (null != rec) {
+            try {
+                sB.append(MarcInJSON.record_to_marc_in_json(rec));
+            } catch (IOException ioEx) {
+                ioEx.printStackTrace(System.out);
+            } catch (Throwable th) {
+                th.printStackTrace(System.out);
+            }
+        }
+        return sB.toString();
+
+
+    }
+
+
 
     private String replaceWrongStructure(String recordToAnalyze) {
 
@@ -426,6 +480,81 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
 
         return sB.toString();
     }
+
+    protected String createSRUXMLHeader (String numberOfHits) {
+
+        StringBuilder sB = new StringBuilder();
+
+        sB.append("<?xml version=\"1.0\" ?>");
+        if (schema == RequestedSchema.dcOCLC || schema == RequestedSchema.marcOCLC) {
+            sB.append("<searchRetrieveResponse xmlns=\"http://www.loc.gov/zing/srw\" >\n");
+        } else {
+            sB.append("<searchRetrieveResponse>\n");
+        }
+
+        sB.append("<version>1.1</version>");
+        sB.append("<numberOfRecords>");
+        sB.append(numberOfHits);
+        sB.append("</numberOfRecords>");
+        if (schema == RequestedSchema.dcOCLC || schema == RequestedSchema.marcOCLC) {
+            sB.append("<records xmlns:ns1=\"http://www.loc.gov/zing/srw\" >\n");
+        } else {
+            sB.append("<records>\n");
+        }
+
+
+        return sB.toString();
+
+    }
+
+    protected String createSRUXMLFooter (String maxRecords, String nextRecordPosition) {
+
+        StringBuilder sB = new StringBuilder();
+
+        sB.append("</records>\n");
+
+        if (null != nextRecordPosition) {
+            sB.append("<nextRecordPosition>").append(nextRecordPosition).append("</nextRecordPosition>\n");
+        }
+
+        sB.append("<echoedSearchRetrieveRequest>\n");
+        sB.append("<version>1.1</version>\n");
+        sB.append("<query>").append("<![CDATA[").append(this.cqlQuery).append("]]>").append("</query>\n");
+        sB.append("<startRecord>").append(startPage).append("</startRecord>");
+        sB.append("<maximumRecords>").append(maxRecords).append("</maximumRecords>\n");
+        sB.append("<recordPacking>").append(queryParams.getFirstValue("recordPacking")).append("</recordPacking>\n");
+        sB.append("<recordSchema>").append(schema.toString()).append("</recordSchema>\n");
+        sB.append("<resultSetTTL>0</resultSetTTL>\n");
+        sB.append("</echoedSearchRetrieveRequest>\n");
+        sB.append("<sortKeys/>\n");
+
+        sB.append("</searchRetrieveResponse>\n");
+
+
+        return sB.toString();
+
+    }
+    protected String createSRUJsonHeader (String numberOfHits) {
+
+        StringBuilder sB = new StringBuilder();
+
+        sB.append("{\"collection\" : [");
+
+        return sB.toString();
+
+    }
+
+    protected String createSRUJsonFooter (String maxRecords, String nextRecordPosition) {
+
+        StringBuilder sB = new StringBuilder();
+
+
+        sB.append("]}");
+
+        return sB.toString();
+
+    }
+
 
 
 }
