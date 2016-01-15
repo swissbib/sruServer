@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="swissbib SRU server" default="build-war" basedir="..">
 
-    <property name="author" value="Guenter Hipler" />
+
+    <property file="ant/sru.properties" />
+
     <property name="builder" value="project swissbib www.swissbib.org, UB Basel, author: ${author}" />
     <property name="web.dir" value="${basedir}/web/WEB-INF" />
 
 
     <path id="sruServerDependenciesClasspath">
-        <fileset dir="/home/swissbib/environment/develop.deploy/globalcomponents/solrj.2016">
+        <fileset dir="${solrjJars}">
             <include name="*.jar"/>
         </fileset>
-        <fileset dir="/home/swissbib/environment/develop.deploy/globalcomponents/restlet.2016">
+        <fileset dir="${restletJars}">
             <include name="*.jar"/>
         </fileset>
-        <fileset dir="/home/swissbib/environment/develop.deploy/globalcomponents/xml2json">
+        <fileset dir="${xml2jsonJars}">
             <include name="*.jar"/>
         </fileset>
 
@@ -34,21 +36,21 @@
     </target>
 
     <target name="prepare">
-        <mkdir dir="build/classes"/>
-        <mkdir dir="build/lib"/>
-        <mkdir dir="build/war"/>
-        <mkdir dir="build/resources/xslt"/>
-        <mkdir dir="build/resources/mapping"/>
-        <mkdir dir="build/resources/diagnose"/>
-        <mkdir dir="build/resources/explain"/>
+        <mkdir dir="${deploy}/build/classes"/>
+        <mkdir dir="${deploy}/build/lib"/>
+        <mkdir dir="${deploy}/build/war"/>
+        <mkdir dir="${deploy}/build/resources/xslt"/>
+        <mkdir dir="${deploy}/build/resources/mapping"/>
+        <mkdir dir="${deploy}/build/resources/diagnose"/>
+        <mkdir dir="${deploy}/build/resources/explain"/>
 
-        <copy todir="build/lib">
+        <copy todir="${deploy}/build/lib">
 
             <path refid="sruServerDependenciesClasspath"/>
 
         </copy>
 
-        <copy todir="build/resources/xslt">
+        <copy todir="${deploy}/build/resources/xslt">
             <fileset dir="web/WEB-INF/classes/resources/xslt">
                 <include name="MARC21slim2OAIDC.oclc.xsl"/>
                 <include name="MARC21slim2OAIDC.swissbib.xsl"/>
@@ -56,19 +58,19 @@
             </fileset>
         </copy>
 
-        <copy todir="build/resources/mapping">
+        <copy todir="${deploy}/build/resources/mapping">
             <fileset dir="web/WEB-INF/classes/resources/mapping">
                 <include name="**/**"/>
             </fileset>
         </copy>
 
-        <copy todir="build/resources/diagnose">
+        <copy todir="${deploy}/build/resources/diagnose">
             <fileset dir="web/WEB-INF/classes/resources/diagnose">
                 <include name="**/**"/>
             </fileset>
         </copy>
 
-        <copy todir="build/resources/explain">
+        <copy todir="${deploy}/build/resources/explain">
             <fileset dir="web/WEB-INF/classes/resources/explain">
                 <include name="**/**"/>
             </fileset>
@@ -76,7 +78,7 @@
     </target>
 
     <target name="copyCreatedJar">
-        <copy todir="build/lib">
+        <copy todir="${deploy}/build/lib">
 
             <path refid="sruServerJar"/>
 
@@ -86,9 +88,9 @@
 
 
     <target name="compile">
-        <javac
+        <javac target="${javacTarget}"
                 srcdir="src"
-                destdir="build/classes"
+                destdir="${deploy}/build/classes"
                 classpathref="sruServerDependenciesClasspath" />
     </target>
 
@@ -100,8 +102,8 @@
 
 
     <target name="jar" >
-        <mkdir dir="build/jar"/>
-        <jar destfile="build/jar/swissbibSRUserver.jar" basedir="build/classes">
+        <mkdir dir="${deploy}/build/jar"/>
+        <jar destfile="${deploy}/build/jar/swissbibSRUserver.jar" basedir="${deploy}/build/classes">
             <manifest>
                 <attribute name="Built-By" value="${builder}" />
                 <attribute name="Built-On" value="${build-info.current-date}" />
@@ -113,15 +115,15 @@
 
 
     <target name="build-war" depends="clean,prepare,compile,jar,copyCreatedJar">
-        <war destfile="build/war/sru.war" webxml="${web.dir}/web.xml">
+        <war destfile="${deploy}/build/war/sru.war" webxml="${web.dir}/web.xml">
             <manifest>
                 <attribute name="Built-By" value="${builder}" />
                 <attribute name="Built-On" value="${build-info.current-date}" />
                 <attribute name="Built-At" value="${build-info.current-time}" />
                 <attribute name="Application-Name" value="Web Application swissbib SRU server" />
             </manifest>
-            <lib dir="build/lib"/>
-            <classes dir="build/resources"/>
+            <lib dir="${deploy}/build/lib"/>
+            <classes dir="${deploy}/build/resources"/>
         </war>
     </target>
 
