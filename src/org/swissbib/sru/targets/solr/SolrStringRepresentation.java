@@ -151,23 +151,25 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
 
         }
 
-        StringBuilder temB = new StringBuilder();
-        String t = sB.toString();
-        temB.append( t.substring(0,t.length() - 2));
+        if (schema == RequestedSchema.jsonswissbib) {
+            String t = sB.toString();
+            //remove the latest comma as seperator only in case of JSON entities
+            sB = new StringBuilder(t.substring(0, t.length() - 2));
+        }
 
 
         String nextPage = (startPage + result.size() < result.getNumFound() -1) ?
                 String.valueOf(startPage + result.size()) : null;
 
 
-        temB.append(schema != RequestedSchema.jsonswissbib ?
+        sB.append(schema != RequestedSchema.jsonswissbib ?
                 this.createSRUXMLFooter(String.valueOf(String.valueOf(result.size())),nextPage):
                 this.createSRUJsonFooter(String.valueOf(String.valueOf(result.size())),nextPage));
 
 
         MediaType mt = schema != RequestedSchema.jsonswissbib ? MediaType.TEXT_XML : MediaType.APPLICATION_JSON;
 
-        return new StringRepresentation(temB.toString(),mt);
+        return new StringRepresentation(sB.toString(),mt);
     }
 
 
