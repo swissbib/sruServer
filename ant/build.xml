@@ -2,7 +2,9 @@
 <project name="swissbib SRU server" default="build-war" basedir="..">
 
 
-    <property file="ant/sru.properties" />
+
+    <property environment="env"/>
+    <property file="${env.PROPERTY_FILE_SRU}" />
 
     <property name="builder" value="project swissbib www.swissbib.org, UB Basel, author: ${author}" />
     <property name="web.dir" value="${basedir}/web/WEB-INF" />
