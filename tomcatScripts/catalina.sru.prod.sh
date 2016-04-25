@@ -185,6 +185,8 @@ if [ ! -z "$CLASSPATH" ] ; then
 fi
 CLASSPATH="$CLASSPATH""$CATALINA_HOME"/bin/bootstrap.jar
 
+CATALINA_PID="$CATALINA_HOME/bin/tomcat.pid"
+
 if [ -z "$CATALINA_OUT" ] ; then
   CATALINA_OUT="$CATALINA_BASE"/logs/catalina.out
 fi
@@ -278,7 +280,21 @@ SRU_PROP_RES=${SRU_PROP_BASE}/webapps/sru/WEB-INF/classes
 
 #CATALINA_OPTS="$CATALINA_OPTS -Dmarc2DublinCoreTemplate=${SRU_PROP_RES}/xslt/MARC21slim2OAIDC.swissbib.xsl -Dmarc2DublinCoreTemplateOCLC=${SRU_PROP_RES}/xslt/MARC21slim2OAIDC.oclc.xsl -DdiagnoseDir=file://${SRU_PROP_RES}/diagnose -DsolrServer=http://sb-s20.swissbib.unibas.ch/solr/sb_biblio###defaultdb####http://sb-s4.swissbib.unibas.ch/solr/sb_biblio###bbdb -DmappingFieldsProps=${SRU_PROP_RES}/mapping/mapping.solr.properties -DmappingCQLRelations=${SRU_PROP_RES}/mapping/mapping.cqlrelations.properties -DformResource=${SRU_PROP_RES}/diagnose/index.html -DjsResource=${SRU_PROP_RES}/diagnose/js/srudiagnose.js -DsruSearchURL=http://sru.swissbib.ch/sru/search  -DsruExplainURL=http://sru.swissbib.ch/sru/explain  -DxsltDir=${SRU_PROP_RES}/xslt/ -DsruExplain=${SRU_PROP_RES}/explain/explain.swissbib.default.xml -DfilterDBs=${SRU_PROP_RES}/mapping/mapping.views.properties -DlastCommit=https://github.com/swissbib/sruServer/commit/f245871525a0e7b8ab2611f909dbbad0545a95bd"
 
-CATALINA_OPTS="$CATALINA_OPTS -Dmarc2DublinCoreTemplate=${SRU_PROP_RES}/xslt/MARC21slim2OAIDC.swissbib.xsl -Dmarc2DublinCoreTemplateOCLC=${SRU_PROP_RES}/xslt/MARC21slim2OAIDC.oclc.xsl -DdiagnoseDir=file://${SRU_PROP_RES}/diagnose -DsolrServer=http://sb-s20.swissbib.unibas.ch/solr/sb_biblio###defaultdb####http://sb-s4.swissbib.unibas.ch/solr/sb_biblio###bbdb -DmappingFieldsProps=${SRU_PROP_RES}/mapping/mapping.solr.properties -DmappingCQLRelations=${SRU_PROP_RES}/mapping/mapping.cqlrelations.properties -DformResource=${SRU_PROP_RES}/diagnose/index.html -DjsResource=${SRU_PROP_RES}/diagnose/js/srudiagnose.js -DsruSearchURL=http://sb-s20.swissbib.unibas.ch:8080/sru/search  -DsruExplainURL=http://sb-s20.swissbib.unibas.ch./sru/explain  -DxsltDir=${SRU_PROP_RES}/xslt/ -DsruExplain=${SRU_PROP_RES}/explain/explain.swissbib.default.xml -DfilterDBs=${SRU_PROP_RES}/mapping/mapping.views.properties -DlastCommit=https://github.com/swissbib/sruServer/commit/f245871525a0e7b8ab2611f909dbbad0545a95bd"
+CATALINA_OPTS="$CATALINA_OPTS
+                -Dmarc2DublinCoreTemplate=${SRU_PROP_RES}/xslt/MARC21slim2OAIDC.swissbib.xsl
+                -Dmarc2DublinCoreTemplateOCLC=${SRU_PROP_RES}/xslt/MARC21slim2OAIDC.oclc.xsl
+                -DdiagnoseDir=file://${SRU_PROP_RES}/diagnose
+                -DsolrServer=http://sb-s20.swissbib.unibas.ch:8080/solr/sb_biblio###defaultdb####http://sb-s4.swissbib.unibas.ch:8080/solr/sb_biblio###bbdb
+                -DmappingFieldsProps=${SRU_PROP_RES}/mapping/mapping.solr.properties
+                -DmappingCQLRelations=${SRU_PROP_RES}/mapping/mapping.cqlrelations.properties
+                -DformResource=${SRU_PROP_RES}/diagnose/index.html
+                -DjsResource=${SRU_PROP_RES}/diagnose/js/srudiagnose.js
+                -DsruSearchURL=http://sb-vf21.swissbib.unibas.ch:8080/sru/search
+                -DsruExplainURL=http://sb-vf21.swissbib.unibas.ch:8080/sru/explain
+                -DxsltDir=${SRU_PROP_RES}/xslt/
+                -DsruExplain=${SRU_PROP_RES}/explain/explain.swissbib.default.xml
+                -DfilterDBs=${SRU_PROP_RES}/mapping/mapping.views.properties
+                -DlastCommit=https://github.com/swissbib/sruServer/commit/f245871525a0e7b8ab2611f909dbbad0545a95bd"
 
 
 if [ "$1" = "debug" ] ; then

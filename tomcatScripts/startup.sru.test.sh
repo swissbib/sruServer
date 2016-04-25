@@ -42,7 +42,7 @@ done
 
 PRGDIR=`dirname "$PRG"`
 #EXECUTABLE=catalina.properties.sru.sh
-EXECUTABLE=catalina.sru.sh
+EXECUTABLE=catalina.sru.test.sh
 
 # Check that target executable exists
 if $os400; then
