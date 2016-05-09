@@ -118,7 +118,7 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
 
         sB.append(schema != RequestedSchema.jsonswissbib ?
                 this.createSRUXMLHeader(String.valueOf(qR.getResults().getNumFound())):
-                this.createSRUJsonHeader(String.valueOf(qR.getResults().getNumFound())));
+                this.createSRUJsonHeader(String.valueOf(qR.getResults().getNumFound()),String.valueOf(qR.getResults().getStart())));
 
 
         while (iterator.hasNext()) {
@@ -151,7 +151,8 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
 
         }
 
-        if (schema == RequestedSchema.jsonswissbib) {
+        if (schema == RequestedSchema.jsonswissbib && qR.getResults().getNumFound() > 0 &&
+                qR.getResults().getStart() < qR.getResults().getNumFound()) {
             String t = sB.toString();
             //remove the latest comma as seperator only in case of JSON entities
             sB = new StringBuilder(t.substring(0, t.length() - 2));
@@ -536,11 +537,20 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
         return sB.toString();
 
     }
-    protected String createSRUJsonHeader (String numberOfHits) {
+    protected String createSRUJsonHeader (String numberOfHits, String startRecord) {
 
         StringBuilder sB = new StringBuilder();
 
-        sB.append("{\"collection\" : [");
+        sB.append("{").
+                append("\"numberOfRecords\" : ").
+                append("\"").
+                append(numberOfHits).
+                append("\"").append(",").
+                append("\"startRecord\" : ").
+                append("\"").
+                append(startRecord).
+                append("\"").append(",").
+                append("\"collection\" : [");
 
         return sB.toString();
 
