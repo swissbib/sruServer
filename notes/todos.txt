@@ -31,3 +31,8 @@ zur zeit am wichtigsten:
 
 
 
+maven - Umstellung
+http://maven.indexdata.com/org/z3950/zing/cql-java/
+
+
+
