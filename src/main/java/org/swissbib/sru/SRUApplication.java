@@ -1,5 +1,6 @@
 package org.swissbib.sru;
 
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.impl.BinaryRequestWriter;
 import org.apache.solr.client.solrj.impl.BinaryResponseParser;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
@@ -265,17 +266,19 @@ public class SRUApplication extends Application {
 
     }
 
-    private HashMap <String,HttpSolrClient> configureSearchServer(String configurations) {
+    private HashMap <String,SolrClient> configureSearchServer(String configurations) {
 
 
         String[]  configuration = configurations.split("####");
-        HashMap <String,HttpSolrClient> configuredSolrServers = new HashMap<String, HttpSolrClient>();
+        HashMap <String,SolrClient> configuredSolrServers = new HashMap<String, SolrClient>();
         for (String server: configuration) {
 
             String[] nameAndURL = server.split("###");
-            HttpSolrClient searchServer =  new HttpSolrClient(nameAndURL[0]);
-            searchServer.setParser(new BinaryResponseParser());
-            searchServer.setRequestWriter(new BinaryRequestWriter());
+            //use the Solr 6.x implementation
+            SolrClient searchServer = new HttpSolrClient.Builder(nameAndURL[0]).build();
+            //HttpSolrClient searchServer =  new HttpSolrClient(nameAndURL[0]);
+            //searchServer.setParser(new BinaryResponseParser());
+            //searchServer.setRequestWriter(new BinaryRequestWriter());
             configuredSolrServers.put(nameAndURL[1],searchServer);
 
         }
@@ -291,26 +294,24 @@ public class SRUApplication extends Application {
 
         try {
 
-        File configCQLRelatuonsFile = new File(mappingViews);
+            File configCQLRelatuonsFile = new File(mappingViews);
 
-        FileInputStream fi = new FileInputStream(configCQLRelatuonsFile);
-        Properties configProps = new Properties();
-        configProps.load(fi);
+            FileInputStream fi = new FileInputStream(configCQLRelatuonsFile);
+            Properties configProps = new Properties();
+            configProps.load(fi);
 
-        Enumeration<Object> propKeys  = configProps.keys();
+            Enumeration<Object> propKeys  = configProps.keys();
 
-        while (propKeys.hasMoreElements()) {
+            while (propKeys.hasMoreElements()) {
 
-            String viewName = (String) propKeys.nextElement();
-            String viewFilter = configProps.getProperty(viewName);
+                String viewName = (String) propKeys.nextElement();
+                String viewFilter = configProps.getProperty(viewName);
 
-            filterDBs.put(viewName,viewFilter);
-        }
+                filterDBs.put(viewName,viewFilter);
+            }
 
-
-        } catch (FileNotFoundException fnFEx) {
-            fnFEx.printStackTrace();
         } catch (IOException ioExc) {
+            //make something more useful
             ioExc.printStackTrace();
         }
 

@@ -1,0 +1,30 @@
+
+
+
+1) installation instruction for Linux based systems to develop locally
+2) Requirements:
+a) Java version >= 8
+b) install Maven library >= 3.3 (http://www.pirbot.com/mirrors/apache/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz)
+c) install Tomcat - server locally (http://mirror.switch.ch/mirror/apache/dist/tomcat/tomcat-8/v8.5.11/bin/apache-tomcat-8.5.11.tar.gz)
+
+3) clone swissbib SRU server from Github
+
+git clone https://github.com/swissbib/sruServer .
+git checkout sru/maven
+
+4) create webapp with maven
+mvn clean package
+
+5) copy webapp to local Tomcat
+
+3) copy start-scripts to TOMCAT_HOME/bin
+catalina.sru.local.sh
+startup.sru.local.sh
+setenv.remote
+
+4) in catalina.sru.local.sh
+change property SRU_PROP_BASE=/usr/local/vufind/tomcat.sru into TOMCAT_HOME
+
+5) start local Tomcat:
+a) cd TOMCAT_HOME/bin
+source se
