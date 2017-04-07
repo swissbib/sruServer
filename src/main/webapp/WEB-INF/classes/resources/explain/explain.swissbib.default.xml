@@ -58,6 +58,11 @@
                         <ns:title lang="de" primary="true">content is provided in MARC format with namespaces compatible (namespaces are compatible to the former used OCLC style
                             but quite chatty which makes it more expensive for developers to use it which isn't necessary)</ns:title>
                     </ns:schema>
+                    <ns:schema retrieve="true" sort="false"
+                               identifier="info:srw/schema/1/ao-isad-xml"
+                               name="ao-isad-xml">
+                        <ns:title lang="de" primary="true">Variant of the ISAD(G) archival standard used for the Archives Online metaseach<ns:title>
+                    </ns:schema>
                 </ns:schemaInfo>
                 <ns:configInfo>
                     <ns:default type="numberOfRecords">10</ns:default>

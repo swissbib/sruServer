@@ -32,7 +32,8 @@ public enum RequestedSchema {
     dcswissbib("info:sru/schema/1/dc-v1.1-light"),
     marcOCLC("info:srw/schema/1/marcxml-v1.1"),
     marcswissbib("info:sru/schema/1/marcxml-v1.1-light"),
-    jsonswissbib("info:sru/schema/json");
+    jsonswissbib("info:sru/schema/json"),
+    aoisadxml("info:sru/schema/1/aoisadxml");
 
     private final String value;
 

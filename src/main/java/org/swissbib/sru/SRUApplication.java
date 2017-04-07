@@ -83,6 +83,7 @@ public class SRUApplication extends Application {
         //get the properties for resources
         String marc2DC =  System.getProperty("marc2DublinCoreTemplate","/home/swissbib/environment/code/sruWebAppRestLet/build/resources/xslt/MARC21slim2OAIDC.swissbib.xsl");
         String marc2DCOCLC =  System.getProperty("marc2DublinCoreTemplateOCLC","/home/swissbib/environment/code/sruWebAppRestLet/build/resources/xslt/MARC21slim2OAIDC.oclc.xsl");
+        String marc2AOISADXML =  System.getProperty("marc2aoisadxml","/home/swissbib/environment/code/sruWebAppRestLet/build/resources/xslt/MARC21slim2aoisadxml.xsl");
 
         String diagnoseDir =  System.getProperty("diagnoseDir","file:///home/swissbib/environment/code/sruWebAppRestLet/build/resources/diagnose");
         //String configuredSOLRServer =  System.getProperty("solrServer","http://search.swissbib.ch/solr/sb-biblio###defaultdb");
@@ -107,6 +108,7 @@ public class SRUApplication extends Application {
 
         System.out.println("marc2DublinCoreTemplate: " + marc2DC);
         System.out.println("marc2DublinCoreTemplateOCLC: " + marc2DCOCLC);
+        System.out.println("marc2aoisadxml: " + marc2AOISADXML);
         System.out.println("diagnoseDir: " + diagnoseDir);
         System.out.println("solrServer: " + configuredSOLRServer);
         System.out.println("mappingFieldsProps: " + mappingFieldsProps);
@@ -143,6 +145,7 @@ public class SRUApplication extends Application {
         //todo: load templates resources with RESTlet means
         final Source marc2DCswissbib = new StreamSource(new File(marc2DC));
         final Source marc2DCoclc = new StreamSource(new File(marc2DCOCLC));
+        final Source marc2aoisadxml= new StreamSource(new File(marc2AOISADXML));
 
         try {
             Templates templates =  tF.newTemplates(marc2DCswissbib);
@@ -150,6 +153,9 @@ public class SRUApplication extends Application {
 
             templates =  tF.newTemplates(marc2DCoclc);
             templatesMap.put("m2DCoclc",templates);
+
+            templates =  tF.newTemplates(marc2aoisadxml);
+            templatesMap.put("m2aoisadxml",templates);
 
         } catch (TransformerConfigurationException trConfiguration) {
 

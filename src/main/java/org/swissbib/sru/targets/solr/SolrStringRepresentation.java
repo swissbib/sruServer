@@ -138,11 +138,12 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
                 case marcOCLC:
                     sB.append(createMarcNS(doc,incrementalStart,useHoldings));
                     break;
-
                 case jsonswissbib:
                     sB.append(createJson(doc,incrementalStart,useHoldings)).append(", ");
                     break;
-
+                case aoisadxml:
+                    sB.append(createaoisadxml(doc,incrementalStart));
+                    break;
 
                 default:
 
@@ -431,6 +432,47 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
 
 
 
+
+            return sB.toString();
+        } catch (TransformerException tE ) {
+            tE.printStackTrace();
+        }
+
+
+        return sB.toString();
+    }
+
+    @SuppressWarnings("unchecked")
+    private String createaoisadxml (SolrDocument doc, long position )  {
+
+
+        ConcurrentMap<String,Object> attributes = context.getAttributes();
+        Templates template =  ((ConcurrentHashMap<String,Templates>) attributes.get("templatesMap")).get("m2aoisadxml");
+        StringBuilder sB = new StringBuilder();
+
+        try {
+
+            final Transformer transformer = template.newTransformer();
+
+
+            sB.append("<record>");
+            sB.append("<recordSchema>isad</recordSchema>");
+            sB.append("<recordPacking>xml</recordPacking>");
+
+            String record = (String) doc.getFieldValue("fullrecord");
+            Source sourceRecord =  new StreamSource(new StringReader(record));
+
+            StringWriter sw = new StringWriter() ;
+            Result streamResult = new StreamResult(sw);
+
+            transformer.transform(sourceRecord,streamResult);
+
+            sB.append(sw.toString().substring(38)) ;
+            //sB.append(sw.toString()) ;
+
+            sB.append("<recordPosition>").append(position).append("</recordPosition>");
+
+            sB.append("</record>");
 
             return sB.toString();
         } catch (TransformerException tE ) {
