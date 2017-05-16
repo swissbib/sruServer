@@ -1,5 +1,6 @@
 package org.swissbib.sru.targets.solr;
 
+import org.apache.solr.client.solrj.response.AnalysisResponseBase;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -533,6 +534,8 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
         sB.append("<?xml version=\"1.0\" ?>");
         if (schema == RequestedSchema.dcOCLC || schema == RequestedSchema.marcOCLC) {
             sB.append("<searchRetrieveResponse xmlns=\"http://www.loc.gov/zing/srw\" >\n");
+        } else if (schema == RequestedSchema.aoisadxml) {
+            sB.append("<searchRetrieveResponse xmlns=\"http://www.loc.gov/zing/srw/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:isad=\"http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd\" xsi:schemaLocation=\"http://www.loc.gov/zing/srw/ http://www.loc.gov/standards/sru/sru1-1archive/xml-files/srw-types.xsd\" >\n");
         } else {
             sB.append("<searchRetrieveResponse>\n");
         }

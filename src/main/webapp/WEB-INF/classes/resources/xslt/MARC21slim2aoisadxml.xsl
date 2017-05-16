@@ -43,116 +43,142 @@
 
         <recordData>
 
-		<isad:identity xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
+            <isad:archivaldescription xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
 
-			<isad:reference xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
-                <xsl:value-of select="datafield[@tag=949]/subfield[@code='j']"/>
-			</isad:reference>
+		        <isad:identity xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
 
-            <xsl:for-each select="datafield[@tag=245]">
-            <isad:title xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
-				<xsl:call-template name="subfieldSelect">
-                    <xsl:with-param name="codes">ab</xsl:with-param>
-					<xsl:with-param name="delimeter">' : '</xsl:with-param>
-				</xsl:call-template>
-            </isad:title>
-		    </xsl:for-each>
+			        <isad:reference xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
+                        <xsl:value-of select="datafield[@tag=949]/subfield[@code='j']"/>
+			        </isad:reference>
 
-            <xsl:for-each select="datafield[@tag=260]">
-                <isad:date xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
-                    <xsl:call-template name="subfieldSelect">
-                        <xsl:with-param name="codes">c</xsl:with-param>
-                    </xsl:call-template>
-                </isad:date>
-            </xsl:for-each>
+                    <xsl:for-each select="datafield[@tag=245]">
+                    <isad:title xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
+				        <xsl:call-template name="subfieldSelect">
+                            <xsl:with-param name="codes">ab</xsl:with-param>
+					        <xsl:with-param name="delimeter">' : '</xsl:with-param>
+				        </xsl:call-template>
+                    </isad:title>
+		            </xsl:for-each>
 
-            <xsl:for-each select="datafield[@tag=351]">
-			    <isad:descriptionlevel xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
-                    <xsl:call-template name="subfieldSelect">
-                        <xsl:with-param name="codes">c</xsl:with-param>
-                    </xsl:call-template>
-			    </isad:descriptionlevel>
-            </xsl:for-each>
-
-            <xsl:for-each select="datafield[@tag=300]">
-			    <isad:extent xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
-                    <xsl:call-template name="subfieldSelect">
-                        <xsl:with-param name="codes">a</xsl:with-param>
-                    </xsl:call-template>
-			    </isad:extent>
-            </xsl:for-each>
-
-		</isad:identity>
-
-		<isad:context xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
-
-            <xsl:for-each select="datafield[@tag=100]|datafield[@tag=700]">
-            <isad:creator xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
-                <xsl:call-template name="subfieldSelect">
-                    <xsl:with-param name="codes">a</xsl:with-param>
-                </xsl:call-template>
-                <xsl:for-each select="subfield">
-                    <xsl:if test="@code='b'">
-                         <xsl:value-of select="concat(' ', text())"/>
-                    </xsl:if>
-                    <xsl:if test="@code='c'">
-                        <xsl:value-of select="concat(', ', text())"/>
-                    </xsl:if>
-                    <xsl:if test="@code='d'">
-                        <xsl:value-of select="concat(' (', text(),')')"/>
-                    </xsl:if>
-                    <xsl:if test="@code='e'">
-                        <xsl:value-of select="concat(' (', text(),')')"/>
-                    </xsl:if>
-                </xsl:for-each>
-			</isad:creator>
-		    </xsl:for-each>
-
-            <xsl:for-each select="datafield[@tag=110]|datafield[@tag=710]">
-                <isad:creator xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
-                    <xsl:call-template name="subfieldSelect">
-                        <xsl:with-param name="codes">a</xsl:with-param>
-                    </xsl:call-template>
-                    <xsl:for-each select="subfield">
-                        <xsl:if test="@code='b'">
-                            <xsl:value-of select="concat(', ', text())"/>
-                        </xsl:if>
-                        <xsl:if test="@code='g'">
-                            <xsl:value-of select="concat(' (', text(),')')"/>
-                        </xsl:if>
-                        <xsl:if test="@code='e'">
-                            <xsl:value-of select="concat(' (', text(),')')"/>
-                        </xsl:if>
+                    <xsl:for-each select="datafield[@tag=260]">
+                        <isad:date xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
+                            <xsl:call-template name="subfieldSelect">
+                                <xsl:with-param name="codes">c</xsl:with-param>
+                            </xsl:call-template>
+                        </isad:date>
                     </xsl:for-each>
-                </isad:creator>
-            </xsl:for-each>
+                    
+                    <xsl:choose>
+                        <xsl:when test="datafield[@tag=351]">
+                            <xsl:for-each select="datafield[@tag=351]">
+                                <isad:descriptionlevel xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
+                                    <xsl:call-template name="subfieldSelect">
+                                        <xsl:with-param name="codes">c</xsl:with-param>
+                                    </xsl:call-template>
+                                </isad:descriptionlevel>
+                            </xsl:for-each>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <isad:descriptionlevel xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
+                                <xsl:text>Dokument</xsl:text>
+                            </isad:descriptionlevel>
+                        </xsl:otherwise>
+                    </xsl:choose>
 
-            <xsl:for-each select="datafield[@tag=111]|datafield[@tag=711]">
-                <isad:creator xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
-                    <xsl:call-template name="subfieldSelect">
-                        <xsl:with-param name="codes">a</xsl:with-param>
-                    </xsl:call-template>
-                    <xsl:for-each select="subfield">
-                        <xsl:if test="@code='e'">
-                            <xsl:value-of select="concat('. ', text())"/>
-                        </xsl:if>
-                        <xsl:if test="@code='n'">
-                            <xsl:value-of select="concat(', ', text())"/>
-                        </xsl:if>
-                        <xsl:if test="@code='d'">
-                            <xsl:value-of select="concat(', ', text())"/>
-                        </xsl:if>
-                        <xsl:if test="@code='c'">
-                            <xsl:value-of select="concat(', ', text())"/>
-                        </xsl:if>
-                        <xsl:if test="@code='j'">
-                            <xsl:value-of select="concat(' (', text(),')')"/>
-                        </xsl:if>
+                    <xsl:for-each select="datafield[@tag=300]">
+			            <isad:extent xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
+                            <xsl:call-template name="subfieldSelect">
+                                <xsl:with-param name="codes">a</xsl:with-param>
+                            </xsl:call-template>
+			            </isad:extent>
                     </xsl:for-each>
-                </isad:creator>
-            </xsl:for-each>
 
-		</isad:context>
+		        </isad:identity>
+
+		        <isad:context xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
+
+                    <xsl:for-each select="datafield[@tag=245]">
+                        <isad:creator xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
+                            <xsl:call-template name="subfieldSelect">
+                                <xsl:with-param name="codes">c</xsl:with-param>
+                            </xsl:call-template>
+                        </isad:creator>
+                    </xsl:for-each>
+
+                    <!--
+
+                    <xsl:for-each select="datafield[@tag=100]|datafield[@tag=700]">
+                        <isad:creator xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
+                            <xsl:call-template name="subfieldSelect">
+                                <xsl:with-param name="codes">a</xsl:with-param>
+                            </xsl:call-template>
+                            <xsl:for-each select="subfield">
+                                <xsl:if test="@code='D'">
+                                     <xsl:value-of select="concat(', ', text())"/>
+                                </xsl:if>
+                                <xsl:if test="@code='b'">
+                                     <xsl:value-of select="concat(' ', text())"/>
+                                </xsl:if>
+                                <xsl:if test="@code='c'">
+                                    <xsl:value-of select="concat(', ', text())"/>
+                                </xsl:if>
+                                <xsl:if test="@code='d'">
+                                    <xsl:value-of select="concat(' (', text(),')')"/>
+                                </xsl:if>
+                                <xsl:if test="@code='e'">
+                                    <xsl:value-of select="concat(' (', text(),')')"/>
+                                </xsl:if>
+                            </xsl:for-each>
+			            </isad:creator>
+		                </xsl:for-each>
+
+                        <xsl:for-each select="datafield[@tag=110]|datafield[@tag=710]">
+                        <isad:creator xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
+                            <xsl:call-template name="subfieldSelect">
+                                <xsl:with-param name="codes">a</xsl:with-param>
+                            </xsl:call-template>
+                            <xsl:for-each select="subfield">
+                                <xsl:if test="@code='b'">
+                                    <xsl:value-of select="concat(', ', text())"/>
+                                </xsl:if>
+                                <xsl:if test="@code='g'">
+                                    <xsl:value-of select="concat(' (', text(),')')"/>
+                                </xsl:if>
+                                <xsl:if test="@code='e'">
+                                    <xsl:value-of select="concat(' (', text(),')')"/>
+                                </xsl:if>
+                            </xsl:for-each>
+                        </isad:creator>
+                    </xsl:for-each>
+
+                    <xsl:for-each select="datafield[@tag=111]|datafield[@tag=711]">
+                        <isad:creator xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
+                            <xsl:call-template name="subfieldSelect">
+                                <xsl:with-param name="codes">a</xsl:with-param>
+                            </xsl:call-template>
+                            <xsl:for-each select="subfield">
+                                <xsl:if test="@code='e'">
+                                    <xsl:value-of select="concat('. ', text())"/>
+                                </xsl:if>
+                                <xsl:if test="@code='n'">
+                                    <xsl:value-of select="concat(', ', text())"/>
+                                </xsl:if>
+                                <xsl:if test="@code='d'">
+                                    <xsl:value-of select="concat(', ', text())"/>
+                                </xsl:if>
+                                <xsl:if test="@code='c'">
+                                    <xsl:value-of select="concat(', ', text())"/>
+                                </xsl:if>
+                                <xsl:if test="@code='j'">
+                                    <xsl:value-of select="concat(' (', text(),')')"/>
+                                </xsl:if>
+                            </xsl:for-each>
+                        </isad:creator>
+                    </xsl:for-each>
+                    -->
+
+		        </isad:context>
+           </isad:archivaldescription>
 
         </recordData>
 
@@ -166,36 +192,36 @@
 
             <xsl:choose>
                 <xsl:when test="$dataField593">
-                    <beginDateISO xmlns:ap="http://www.archivportal.ch/srw/extension/">
+                    <ap:beginDateISO xmlns:ap="http://www.archivportal.ch/srw/extension/">
                         <xsl:value-of select="$beginDate593"/>
-                    </beginDateISO>
+                    </ap:beginDateISO>
 
-                    <endDateISO xmlns:ap="http://www.archivportal.ch/srw/extension/">
+                    <ap:endDateISO xmlns:ap="http://www.archivportal.ch/srw/extension/">
                         <xsl:value-of select="$endDate593"/>
-                    </endDateISO>
+                    </ap:endDateISO>
                 </xsl:when>
 
                 <xsl:otherwise>
-                    <beginDateISO xmlns:ap="http://www.archivportal.ch/srw/extension/">
+                    <ap:beginDateISO xmlns:ap="http://www.archivportal.ch/srw/extension/">
                         <xsl:value-of select="$beginDate008"/>
-                    </beginDateISO>
+                    </ap:beginDateISO>
 
-                    <endDateISO xmlns:ap="http://www.archivportal.ch/srw/extension/">
+                    <ap:endDateISO xmlns:ap="http://www.archivportal.ch/srw/extension/">
                         <xsl:value-of select="$endDate008"/>
-                    </endDateISO>
+                    </ap:endDateISO>
                 </xsl:otherwise>
             </xsl:choose>
 
-            <endApprox xmlns:ap="http://www.archivportal.ch/srw/extension/">0</endApprox>
+            <ap:endApprox xmlns:ap="http://www.archivportal.ch/srw/extension/">0</ap:endApprox>
 
-            <beginApprox xmlns:ap="http://www.archivportal.ch/srw/extension/">0</beginApprox>
+            <ap:beginApprox xmlns:ap="http://www.archivportal.ch/srw/extension/">0</ap:beginApprox>
 
-            <hasDigitizedItems xmlns:ap="http://www.archivportal.ch/srw/extension/">
+            <ap:hasDigitizedItems xmlns:ap="http://www.archivportal.ch/srw/extension/">
                 <xsl:choose>
                     <xsl:when test="$dataField856">1</xsl:when>
                     <xsl:otherwise>0</xsl:otherwise>
                 </xsl:choose>
-            </hasDigitizedItems>
+            </ap:hasDigitizedItems>
 
         </extraRecordData>
 
