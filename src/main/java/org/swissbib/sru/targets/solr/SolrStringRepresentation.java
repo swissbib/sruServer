@@ -1,6 +1,5 @@
 package org.swissbib.sru.targets.solr;
 
-import org.apache.solr.client.solrj.response.AnalysisResponseBase;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
