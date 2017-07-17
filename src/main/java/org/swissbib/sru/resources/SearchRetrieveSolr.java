@@ -76,7 +76,7 @@ public class SearchRetrieveSolr extends SearchRetrieveBasic {
                 SOLRQueryTransformation sQ = new SOLRQueryTransformation();
 
                 sQ.setGeneralFilterQuery(this.getGeneralFilterQuery());
-
+                sQ.setCurrentSchema(this.schemaType);
                 HashMap<String,ArrayList<String>> searchMapping = (HashMap<String,ArrayList<String>>)    attributes.get("searchMapping");
 
                 UtilsCQLRelationsIndexMapping rM = (UtilsCQLRelationsIndexMapping) attributes.get("cqlRelationsMapping");
