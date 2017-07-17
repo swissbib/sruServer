@@ -29,7 +29,7 @@
                     <isad:title xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
 				        <xsl:call-template name="subfieldSelect">
                             <xsl:with-param name="codes">ab</xsl:with-param>
-					        <xsl:with-param name="delimeter">' : '</xsl:with-param>
+					        <xsl:with-param name="delimeter"> : </xsl:with-param>
 				        </xsl:call-template>
                     </isad:title>
 		            </xsl:for-each>
