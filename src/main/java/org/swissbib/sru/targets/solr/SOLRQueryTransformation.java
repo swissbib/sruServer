@@ -4,6 +4,7 @@ package org.swissbib.sru.targets.solr;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
+import org.swissbib.sru.resources.RequestedSchema;
 import org.swissbib.sru.targets.common.BasicQueryTransformation;
 import org.swissbib.sru.targets.common.SRUException;
 import org.z3950.zing.cql.*;
@@ -44,6 +45,8 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
 
     protected String generalFilterQuery = null;
 
+    protected RequestedSchema currentSchema;
+
 
     //private final static SolrServer solrServer;
 
@@ -55,6 +58,10 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
     public void setGeneralFilterQuery(String fq) {
 
         this.generalFilterQuery = fq;
+    }
+
+    public void setCurrentSchema (RequestedSchema schema) {
+        this.currentSchema = schema;
     }
 
 
@@ -103,6 +110,10 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
                 System.out.println("invalid rows parameter -> use 10 as default");
             }
 
+            //if (this.currentSchema == RequestedSchema.aoisadxml) {
+            //    String sort = "author_sort asc" ;
+            //    parameters.set("sort", sort) ;
+            //}
 
             parameters.set("start",startRecord);
             parameters.set("rows", maxRows) ;

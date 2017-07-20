@@ -1,28 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:marc="http://www.loc.gov/MARC21/slim" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" exclude-result-prefixes="marc">
-	<xsl:import href="MARC21slimUtils.nonamespace.xsl"/>
-	<xsl:output method="xml" indent="yes"/>
-	<!--
-	Fixed 530 Removed type="original" from dc:relation 2010-11-19 tmee
-	Fixed 500 fields. 2006-12-11 ntra
-	Added ISBN and deleted attributes 6/04 jer
-	-->
-	<xsl:template match="/">
-		<xsl:if test="collection">
-			<oai_dc:dcCollection xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
-				<xsl:for-each select="collection">
-					<xsl:for-each select="record">
-						<oai_dc:dc>
-							<xsl:apply-templates select="."/>
-						</oai_dc:dc>
-					</xsl:for-each>
-				</xsl:for-each>
-			</oai_dc:dcCollection>
-		</xsl:if>
-		<xsl:if test="record">
-				<xsl:apply-templates/>
-		</xsl:if>
-	</xsl:template>
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<xsl:import href="MARC21slimUtils.nonamespace.xsl"/>
+<xsl:output method="xml" indent="yes"/>
 
 	<xsl:template match="record">
 
@@ -31,15 +10,10 @@
         <xsl:variable name="dataField856" select="datafield[@tag=856 and @ind1=1]"/>
         <xsl:variable name="beginDate008" select="substring($controlField008,8,4)"/>
         <xsl:variable name="endDate008" select="substring($controlField008,12,4)"/>
-
+        <xsl:variable name="dataField260c" select="datafield[@tag=260]/subfield[@code='c']"/>
+        <xsl:variable name="dataField046" select="datafield[@tag=046]"/>
         <xsl:variable name="beginDate046" select="datafield[@tag=046]/subfield[@code='c']"/>
         <xsl:variable name="endDate046" select="datafield[@tag=046]/subfield[@code='e']"/>
-
-        <xsl:variable name="dataField593" select="datafield[@tag=593]"/>
-        <xsl:variable name="divider593" select="'-'"/>
-
-        <xsl:variable name="beginDate593" select="translate(substring-before($dataField593,$divider593),'.','-')"/>
-        <xsl:variable name="endDate593" select="translate(substring-after($dataField593,$divider593),'.','-')"/>
 
         <recordData>
 
@@ -55,19 +29,38 @@
                     <isad:title xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
 				        <xsl:call-template name="subfieldSelect">
                             <xsl:with-param name="codes">ab</xsl:with-param>
-					        <xsl:with-param name="delimeter">' : '</xsl:with-param>
+					        <xsl:with-param name="delimeter"> : </xsl:with-param>
 				        </xsl:call-template>
                     </isad:title>
 		            </xsl:for-each>
 
-                    <xsl:for-each select="datafield[@tag=260]">
-                        <isad:date xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
-                            <xsl:call-template name="subfieldSelect">
-                                <xsl:with-param name="codes">c</xsl:with-param>
-                            </xsl:call-template>
-                        </isad:date>
-                    </xsl:for-each>
-                    
+                    <xsl:choose>
+                        <xsl:when test="$dataField260c">
+                            <xsl:for-each select="datafield[@tag=260]">
+                                <isad:date xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
+                                    <xsl:call-template name="subfieldSelect">
+                                        <xsl:with-param name="codes">c</xsl:with-param>
+                                    </xsl:call-template>
+                                </isad:date>
+                            </xsl:for-each>
+                        </xsl:when>
+
+                        <xsl:otherwise>
+                            <xsl:choose>
+                                <xsl:when test="$endDate008=''">
+                                    <isad:date xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
+                                        <xsl:value-of select="translate($beginDate008, 'u', '')"/>
+                                    </isad:date>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <isad:date xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
+                                        <xsl:value-of select="translate(concat($beginDate008, '-' , $endDate008),'u','')"/>
+                                    </isad:date>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </xsl:otherwise>
+                    </xsl:choose>
+
                     <xsl:choose>
                         <xsl:when test="datafield[@tag=351]">
                             <xsl:for-each select="datafield[@tag=351]">
@@ -191,13 +184,13 @@
             </ap:link>
 
             <xsl:choose>
-                <xsl:when test="$dataField593">
+                <xsl:when test="$dataField046">
                     <ap:beginDateISO xmlns:ap="http://www.archivportal.ch/srw/extension/">
-                        <xsl:value-of select="$beginDate593"/>
+                        <xsl:value-of select="$beginDate046"/>
                     </ap:beginDateISO>
 
                     <ap:endDateISO xmlns:ap="http://www.archivportal.ch/srw/extension/">
-                        <xsl:value-of select="$endDate593"/>
+                        <xsl:value-of select="$endDate046"/>
                     </ap:endDateISO>
                 </xsl:when>
 
