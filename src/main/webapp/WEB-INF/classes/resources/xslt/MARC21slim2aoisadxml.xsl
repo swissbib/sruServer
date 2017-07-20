@@ -78,13 +78,22 @@
                         </xsl:otherwise>
                     </xsl:choose>
 
-                    <xsl:for-each select="datafield[@tag=300]">
-			            <isad:extent xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
-                            <xsl:call-template name="subfieldSelect">
-                                <xsl:with-param name="codes">a</xsl:with-param>
-                            </xsl:call-template>
-			            </isad:extent>
-                    </xsl:for-each>
+                    <xsl:choose>
+                        <xsl:when test="datafield[@tag=300]">
+                            <xsl:for-each select="datafield[@tag=300]">
+			                    <isad:extent xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
+                                    <xsl:call-template name="subfieldSelect">
+                                        <xsl:with-param name="codes">a</xsl:with-param>
+                                    </xsl:call-template>
+			                    </isad:extent>
+                            </xsl:for-each>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <isad:extent xmlns:isad="http://www.expertisecentrumdavid.be/xmlschemas/isad.xsd">
+                                <xsl:text>-</xsl:text>
+                            </isad:extent>
+                        </xsl:otherwise>
+                    </xsl:choose>
 
 		        </isad:identity>
 
