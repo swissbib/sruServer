@@ -109,10 +109,11 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
 
                 System.out.println("invalid rows parameter -> use 10 as default");
             }
-            if (this.currentSchema == RequestedSchema.aoisadxml) {
-                String sort = "author_sort asc" ;
-                parameters.set("sort", sort) ;
-            }
+
+            //if (this.currentSchema == RequestedSchema.aoisadxml) {
+            //    String sort = "author_sort asc" ;
+            //    parameters.set("sort", sort) ;
+            //}
 
             parameters.set("start",startRecord);
             parameters.set("rows", maxRows) ;
