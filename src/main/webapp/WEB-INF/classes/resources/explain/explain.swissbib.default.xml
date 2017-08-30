@@ -61,7 +61,7 @@
                     <ns:schema retrieve="true" sort="false"
                                identifier="info:srw/schema/1/ao-isad-xml"
                                name="ao-isad-xml">
-                        <ns:title lang="de" primary="true">Variant of the ISAD(G) archival standard used for the Archives Online metaseach<ns:title>
+                        <ns:title lang="de" primary="true">Variant of the ISAD(G) archival standard used for the Archives Online metasearch</ns:title>
                     </ns:schema>
                 </ns:schemaInfo>
                 <ns:configInfo>
