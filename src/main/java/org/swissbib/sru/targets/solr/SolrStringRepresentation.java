@@ -12,11 +12,13 @@ import org.restlet.data.MediaType;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.swissbib.sru.resources.RequestedSchema;
+import org.swissbib.sru.targets.common.ResponseCreator;
 import org.swissbib.sru.targets.common.SRUBasicRepresentation;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -109,7 +111,7 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
 
 
         Iterator<SolrDocument> iterator =  qR.getResults().iterator();
-        String uH =  queryParams.getFirstValue("x-info-10-get-holdings");
+        String uH =  queryParams.getFirstValue( "x-info-10-get-holdings");
 
         boolean useHoldings = uH != null ? Boolean.valueOf(uH) : false;
 
@@ -529,6 +531,17 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
     protected String createSRUXMLHeader (String numberOfHits) {
 
         StringBuilder sB = new StringBuilder();
+
+        //so far only test call
+        //todo: integrate the whole logic based on FunctionalInterface and templates to get rid of String concatination
+        //ResponseCreator rc = new ResponseCreator();
+        //HashMap<String,String> valuesMap = new HashMap<>();
+        //valuesMap.put("numberOfHits", String.valueOf(numberOfHits));
+        //valuesMap.put("searchRetrieveResponseNamespace","");
+        //valuesMap.put("recordsNamespace","");
+
+        //String test =  rc.responseXMLHeaderCreator.createStructure(valuesMap,
+        //                          "responseTemplates/xmlHeader.txt");
 
         sB.append("<?xml version=\"1.0\" ?>");
         if (schema == RequestedSchema.dcOCLC || schema == RequestedSchema.marcOCLC) {

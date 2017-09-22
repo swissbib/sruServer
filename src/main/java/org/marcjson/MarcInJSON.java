@@ -4,7 +4,6 @@
  */
 package org.marcjson;
 
-import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.marc4j.marc.MarcFactory;
@@ -21,7 +20,8 @@ import org.marc4j.marc.Subfield;
 
 /**
  *
- * @author dueberb
+ * @author dueberb (https://www.lib.umich.edu/users/dueberb)
+ * https://github.com/billdueber/marc4j_extra_reader_writers/blob/master/src/org/marc4j/MarcInJSON.java
  */
 public class MarcInJSON {
 
