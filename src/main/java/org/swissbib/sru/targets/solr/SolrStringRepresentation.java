@@ -13,18 +13,22 @@ import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.swissbib.sru.resources.RequestedSchema;
 import org.swissbib.sru.targets.common.ResponseCreator;
+import org.swissbib.sru.targets.common.ResponseCreator1;
 import org.swissbib.sru.targets.common.SRUBasicRepresentation;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import java.util.stream.Stream;
+import static java.util.stream.Collectors.toList;
 
 
 /**
@@ -52,6 +56,7 @@ import java.util.regex.Pattern;
  */
 
 
+
 public class SolrStringRepresentation extends SRUBasicRepresentation {
 
 
@@ -67,7 +72,6 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
     private final static Pattern pStartLeaderTag = Pattern.compile("<leader>");
     private final static Pattern pEndLeaderTag = Pattern.compile("</leader>");
     private final static Pattern pHoldingsPattern = Pattern.compile("<record>(.*?)</record>");
-
     private final static Pattern pWrongSubfieldstructure = Pattern.compile("<subfielddatafield.*?</subfielddatafield>",Pattern.MULTILINE | Pattern.DOTALL);
     private final static Pattern pWrongSubfieldDubstructure = Pattern.compile("<subfielddubfield.*?</subfielddubfield>",Pattern.MULTILINE | Pattern.DOTALL);
 
@@ -87,34 +91,51 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
         this.qR = qR;
         this.context = context;
         this.schema = schema;
-
         this.queryParams = queryParams;
-
         this.cqlQuery =  queryParams.getFirstValue("query");
-
-
-
 
     }
 
     @Override
     public Representation getRepresentation() {
 
+        //Hinweise: non static / static Methods for Method references
+        //https://stackoverflow.com/questions/26168806/java-8-method-reference-to-non-static-method
+
+        //Supplier<String> addHeader = ResponseCreator1::addHeader;
 
 
+        Map<String,String> myMap = new HashMap<>();
+        myMap.put("test","test");
 
         SolrDocumentList result =  qR.getResults();
+
+        //ResponseCreator1 cr1 = new ResponseCreator1(myMap);
+
+        //Function <Map<String,String>, String> addHeader = new ResponseCreator1(myMap)::addHeader;
+        BiFunction<Map<String,String>,SolrDocumentList,String> addDocuments = ResponseCreator1::addDocuments;
+        //addHeader.andThen(addDocuments)
+
+        Function<Map<String,String>,String> addDocuments1 = ResponseCreator1::addDocuments1;
+
+        ResponseCreator1 rc1 = new ResponseCreator1(myMap);
+
+        List<String> allStrings =  result.stream().map(rc1).collect(toList());
+
+        addDocuments.apply(myMap,result);
+
+        //        addHeader.andThen ()
+
+
+
+        //result.stream().map()
         startPage = result.getStart();
         long incrementalStart = result.getStart();
-
-
-
 
         Iterator<SolrDocument> iterator =  qR.getResults().iterator();
         String uH =  queryParams.getFirstValue( "x-info-10-get-holdings");
 
         boolean useHoldings = uH != null ? Boolean.valueOf(uH) : false;
-
 
         StringBuilder sB = new StringBuilder();
 
@@ -427,13 +448,8 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
             sB.append(sw.toString().substring(38)) ;
             //sB.append(sw.toString()) ;
 
-
             sB.append("</recordData>");
             sB.append("</record>");
-
-
-
-
 
             return sB.toString();
         } catch (TransformerException tE ) {
@@ -446,7 +462,6 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
 
     @SuppressWarnings("unchecked")
     private String createaoisadxml (SolrDocument doc, long position )  {
-
 
         ConcurrentMap<String,Object> attributes = context.getAttributes();
         Templates template =  ((ConcurrentHashMap<String,Templates>) attributes.get("templatesMap")).get("m2aoisadxml");
@@ -514,7 +529,6 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
 
             sB.append(sw.toString().substring(38)) ;
             //sB.append(sw.toString()) ;
-
 
             sB.append("</recordData>");
             sB.append("</record>");
@@ -590,7 +604,6 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
 
         sB.append("</searchRetrieveResponse>\n");
 
-
         return sB.toString();
 
     }
@@ -614,16 +627,7 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
     }
 
     protected String createSRUJsonFooter (String maxRecords, String nextRecordPosition) {
-
-        StringBuilder sB = new StringBuilder();
-
-
-        sB.append("]}");
-
-        return sB.toString();
-
+        return "]}";
     }
-
-
 
 }

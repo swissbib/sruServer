@@ -1,18 +1,36 @@
 package org.swissbib.sru.targets.common;
 
 import org.apache.commons.lang.text.StrSubstitutor;
+import org.swissbib.sru.resources.RequestedSchema;
+
 import java.io.*;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Supplier;
+
+import static  java.util.Comparator.comparing;
+
 
 public class ResponseCreator {
 
     final String versionNumber = "1.1";
 
+    private static  Map <RequestedSchema,Supplier<String>> headerCreators;
+
+    static {
+        headerCreators.put(RequestedSchema.dcswissbib,() -> {
+            return "";
+        });
+    }
+
+
+
 
     public ResponseHeaderCreator responseXMLHeaderCreator = (Map<String,String> valuesMap,
+
                                                             String templatePath) -> {
 
-        String headerTemplate = this.readResource(templatePath);
+        headerCreators.get(RequestedSchema.dcswissbib).get();
+        String headerTemplate = readResource(templatePath);
         valuesMap.put("versionNumber", versionNumber);
         StrSubstitutor sub = new StrSubstitutor(valuesMap);
         return sub.replace(headerTemplate);
@@ -20,7 +38,16 @@ public class ResponseCreator {
 
 
 
-    private String readResource(String path) {
+    private static String readResource(String path) {
+
+        String s = "";
+        s.compareToIgnoreCase("");
+
+        //List<String> names = Arrays.asList("Mal", "Wash", "Kaylee", "Inara",    "Zoë", "Jayne", "Simon", "River", "Shepherd Book");
+        //Optional<String> first = names.stream().filter(name -> name.startsWith("C")).findFirst();
+
+        //names.sort(comparing(Apple::getWeight));
+
 
         final int bufferSize = 1024;
         final char[] buffer = new char[bufferSize];
@@ -28,7 +55,7 @@ public class ResponseCreator {
 
 
         //path has to be reachable from the Classpath (subdirs of WEB-INF/classes
-        try (InputStream xmlHeader = this.getClass().getClassLoader()
+        try (InputStream xmlHeader = ResponseCreator.class.getClassLoader()
                 .getResourceAsStream(path)) {
 
             Reader in = new InputStreamReader(xmlHeader, "UTF-8");
