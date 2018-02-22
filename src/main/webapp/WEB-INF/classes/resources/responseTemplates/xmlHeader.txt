@@ -1,0 +1,5 @@
+<?xml version="1.0" ?>
+<searchRetrieveResponse  ${searchRetrieveResponseNamespace}>
+<version>${versionNumber}</version>
+<numberOfRecords>${numberOfHits}</numberOfRecords>
+<records ${recordsNamespace}>

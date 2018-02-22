@@ -116,6 +116,7 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
         BiFunction<Map<String,String>,SolrDocumentList,String> addDocuments = ResponseCreator1::addDocuments;
         //addHeader.andThen(addDocuments)
 
+
         Function<Map<String,String>,String> addDocuments1 = ResponseCreator1::addDocuments1;
 
         ResponseCreator1 rc1 = new ResponseCreator1(myMap);
@@ -126,7 +127,9 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
 
         //        addHeader.andThen ()
 
-
+        Map <String, String> values = new HashMap<>();
+        values.put("versionNumber", "5.0");
+        String header =  ResponseCreator.responseXMLHeaderCreator.createStructure(values, "responseTemplates/xmlHeader.txt");
 
         //result.stream().map()
         startPage = result.getStart();

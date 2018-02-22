@@ -14,27 +14,26 @@ public class ResponseCreator {
 
     final String versionNumber = "1.1";
 
-    private static  Map <RequestedSchema,Supplier<String>> headerCreators;
+    private static  Map <RequestedSchema,ResponseHeaderCreator> headerCreators;
+
+    public static ResponseHeaderCreator responseXMLHeaderCreator = (Map<String,String> valuesMap,
+                                                                    String templatePath) -> {
+
+        String headerTemplate = readResource(templatePath);
+        //valuesMap.put("versionNumber", versionNumber);
+        StrSubstitutor sub = new StrSubstitutor(valuesMap);
+        return sub.replace(headerTemplate);
+    };
+
 
     static {
-        headerCreators.put(RequestedSchema.dcswissbib,() -> {
-            return "";
-        });
+        headerCreators = new HashMap<>();
+        headerCreators.put(RequestedSchema.dcswissbib,responseXMLHeaderCreator);
     }
 
 
 
 
-    public ResponseHeaderCreator responseXMLHeaderCreator = (Map<String,String> valuesMap,
-
-                                                            String templatePath) -> {
-
-        headerCreators.get(RequestedSchema.dcswissbib).get();
-        String headerTemplate = readResource(templatePath);
-        valuesMap.put("versionNumber", versionNumber);
-        StrSubstitutor sub = new StrSubstitutor(valuesMap);
-        return sub.replace(headerTemplate);
-    };
 
 
 
