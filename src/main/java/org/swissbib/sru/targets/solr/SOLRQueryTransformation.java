@@ -47,6 +47,8 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
 
     protected RequestedSchema currentSchema;
 
+    protected int restrictedNumberOfDocuments = 50000;
+
 
     //private final static SolrServer solrServer;
 
@@ -58,6 +60,10 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
     public void setGeneralFilterQuery(String fq) {
 
         this.generalFilterQuery = fq;
+    }
+
+    public void setRestrictedNumberOfDocuments(int restrictedNumberOfDocuments) {
+        this.restrictedNumberOfDocuments = restrictedNumberOfDocuments;
     }
 
     public void setCurrentSchema (RequestedSchema schema) {
@@ -88,35 +94,7 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
             SolrQuery parameters = new SolrQuery();
             parameters.set("q", luceneStringQuery.toString());
 
-            String sR = inputParams.getFirstValue("startRecord");
-            int startRecord = 0;
-
-            try {
-                startRecord =  sR != null && sR.length() > 0 ? Integer.parseInt(sR) : 0;
-                startRecord = startRecord == 1 ? 0 : startRecord;
-            } catch (Exception ex)  {
-
-                System.out.println("invalid start parameter -> use 0 as default");
-            }
-
-            //for backward compatibility - was 1 in the former version
-
-            String rows = inputParams.getFirstValue("maximumRecords");
-            int maxRows = 10;
-            try {
-                maxRows =  rows != null && rows.length() > 0 ? Integer.parseInt(rows) : 0;
-            } catch (Exception ex)  {
-
-                System.out.println("invalid rows parameter -> use 10 as default");
-            }
-
-            //if (this.currentSchema == RequestedSchema.aoisadxml) {
-            //    String sort = "author_sort asc" ;
-            //    parameters.set("sort", sort) ;
-            //}
-
-            parameters.set("start",startRecord);
-            parameters.set("rows", maxRows) ;
+            this.setQueryWindow(parameters);
 
             if (this.generalFilterQuery != null) {
 
@@ -134,6 +112,8 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
 
             //this.searchServer.setParser(new BinaryResponseParser());
             //this.searchServer.setRequestWriter(new BinaryRequestWriter());
+
+            checkDeepPaging(parameters);
 
             response = this.searchServer.query(parameters);
 
@@ -194,9 +174,75 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
             sb.append(edismaxClause.getQueryClause());
         }
 
+
+
+    }
+
+    private void setQueryWindow(SolrQuery parameters) {
+
+        String cursor = inputParams.getFirstValue("cursor");
+
+        if (null != cursor)  {
+
+            //todo include special cases for sort
+            if (cursor.equalsIgnoreCase("0") || cursor.equalsIgnoreCase("")) {
+                parameters.set("cursorMark","*");
+            } else {
+                parameters.set("cursorMark",cursor);
+            }
+            parameters.set("sort","id asc");
+
+            return;
+        }
+
+        String sR = inputParams.getFirstValue("startRecord");
+        int startRecord = 0;
+
+        try {
+            startRecord =  sR != null && sR.length() > 0 ? Integer.parseInt(sR) : 0;
+            startRecord = startRecord == 1 ? 0 : startRecord;
+        } catch (Exception ex)  {
+
+            System.out.println("invalid start parameter -> use 0 as default");
+        }
+
+        //for backward compatibility - was 1 in the former version
+
+        String rows = inputParams.getFirstValue("maximumRecords");
+        int maxRows = 10;
+        try {
+            maxRows =  rows != null && rows.length() > 0 ? Integer.parseInt(rows) : 0;
+        } catch (Exception ex)  {
+
+            System.out.println("invalid rows parameter -> use 10 as default");
+        }
+        parameters.set("start",startRecord);
+        parameters.set("rows", maxRows) ;
+
+
     }
 
 
+    private void checkDeepPaging(SolrQuery parameters) throws SRUException{
+
+
+        if (parameters.get("cursorMark") == null) {
+            //deep paging using the cursor model is allowed
+            //otherwise we restrict access
+
+            Integer currentFetchedDocs = Integer.valueOf( parameters.get("start")) + Integer.valueOf( parameters.get("rows"));
+            if (currentFetchedDocs > this.restrictedNumberOfDocuments) {
+                throw new SRUException(String.format("it's not allowed to fetch more than %s documents. You fetched already %s. " +
+                                "You can use the cursor model for deep paging",
+                        this.restrictedNumberOfDocuments,currentFetchedDocs));
+            }
+
+
+        }
+
+
+
+    }
 
     /*
 

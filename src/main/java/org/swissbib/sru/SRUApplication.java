@@ -103,6 +103,8 @@ public class SRUApplication extends Application {
         String xsltDir =  System.getProperty("xsltDir","/home/swissbib/environment/code/sruWebAppRestLet/build/resources/xslt/");
         String lastCommit = System.getProperty("lastCommit", "https://github.com/swissbib/sruServer");
 
+        String restrictedNumberOfDocuments = System.getProperty("maxNumberDocuments", "50000");
+
 
 
 
@@ -133,6 +135,7 @@ public class SRUApplication extends Application {
         hM.put("sruSearchURL",sruSearchURL);
         hM.put("sruExplainURL",sruExplainURL);
         hM.put("sruExplain",sruExplain);
+        hM.put("restrictedNumberOfDocuments",restrictedNumberOfDocuments);
 
         hM.put("xsltDir",xsltDir);
         hM.put("lastCommit", lastCommit);

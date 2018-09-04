@@ -82,6 +82,7 @@ public class SearchRetrieveSolr extends SearchRetrieveBasic {
                 UtilsCQLRelationsIndexMapping rM = (UtilsCQLRelationsIndexMapping) attributes.get("cqlRelationsMapping");
 
                 sQ.init(queryParams,solrServer, searchMapping,rM);
+                sQ.setRestrictedNumberOfDocuments((Integer.valueOf((String)attributes.get("restrictedNumberOfDocuments"))));
                 QueryResponse qR = sQ.runQuery();
 
 

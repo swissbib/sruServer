@@ -171,6 +171,7 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
 
         MediaType mt = schema != RequestedSchema.jsonswissbib ? MediaType.TEXT_XML : MediaType.APPLICATION_JSON;
 
+        //return ned
         return new StringRepresentation(sB.toString(),mt);
     }
 
@@ -538,6 +539,9 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
         } else {
             sB.append("<searchRetrieveResponse>\n");
         }
+        if (qR.getNextCursorMark() != null) {
+            sB.append("<nextCursormark>").append(qR.getNextCursorMark()).append("</nextCursormark>");
+        }
 
         sB.append("<version>1.1</version>");
         sB.append("<numberOfRecords>");
@@ -585,16 +589,35 @@ public class SolrStringRepresentation extends SRUBasicRepresentation {
 
         StringBuilder sB = new StringBuilder();
 
-        sB.append("{").
-                append("\"numberOfRecords\" : ").
-                append("\"").
-                append(numberOfHits).
-                append("\"").append(",").
-                append("\"startRecord\" : ").
-                append("\"").
-                append(startRecord).
-                append("\"").append(",").
-                append("\"collection\" : [");
+        if (qR.getNextCursorMark() != null) {
+
+            sB.append("{").
+                    append("\"numberOfRecords\" : ").
+                    append("\"").
+                    append(numberOfHits).
+                    append("\"").append(",").
+                    append("\"nextCursormark\" : ").
+                    append(qR.getNextCursorMark()).
+                    append("\"").append(",").
+                    append("\"startRecord\" : ").
+                    append("\"").
+                    append(startRecord).
+                    append("\"").append(",").
+                    append("\"collection\" : [");
+        } else {
+
+            sB.append("{").
+                    append("\"numberOfRecords\" : ").
+                    append("\"").
+                    append(numberOfHits).
+                    append("\"").append(",").
+                    append("\"startRecord\" : ").
+                    append("\"").
+                    append(startRecord).
+                    append("\"").append(",").
+                    append("\"collection\" : [");
+
+        }
 
         return sB.toString();
 
