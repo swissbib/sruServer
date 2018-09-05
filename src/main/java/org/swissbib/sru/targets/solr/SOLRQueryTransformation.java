@@ -190,6 +190,16 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
             } else {
                 parameters.set("cursorMark",cursor);
             }
+            try {
+                String rows = inputParams.getFirstValue("maximumRecords");
+
+                int maxRows =  rows != null && rows.length() > 0 ? Integer.parseInt(rows) : 10;
+                parameters.set("rows", maxRows) ;
+            } catch (Exception ex)  {
+
+                System.out.println("invalid rows parameter -> use 10 as default");
+                parameters.set("rows", 10) ;
+            }
             parameters.set("sort","id asc");
 
             return;
@@ -205,19 +215,21 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
 
             System.out.println("invalid start parameter -> use 0 as default");
         }
-
+        parameters.set("start",startRecord);
         //for backward compatibility - was 1 in the former version
 
         String rows = inputParams.getFirstValue("maximumRecords");
-        int maxRows = 10;
+
         try {
-            maxRows =  rows != null && rows.length() > 0 ? Integer.parseInt(rows) : 0;
+            int maxRows =  rows != null && rows.length() > 0 ? Integer.parseInt(rows) : 10;
+            parameters.set("rows", maxRows) ;
         } catch (Exception ex)  {
 
             System.out.println("invalid rows parameter -> use 10 as default");
+            parameters.set("rows", 10) ;
         }
-        parameters.set("start",startRecord);
-        parameters.set("rows", maxRows) ;
+
+
 
 
     }
