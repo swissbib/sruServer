@@ -229,8 +229,10 @@ public class SOLRQueryTransformation extends BasicQueryTransformation {
             parameters.set("rows", 10) ;
         }
 
-
-
+        if (this.currentSchema == RequestedSchema.aoisadxml) {
+            String sort = "description_level_str_mv desc" ;
+            parameters.set("sort", sort) ;
+        }
 
     }
 
