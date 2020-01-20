@@ -88,7 +88,7 @@ public class SRUApplication extends Application {
         String diagnoseDir =  System.getProperty("diagnoseDir","file:///home/swissbib/environment/code/sruWebAppRestLet/build/resources/diagnose");
         //String configuredSOLRServer =  System.getProperty("solrServer","http://search.swissbib.ch/solr/sb-biblio###defaultdb");
         //String configuredSOLRServer =  System.getProperty("solrServer","http://localhost:8081/solr/sb-biblio###defaultdb");
-        String configuredSOLRServer =  System.getProperty("solrServer","http://sb-s20.swissbib.unibas.ch:8080/solr/sb_biblio###defaultdb");
+        String configuredSOLRServer =  System.getProperty("solrServer","http://sgreenc2.swissbib.ch/solr/green###defaultdb");
         String mappingFieldsProps =  System.getProperty("mappingFieldsProps","/home/swissbib/environment/code/sruWebAppRestLet/build/resources/mapping/mapping.solr.properties");
         String mappingCQLRelations =  System.getProperty("mappingCQLRelations","/home/swissbib/environment/code/sruWebAppRestLet/build/resources/mapping/mapping.cqlrelations.properties");
 
