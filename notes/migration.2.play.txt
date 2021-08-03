@@ -1,0 +1,7 @@
+
+Tomcat 9.0.50
+
+http://localhost:8080/sru/search/defaultdb?query=%20dc.anywhere%20=%20hello%20world&operation=searchRetrieve&recordSchema=info:srw/schema/1/marcxml-v1.1-light&maximumRecords=10&startRecord=0&recordPacking=XML&availableDBs=defaultdb
+
+
+ssh -L 8081:localhost:8080 swissbib@dd-so7.ub.unibas.ch
